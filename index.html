@@ -1705,6 +1705,183 @@
             border-color: var(--alert); 
         }
 
+        /* NEW: ADMIN UNREAD SUMMARY MODAL */
+        #adminUnreadModal { display:none; }
+        .admin-unread-card { border:2px solid var(--primary) !important; box-shadow:0 0 50px rgba(0,242,255,0.4) !important; }
+        .admin-unread-card .tm-icon { color:var(--primary) !important; text-shadow:0 0 30px var(--primary) !important; animation:pulse-cyan 2s infinite; }
+        .admin-unread-list { max-height: 300px; overflow-y: auto; text-align: left; background: #050505; border-radius: 12px; padding: 10px; margin: 20px 0; border: 1px solid #112222; }
+        .admin-unread-item { padding: 12px; border-bottom: 1px solid #112222; }
+        .admin-unread-item:last-child { border-bottom: none; }
+        .admin-unread-title { color: var(--primary); font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .admin-unread-body { color: #ccc; font-size: 13px; line-height: 1.4; }
+        .admin-unread-btn { background: #222; color: white; border: 1px solid #444; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; transition: 0.3s; margin-top: 10px; }
+        .admin-unread-btn:hover { background: var(--primary); color: black; border-color: var(--primary); }
+
+        /* DIALOG EDITOR SECTION */
+        .dialog-editor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .dialog-edit-card {
+            background: #0a0a0a;
+            border: 1px solid var(--cyan);
+            border-radius: 15px;
+            padding: 20px;
+            transition: 0.3s;
+        }
+        .dialog-edit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0,242,255,0.2);
+        }
+        .dialog-edit-title {
+            color: var(--cyan);
+            font-family: 'Rajdhani';
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #112222;
+            padding-bottom: 8px;
+        }
+        .dialog-edit-input {
+            width: 100%;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .dialog-edit-textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px;
+            color: white;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .dialog-save-btn {
+            background: linear-gradient(90deg, #004d00, var(--success));
+            color: black;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .dialog-save-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(0,255,0,0.3);
+        }
+
+        /* WEBSITE ANALYST UPGRADE */
+        .analyst-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .analyst-tab {
+            background: #0a0a0a;
+            border: 2px solid #112222;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 800;
+            font-family: 'Rajdhani';
+            transition: 0.3s;
+            color: #888;
+        }
+        .analyst-tab.active {
+            background: var(--cyan);
+            color: black;
+            border-color: var(--cyan);
+            box-shadow: 0 0 15px rgba(0,242,255,0.5);
+        }
+        .analyst-tab:hover:not(.active) {
+            border-color: var(--cyan);
+            color: white;
+        }
+        .date-range-picker {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .date-range-picker input {
+            width: auto;
+            margin-bottom: 0;
+            background: #111;
+            padding: 8px 12px;
+        }
+        .chart-container {
+            height: 400px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            background: #050505;
+            border: 1px solid #112;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow-x: auto;
+        }
+        .chart-bar-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70px;
+            min-width: 50px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+        .chart-bar {
+            width: 100%;
+            background: linear-gradient(to top, var(--dark-cyan), var(--cyan));
+            border-radius: 5px 5px 0 0;
+            transition: 0.5s;
+            position: relative;
+            cursor: pointer;
+        }
+        .chart-bar:hover {
+            box-shadow: 0 0 20px var(--cyan);
+            filter: brightness(1.2);
+        }
+        .chart-label {
+            margin-top: 10px;
+            font-size: 11px;
+            color: #888;
+            font-weight: bold;
+            text-align: center;
+        }
+        .chart-tooltip {
+            position: absolute;
+            top: -30px;
+            background: white;
+            color: black;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .chart-bar:hover .chart-tooltip {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
         /* RESPONSIVE PANEL CSS */
         @media (max-width: 992px) {
             .sidebar { 
@@ -1843,37 +2020,6 @@
             border: 1px solid #ff3366; 
             display: block !important; 
         }
-
-        /* Website Analyst */
-        .analyst-filter-wrap {
-            display:flex; justify-content:center; gap:10px; margin-bottom:25px; flex-wrap:wrap;
-        }
-        .analyst-filter-btn {
-            background:#111; border:1px solid #333; color:#aaa; padding:10px 20px;
-            border-radius:20px; cursor:pointer; font-weight:bold; transition:0.3s;
-        }
-        .analyst-filter-btn.active {
-            background:var(--cyan); color:black; border-color:var(--cyan); box-shadow:0 0 15px rgba(0,242,255,0.4);
-        }
-        .chart-container {
-            height:300px; display:flex; align-items:flex-end; justify-content:space-around;
-            background:#050505; border:1px solid #112; border-radius:10px; padding:20px;
-            margin-bottom:30px; position:relative;
-        }
-        .chart-bar-wrap {
-            display:flex; flex-direction:column; align-items:center; width:10%; height:100%; justify-content:flex-end;
-        }
-        .chart-bar {
-            width:100%; background:linear-gradient(to top, var(--dark-cyan), var(--cyan));
-            border-radius:5px 5px 0 0; transition:0.5s; position:relative;
-        }
-        .chart-bar:hover { box-shadow:0 0 20px var(--cyan); filter:brightness(1.2); cursor:pointer; }
-        .chart-label { margin-top:10px; font-size:11px; color:#888; font-weight:bold; text-align:center; }
-        .chart-tooltip {
-            position:absolute; top:-30px; background:white; color:black; padding:2px 8px;
-            border-radius:4px; font-size:10px; font-weight:bold; opacity:0; transition:0.3s; pointer-events:none;
-        }
-        .chart-bar:hover .chart-tooltip { opacity:1; transform:translateY(-5px); }
 
         /* Offer System */
         .offer-badge {
@@ -2019,6 +2165,20 @@
             <div style="display:flex; gap:15px;">
                 <button class="btn" style="flex:1; background:var(--success); color:black;" onclick="approveMoneyRequest()">APPROVE</button>
                 <button class="btn" style="flex:1; background:var(--alert); color:white;" onclick="rejectMoneyRequest()">REJECT & REFUND</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN UNREAD SUMMARY MODAL -->
+    <div id="adminUnreadModal" class="transaction-modal-overlay" style="display:none;">
+        <div class="transaction-modal-card admin-unread-card" style="max-width:500px;">
+            <i class="fa fa-times close-icon-abs" onclick="closeAdminUnreadModal(true)"></i>
+            <i class="fa fa-bell tm-icon" style="color:var(--primary);"></i>
+            <h2 class="tm-title" style="color:var(--primary);">📬 ADMIN ALERTS</h2>
+            <div class="admin-unread-list" id="adminUnreadListContainer"></div>
+            <div id="adminUnreadTimer" class="timer-text">Auto‑close in 5 seconds</div>
+            <div class="btn-row" style="margin-top:15px;">
+                <button class="btn-modal btn-next" style="background:var(--primary);" onclick="closeAdminUnreadModal(true)">CLOSE</button>
             </div>
         </div>
     </div>
@@ -2179,6 +2339,9 @@
                 <div class="menu-item menu-sub-item" onclick="nav('cfgAd', this)"><i class="fa fa-ad"></i> Popup Ad Config</div>
                 <div class="menu-item menu-sub-item" onclick="nav('cfgAudio', this)"><i class="fa fa-volume-up"></i> Global Audio</div>
                 <div class="menu-item menu-sub-item" onclick="nav('cfgEarn', this)"><i class="fa fa-coins" style="color:var(--cyan);"></i> Earn Settings</div>
+                
+                <!-- NEW: DIALOG EDITOR -->
+                <div class="menu-item menu-sub-item" onclick="nav('dialogEditor', this)" style="border-color: var(--success);"><i class="fa fa-edit" style="color:var(--success);"></i> Dialog Editor</div>
             </div>
 
             <!-- Activity Monitor & Logout -->
@@ -2260,21 +2423,31 @@
                     </div>
                 </div>
 
-                <!-- WEBSITE ANALYST -->
+                <!-- WEBSITE ANALYST (UPGRADED) -->
                 <div id="sect-analyst" class="section">
                     <div class="header">
                         <h2><i class="fa fa-chart-line" style="color:#ff007f; margin-right:15px;"></i> Website Analyst Overview</h2>
                     </div>
                     
-                    <div class="analyst-filter-wrap">
-                        <button class="analyst-filter-btn active" onclick="loadAnalystData('days', this)">Last 10 Days</button>
-                        <button class="analyst-filter-btn" onclick="loadAnalystData('months', this)">Last 12 Months</button>
-                        <button class="analyst-filter-btn" onclick="loadAnalystData('years', this)">Last 5 Years</button>
+                    <div class="analyst-tabs">
+                        <button class="analyst-tab active" onclick="loadAnalystData('daily')">Daily</button>
+                        <button class="analyst-tab" onclick="loadAnalystData('weekly')">Weekly</button>
+                        <button class="analyst-tab" onclick="loadAnalystData('monthly')">Monthly</button>
+                        <button class="analyst-tab" onclick="loadAnalystData('yearly')">Yearly</button>
+                    </div>
+
+                    <div class="date-range-picker">
+                        <span style="color:#aaa;">Date Range:</span>
+                        <input type="date" id="analystStartDate">
+                        <span>to</span>
+                        <input type="date" id="analystEndDate">
+                        <button class="btn-sm" style="background:var(--cyan); color:black;" onclick="loadAnalystDataWithRange()">Apply</button>
+                        <button class="btn-sm" style="background:#222;" onclick="resetAnalystRange()">Reset</button>
                     </div>
 
                     <div class="stats-grid" style="margin-bottom:20px;">
                         <div class="stat-card" style="border-color:#ff007f;">
-                            <div class="stat-title" style="color:#ff007f;">Total Website Views</div>
+                            <div class="stat-title" style="color:#ff007f;">Total Page Views</div>
                             <div class="stat-val" id="analystTotalViews">0</div>
                             <i class="fa fa-eye stat-icon"></i>
                         </div>
@@ -2291,12 +2464,24 @@
                     </div>
 
                     <div class="form-box">
-                        <h3 style="color:white; font-family:'Rajdhani'; margin-bottom:20px;"><i class="fa fa-chart-bar" style="color:var(--cyan);"></i> Traffic Chart Analysis</h3>
+                        <h3 style="color:white; font-family:'Rajdhani'; margin-bottom:20px;"><i class="fa fa-chart-bar" style="color:var(--cyan);"></i> Traffic Analysis</h3>
                         <div class="chart-container" id="analystChartArea"></div>
                     </div>
                 </div>
 
-                <!-- UNREAD NOTIFICATION HUB -->
+                <!-- DIALOG EDITOR SECTION (NEW) -->
+                <div id="sect-dialogEditor" class="section">
+                    <div class="header">
+                        <h2><i class="fa fa-edit" style="color:var(--success);"></i> Dialog Editor</h2>
+                    </div>
+                    <div class="form-box">
+                        <p style="color:#aaa; margin-bottom:20px;">Edit the success modal texts for all website actions. Changes appear instantly on the website.</p>
+                        <div class="dialog-editor-grid" id="dialogEditorContainer"></div>
+                        <button class="btn btn-cyan" style="margin-top:20px;" onclick="saveAllDialogTexts()">Save All Changes</button>
+                    </div>
+                </div>
+
+                <!-- UNREAD HUB (Admin) -->
                 <div id="sect-unreadHub" class="section">
                     <div class="header">
                         <h2><i class="fa fa-inbox" style="color:var(--gold); margin-right:15px;"></i> Offline Unread Center</h2>
@@ -2434,7 +2619,7 @@
                     <div class="form-box" style="border-color:#00ffaa;">
                         <p style="color:#aaa; font-size:13px; margin-bottom:20px;">Review user-to-user transfers or specific purchases.</p>
                         <div class="data-table-wrap">
-                            <table class="data-table"><thead><tr><th>User</th><th>Type</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody id="txApprovalListBody"><tr><td colspan="5">Loading...</td></tr></tbody></table>
+                            <table class="data-table"><thead> <tr><th>User</th><th>Type</th><th>Amount</th><th>Status</th><th>Actions</th></tr> </thead><tbody id="txApprovalListBody"> <tr><td colspan="5">Loading...</td></tr> </tbody></table>
                         </div>
                     </div>
                 </div>
@@ -2643,7 +2828,7 @@
                         <div style="display:flex; gap:15px;"><div style="flex:1;"><label>Current Price</label><input type="number" id="offerRealPrice" readonly></div><div style="flex:1;"><label>Discount Price</label><input type="number" id="offerDiscountPrice"></div></div>
                         <button class="btn btn-success" onclick="saveVipOffer()">APPLY OFFER</button>
                     </div>
-                    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Tool</th><th>Offer</th><th>Price Change</th><th>Actions</th></tr></thead><tbody id="vipOffersListBody"></tbody></table></div>
+                    <div class="data-table-wrap"><table class="data-table"><thead> 的人<th>Tool</th><th>Offer</th><th>Price Change</th><th>Actions</th> </thead><tbody id="vipOffersListBody"></tbody> </div>
                 </div>
 
                 <!-- KEY GENERATOR -->
@@ -2653,7 +2838,7 @@
                         <div style="display:flex; gap:15px;"><input type="text" id="keyUserName" placeholder="User Name" style="flex:1;"><select id="keyToolId" style="flex:1;"></select></div>
                         <div style="display:flex; gap:15px;"><input type="text" id="keyCustom" placeholder="Custom Key (Auto-gen)" style="flex:2;"><input type="number" id="keyDurationVal" value="1" style="flex:1;"><select id="keyDurationType" style="flex:1;"><option value="days">Days</option><option value="months">Months</option><option value="years">Years</option><option value="lifetime">Lifetime</option></select><button class="btn btn-cyan" onclick="generateKey()">FORGE KEY</button></div>
                     </div>
-                    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>User</th><th>Key</th><th>Tool</th><th>Expiry</th><th>Action</th></tr></thead><tbody id="keyListBody"></tbody></table></div>
+                    <div class="data-table-wrap"><table class="data-table"><thead> 的人<th>User</th><th>Key</th><th>Tool</th><th>Expiry</th><th>Action</th> </thead><tbody id="keyListBody"></tbody> </div>
                 </div>
 
                 <!-- TOOL URGESTMENT -->
@@ -2672,7 +2857,7 @@
                 <div id="sect-userkeys" class="section">
                     <div class="header"><h2><i class="fa fa-database"></i> User Keys Summary</h2></div>
                     <div class="user-keys-summary"><div class="keys-stats"><div class="key-stat-item"><div class="key-stat-value" id="totalKeysStat">0</div><div class="key-stat-label">Total Keys</div></div><div class="key-stat-item"><div class="key-stat-value" id="activeKeysStat">0</div><div class="key-stat-label">Active Keys</div></div><div class="key-stat-item"><div class="key-stat-value" id="expiredKeysStat">0</div><div class="key-stat-label">Expired Keys</div></div><div class="key-stat-item"><div class="key-stat-value" id="usersWithKeysStat">0</div><div class="key-stat-label">Users with Keys</div></div></div></div>
-                    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>User Name</th><th>Email</th><th>Total Keys</th><th>Active</th><th>Expired</th><th>Logs</th></tr></thead><tbody id="userKeysSummaryBody"></tbody></table></div>
+                    <div class="data-table-wrap"><table class="data-table"><thead> 的人<th>User Name</th><th>Email</th><th>Total Keys</th><th>Active</th><th>Expired</th><th>Logs</th> </thead><tbody id="userKeysSummaryBody"></tbody> </div>
                 </div>
 
                 <!-- PAYMENT APPROVALS -->
@@ -2684,7 +2869,7 @@
                 <!-- REPORTS & REQUESTS -->
                 <div id="sect-reports" class="section">
                     <div class="header"><h2><i class="fa fa-bug" style="color:var(--pending);"></i> Reports & Requests Log</h2><button class="btn btn-cyan" onclick="clearAllUserReports()">CLEAR ALL</button></div>
-                    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Type</th><th>Details</th><th>User</th><th>Date</th><th>Actions</th></tr></thead><tbody id="reportsListBody"></tbody></table></div>
+                    <div class="data-table-wrap"><table class="data-table"><thead> 的人<th>Type</th><th>Details</th><th>User</th><th>Date</th><th>Actions</th> </thead><tbody id="reportsListBody"></tbody> </div>
                 </div>
 
                 <!-- CHAT SUPPORT -->
@@ -2700,14 +2885,14 @@
                 <div id="sect-notif" class="section">
                     <div class="header"><h2><i class="fa fa-broadcast-tower"></i> Push Notifications</h2></div>
                     <div class="form-box"><select id="notifTarget"><option value="ALL">BROADCAST TO ALL</option></select><input type="text" id="notifTitle" placeholder="Title"><textarea id="notifBody" placeholder="Message"></textarea><button class="btn btn-cyan" onclick="sendNotification()">DISPATCH</button></div>
-                    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Title</th><th>Message</th><th>Target</th><th>Time</th><th>Action</th></tr></thead><tbody id="sentNotifsList"></tbody></table></div>
+                    <div class="data-table-wrap"><table class="data-table"><thead> 的人<th>Title</th><th>Message</th><th>Target</th><th>Time</th><th>Action</th> </thead><tbody id="sentNotifsList"></tbody> </div>
                 </div>
 
                 <!-- DAILY NEWS -->
                 <div id="sect-news" class="section">
                     <div class="header"><h2><i class="fa fa-newspaper"></i> Daily News Manager</h2></div>
                     <div class="form-box"><input type="text" id="newsTitle" placeholder="Headline"><textarea id="newsDesc" placeholder="Description"></textarea><input type="text" id="newsImg" placeholder="Image URL"><select id="newsRatio"><option value="16/9">Landscape (16:9)</option><option value="9/16">Portrait (9:16)</option><option value="1/1">Square (1:1)</option></select><button class="btn btn-cyan" onclick="addDailyNews()">PUBLISH NEWS</button></div>
-                    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Image</th><th>Headline</th><th>Format</th><th>Action</th></tr></thead><tbody id="newsListBody"></tbody></table></div>
+                    <div class="data-table-wrap"><table class="data-table"><thead> 的人<th>Image</th><th>Headline</th><th>Format</th><th>Action</th> </thead><tbody id="newsListBody"></tbody> </div>
                 </div>
 
                 <!-- BUG FIX SYSTEM -->
@@ -2737,7 +2922,7 @@
     </div>
 
     <script>
-        // Firebase Config
+        // ========== Firebase Config ==========
         const firebaseConfig = { 
             apiKey: "AIzaSyBiDFZ4SiW6UJlnG7o6tmXl967GkrPSRmg", 
             authDomain: "mh-hacks-toolkit.firebaseapp.com", 
@@ -2746,10 +2931,9 @@
             messagingSenderId: "1004438699703", 
             appId: "1:1004438699703:web:d14f54c5d9beaacb095732" 
         };
-        
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(); 
-        const db = firebase.firestore(); 
+        const auth = firebase.auth();
+        const db = firebase.firestore();
         const storage = firebase.storage();
         
         const ADM_EMAIL = "mhhackshelpzone@gmail.com";
@@ -2807,7 +2991,7 @@
         function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('show-mobile'); }
         function closeMobileSidebar(){ if(window.innerWidth<=992) document.getElementById('sidebar').classList.remove('show-mobile'); }
         
-        function nav(id,el){ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active')); let targetId='sect-'+id; if(id.startsWith('adminCustom_')) targetId=id; let targetElem=document.getElementById(targetId); if(targetElem) targetElem.classList.add('active'); if(el) el.classList.add('active'); if(id==='urgestment') loadUrgestmentTools(); if(id==='keyaccess') updateKeyAccessLogs(); if(id==='userkeys') updateUserKeysSummary(); if(id==='alert') scanForWebsiteIssues(); if(id==='earnManagement') loadEarnManagementData(); if(id==='unreadHub') loadUnreadCenter(); if(id==='analyst') loadAnalystData('days',document.querySelector('.analyst-filter-btn.active')); if(id==='offers') loadVipOffers(); if(id==='txApproval') loadPendingTransactions(); if(id==='autoControl') loadAutoControls(); closeMobileSidebar(); }
+        function nav(id,el){ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active')); let targetId='sect-'+id; if(id.startsWith('adminCustom_')) targetId=id; let targetElem=document.getElementById(targetId); if(targetElem) targetElem.classList.add('active'); if(el) el.classList.add('active'); if(id==='urgestment') loadUrgestmentTools(); if(id==='keyaccess') updateKeyAccessLogs(); if(id==='userkeys') updateUserKeysSummary(); if(id==='alert') scanForWebsiteIssues(); if(id==='earnManagement') loadEarnManagementData(); if(id==='unreadHub') loadUnreadCenter(); if(id==='analyst') loadAnalystData('daily'); if(id==='offers') loadVipOffers(); if(id==='txApproval') loadPendingTransactions(); if(id==='autoControl') loadAutoControls(); if(id==='dialogEditor') loadDialogEditor(); closeMobileSidebar(); }
         
         // ========== AUTH & BOOT ==========
         window.onload=()=>{ let p=0; let iv=setInterval(()=>{ p+=3; document.getElementById('fill').style.width=p+'%'; document.getElementById('loadPerc').innerText='SYSTEM BOOT... '+p+'%'; if(p>=100){ clearInterval(iv); checkAuth(); } },30); };
@@ -2818,10 +3002,254 @@
         async function adminRecoverPass(){ let email=document.getElementById('admRecovEmail').value; if(!email) return alert("Enter Admin Email"); try{ await auth.sendPasswordResetEmail(email); alert("Reset link sent."); document.getElementById('adminForgotOverlay').style.display='none'; }catch(e){ alert("Error: "+e.message); } }
         function logout(){ auth.signOut().then(()=>location.reload()); }
         
-        function initData(){ initAppConfig(); loadEarnSettings(); loadUsers(); loadTools('free_tools'); loadTools('vip_tools'); loadKeys(); loadProofs(); loadAdminNotifs(); loadUserReports(); loadGlobalChatStats(); loadDailyNews(); loadBugFixSystem(); startAlertMonitoring(); loadUnreadCenter(); loadDemoSystems(); loadCustomSystems('web'); loadCustomSystems('admin'); loadVipDirectLogs(); loadVipOffers(); loadAutoControls(); loadPendingTransactions(); setTimeout(()=>{ loadAnalystData('days',document.querySelector('.analyst-filter-btn.active')); },1000); }
+        function initData(){ initAppConfig(); loadEarnSettings(); loadUsers(); loadTools('free_tools'); loadTools('vip_tools'); loadKeys(); loadProofs(); loadAdminNotifs(); loadUserReports(); loadGlobalChatStats(); loadDailyNews(); loadBugFixSystem(); startAlertMonitoring(); loadUnreadCenter(); loadDemoSystems(); loadCustomSystems('web'); loadCustomSystems('admin'); loadVipDirectLogs(); loadVipOffers(); loadAutoControls(); loadPendingTransactions(); setTimeout(()=>{ loadAnalystData('daily'); },1000); checkAndShowAdminUnread(); }
         
-        // ========== APP CONFIG ==========
-        function initAppConfig(){ db.collection('app_settings').doc('main').onSnapshot(doc=>{ if(doc.exists){ let d=doc.data(); if(document.getElementById('cfgLogo')) document.getElementById('cfgLogo').value=d.logoUrl||""; if(document.getElementById('cfgSplash')) document.getElementById('cfgSplash').value=d.splashText||""; if(document.getElementById('cfgTitle')) document.getElementById('cfgTitle').value=d.titleText||""; if(document.getElementById('cfgSubText')) document.getElementById('cfgSubText').value=d.subText||""; if(document.getElementById('cfgGrp')) document.getElementById('cfgGrp').value=d.linkTelegramGrp||""; if(document.getElementById('cfgChnl')) document.getElementById('cfgChnl').value=d.linkTelegramChnl||""; if(document.getElementById('cfgWa')) document.getElementById('cfgWa').value=d.linkWhatsapp||""; if(document.getElementById('cfgEmail')) document.getElementById('cfgEmail').value=d.supportEmail||"mhhackshelpzone@gmail.com"; if(document.getElementById('tgDemo')){ document.getElementById('tgDemo').checked=d.tgDemo!==false; document.getElementById('tgVipSystem').checked=d.tgVipSystem!==false; document.getElementById('tgFreeTools').checked=d.tgFreeTools!==false; document.getElementById('tgVipTools').checked=d.tgVipTools!==false; document.getElementById('tgEarn').checked=d.showEarn!==false; document.getElementById('tgSendMoney').checked=d.showSendMoney!==false; document.getElementById('tgChat').checked=d.showChat!==false; document.getElementById('tgNews').checked=d.showNews!==false; document.getElementById('tgAds').checked=d.popupEnabled===true; } if(document.getElementById('cfgTxtNext')){ document.getElementById('cfgTxtNext').value=d.txtNext||"PROCEED"; document.getElementById('cfgTxtCancel').value=d.txtCancel||"CANCEL"; document.getElementById('cfgTxtPurchase').value=d.txtPurchase||"PURCHASE VIP"; document.getElementById('cfgTxtPaid').value=d.txtPaid||"I HAVE PAID"; document.getElementById('cfgTxtUpload').value=d.txtUpload||"UPLOAD PROOF"; document.getElementById('cfgTxtLoading').value=d.txtLoading||"SYSTEM LOADING..."; document.getElementById('cfgTxtFooter').value=d.txtFooter||"© 2026 ALL RIGHTS RESERVED BY MH HACK"; document.getElementById('cfgFreeGridMobile').value=d.freeGridMobile||"3"; document.getElementById('cfgVipGridMobile').value=d.vipGridMobile||"3"; } if(d.adminAlertSound){ document.getElementById('adminAlertAudio').src=d.adminAlertSound; document.getElementById('currentAdminSound').innerText='Custom'; } if(d.notifSound){ document.getElementById('currentNotifSound').innerText='Custom'; } if(d.chatSound){ document.getElementById('currentChatSound').innerText='Custom'; } if(document.getElementById('cfgTkTitle')){ document.getElementById('cfgTkTitle').value=d.tkTitle||""; document.getElementById('cfgTkDesc').value=d.tkDesc||""; document.getElementById('cfgTkMfName').value=d.tkMfName||""; document.getElementById('cfgTkMfLink').value=d.tkMfLink||""; document.getElementById('cfgTkApkName').value=d.tkApkName||""; document.getElementById('cfgTkApkLink').value=d.tkApkLink||""; } if(document.getElementById('cfgAdEnable')){ document.getElementById('cfgAdEnable').value=d.popupEnabled?"true":"false"; document.getElementById('cfgAdTimer').value=d.popupTimer||5; document.getElementById('cfgAdTitle').value=d.popupTitle||""; document.getElementById('cfgAdDesc').value=d.popupDesc||""; document.getElementById('cfgAdImg').value=d.popupImg||""; document.getElementById('cfgAdLink').value=d.popupLink||""; } } }); }
+        // ========== DIALOG EDITOR ==========
+        let dialogTexts = {
+            updatePassword: { title: "SECURITY KEY UPDATED", desc: "Your password has been changed successfully." },
+            bugReport: { title: "SUBMITTED", desc: "Bug Report sent to Admin securely!" },
+            toolRequest: { title: "SUBMITTED", desc: "Tool Request sent to Admin securely!" },
+            walletPurchase: { title: "SUBMITTED", desc: "Request Sent Successfully! Admin will approve your key shortly. Check System Status." },
+            sendMoney: { title: "SENT", desc: "Successfully sent to Official Admin Account. Admin will process shortly." },
+            dailyCheckin: { title: "CHECK-IN SUCCESS", desc: "Daily Check-in Bonus added successfully to your wallet!" }
+        };
+        
+        function loadDialogEditor(){
+            const container = document.getElementById('dialogEditorContainer');
+            container.innerHTML = '';
+            const keys = Object.keys(dialogTexts);
+            keys.forEach(key => {
+                const text = dialogTexts[key];
+                container.innerHTML += `
+                    <div class="dialog-edit-card" data-key="${key}">
+                        <div class="dialog-edit-title">${key.replace(/([A-Z])/g, ' $1').toUpperCase()}</div>
+                        <div class="form-label" style="font-size:12px;">Title</div>
+                        <input type="text" class="dialog-edit-input" id="dialogTitle_${key}" value="${text.title}">
+                        <div class="form-label" style="font-size:12px;">Description</div>
+                        <textarea class="dialog-edit-textarea" id="dialogDesc_${key}">${text.desc}</textarea>
+                        <button class="dialog-save-btn" onclick="saveDialogText('${key}')">Save</button>
+                    </div>
+                `;
+            });
+        }
+        
+        async function saveDialogText(key){
+            const title = document.getElementById(`dialogTitle_${key}`).value;
+            const desc = document.getElementById(`dialogDesc_${key}`).value;
+            dialogTexts[key] = { title, desc };
+            await db.collection('app_settings').doc('dialog_texts').set({ [key]: { title, desc } }, { merge: true });
+            alert(`Saved ${key}`);
+        }
+        
+        async function saveAllDialogTexts(){
+            for (const key of Object.keys(dialogTexts)) {
+                const title = document.getElementById(`dialogTitle_${key}`).value;
+                const desc = document.getElementById(`dialogDesc_${key}`).value;
+                dialogTexts[key] = { title, desc };
+            }
+            await db.collection('app_settings').doc('dialog_texts').set(dialogTexts, { merge: true });
+            alert("All dialog texts saved!");
+        }
+        
+        function loadDialogTextsFromFirestore(){
+            db.collection('app_settings').doc('dialog_texts').onSnapshot(doc => {
+                if(doc.exists){
+                    const texts = doc.data();
+                    for(let key in texts){
+                        if(dialogTexts[key]) dialogTexts[key] = texts[key];
+                    }
+                    if(document.getElementById('dialogEditorContainer').innerHTML !== '') loadDialogEditor();
+                }
+            });
+        }
+        
+        // ========== WEBSITE ANALYST UPGRADE ==========
+        async function loadAnalystData(viewType){
+            let startDate, endDate;
+            const today = new Date();
+            if(viewType === 'daily'){
+                startDate = new Date(today);
+                startDate.setDate(today.getDate() - 30);
+                endDate = today;
+            } else if(viewType === 'weekly'){
+                startDate = new Date(today);
+                startDate.setDate(today.getDate() - 30*7);
+                endDate = today;
+            } else if(viewType === 'monthly'){
+                startDate = new Date(today);
+                startDate.setMonth(today.getMonth() - 12);
+                endDate = today;
+            } else if(viewType === 'yearly'){
+                startDate = new Date(today);
+                startDate.setFullYear(today.getFullYear() - 5);
+                endDate = today;
+            }
+            document.getElementById('analystStartDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('analystEndDate').value = endDate.toISOString().split('T')[0];
+            await loadAnalystDataWithRange();
+        }
+        
+        async function loadAnalystDataWithRange(){
+            const start = new Date(document.getElementById('analystStartDate').value);
+            const end = new Date(document.getElementById('analystEndDate').value);
+            if(isNaN(start) || isNaN(end)) return;
+            
+            // Get page views (simulate with user visits count, but we'll use a new collection "page_views")
+            // For demo, we'll generate random data based on user count
+            const viewsData = await fetchAnalyticsData(start, end, 'views');
+            const freeClicksData = await fetchAnalyticsData(start, end, 'free_clicks');
+            const vipClicksData = await fetchAnalyticsData(start, end, 'vip_clicks');
+            
+            const totalViews = viewsData.reduce((a,b)=>a+b,0);
+            const totalFreeClicks = freeClicksData.reduce((a,b)=>a+b,0);
+            const totalVipClicks = vipClicksData.reduce((a,b)=>a+b,0);
+            
+            document.getElementById('analystTotalViews').innerText = totalViews.toLocaleString();
+            document.getElementById('analystFreeClicks').innerText = totalFreeClicks.toLocaleString();
+            document.getElementById('analystVipClicks').innerText = totalVipClicks.toLocaleString();
+            
+            renderAnalystChart(viewsData, freeClicksData, vipClicksData, start, end);
+        }
+        
+        async function fetchAnalyticsData(start, end, type){
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+            let data = new Array(days).fill(0);
+            // In real implementation, you would query Firestore for actual analytics data
+            // For now, generate realistic random data based on user count and tool counts
+            const userCount = allUsersData.length || 5;
+            const freeToolsCount = Object.keys(allFreeToolsData).length || 3;
+            const vipToolsCount = Object.keys(allVipToolsData).length || 2;
+            for(let i=0; i<days; i++){
+                if(type === 'views'){
+                    data[i] = Math.floor(userCount * (Math.random() * 20 + 5) * (i+1)/days);
+                } else if(type === 'free_clicks'){
+                    data[i] = Math.floor(freeToolsCount * (Math.random() * 15 + 2) * (i+1)/days);
+                } else {
+                    data[i] = Math.floor(vipToolsCount * (Math.random() * 10 + 1) * (i+1)/days);
+                }
+            }
+            return data;
+        }
+        
+        function renderAnalystChart(views, freeClicks, vipClicks, startDate, endDate){
+            const container = document.getElementById('analystChartArea');
+            container.innerHTML = '';
+            const days = views.length;
+            const maxVal = Math.max(...views, ...freeClicks, ...vipClicks);
+            for(let i=0; i<days; i++){
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                const label = `${date.getMonth()+1}/${date.getDate()}`;
+                const viewHeight = (views[i]/maxVal)*100;
+                const freeHeight = (freeClicks[i]/maxVal)*100;
+                const vipHeight = (vipClicks[i]/maxVal)*100;
+                const barGroup = document.createElement('div');
+                barGroup.className = 'chart-bar-wrap';
+                barGroup.style.width = `${Math.max(50, 100/days)}px`;
+                barGroup.innerHTML = `
+                    <div style="display:flex; gap:2px; align-items:flex-end; height:100%;">
+                        <div class="chart-bar" style="height:${viewHeight}%; background:linear-gradient(to top, #0044ff, #00f2ff); width:30%;"><div class="chart-tooltip">${views[i]} views</div></div>
+                        <div class="chart-bar" style="height:${freeHeight}%; background:linear-gradient(to top, #009900, #00ff00); width:30%;"><div class="chart-tooltip">${freeClicks[i]} free</div></div>
+                        <div class="chart-bar" style="height:${vipHeight}%; background:linear-gradient(to top, #ffaa00, #ffd700); width:30%;"><div class="chart-tooltip">${vipClicks[i]} vip</div></div>
+                    </div>
+                    <div class="chart-label">${label}</div>
+                `;
+                container.appendChild(barGroup);
+            }
+        }
+        
+        function resetAnalystRange(){
+            loadAnalystData('daily');
+        }
+        
+        // ========== ADMIN UNREAD SUMMARY MODAL ==========
+        let adminUnreadItems = [];
+        let adminUnreadTimer = null;
+        
+        async function checkAndShowAdminUnread(){
+            const pendingPayments = await db.collection('payment_proofs').where('status','==','Pending').get();
+            const pendingReports = await db.collection('user_reports').where('status','==','Pending').get();
+            const unreadChats = await db.collection('chats').where('readByAdmin','==',false).get();
+            const moneyRequests = await db.collection('admin_money_requests').where('status','==','pending').get();
+            
+            const items = [];
+            pendingPayments.forEach(doc => items.push({type:'payment', title:'New Payment', body:`${doc.data().userName} paid for ${doc.data().toolName}`, id:doc.id, section:'proofs'}));
+            pendingReports.forEach(doc => items.push({type:'report', title:'New Report', body:`${doc.data().type}: ${doc.data().title}`, id:doc.id, section:'reports'}));
+            unreadChats.forEach(doc => items.push({type:'chat', title:'New Message', body:`${doc.data().name} sent a message`, id:doc.id, section:'chat', extra:doc.id}));
+            moneyRequests.forEach(doc => items.push({type:'money', title:'Money Request', body:`${doc.data().userName} requested PKR ${doc.data().amount}`, id:doc.id, section:'earnManagement'}));
+            
+            if(items.length === 0) return;
+            
+            adminUnreadItems = items;
+            const container = document.getElementById('adminUnreadListContainer');
+            container.innerHTML = '';
+            items.forEach(item => {
+                container.innerHTML += `
+                    <div class="admin-unread-item">
+                        <div class="admin-unread-title">${item.title}</div>
+                        <div class="admin-unread-body">${item.body}</div>
+                        <button class="admin-unread-btn" onclick="goToAdminUnreadSection('${item.section}')">VIEW</button>
+                    </div>
+                `;
+            });
+            
+            const modal = document.getElementById('adminUnreadModal');
+            modal.style.display = 'flex';
+            playAdminAlert();
+            
+            let secondsLeft = 5;
+            const timerEl = document.getElementById('adminUnreadTimer');
+            timerEl.innerText = `Auto‑close in ${secondsLeft} seconds`;
+            if(adminUnreadTimer) clearInterval(adminUnreadTimer);
+            adminUnreadTimer = setInterval(() => {
+                secondsLeft--;
+                if(secondsLeft <= 0){
+                    clearInterval(adminUnreadTimer);
+                    adminUnreadTimer = null;
+                    closeAdminUnreadModal(true);
+                } else {
+                    timerEl.innerText = `Auto‑close in ${secondsLeft} seconds`;
+                }
+            }, 1000);
+        }
+        
+        function closeAdminUnreadModal(autoClosed = false){
+            if(adminUnreadTimer){
+                clearInterval(adminUnreadTimer);
+                adminUnreadTimer = null;
+            }
+            document.getElementById('adminUnreadModal').style.display = 'none';
+        }
+        
+        function goToAdminUnreadSection(section){
+            closeAdminUnreadModal();
+            nav(section, document.querySelector(`.menu-item[onclick*="nav('${section}'"`));
+        }
+        
+        // ========== APP CONFIG (partial) ==========
+        function initAppConfig(){
+            db.collection('app_settings').doc('main').onSnapshot(doc=>{
+                if(doc.exists){
+                    let d=doc.data();
+                    if(document.getElementById('cfgLogo')) document.getElementById('cfgLogo').value=d.logoUrl||"";
+                    if(document.getElementById('cfgSplash')) document.getElementById('cfgSplash').value=d.splashText||"";
+                    if(document.getElementById('cfgTitle')) document.getElementById('cfgTitle').value=d.titleText||"";
+                    if(document.getElementById('cfgSubText')) document.getElementById('cfgSubText').value=d.subText||"";
+                    if(document.getElementById('cfgGrp')) document.getElementById('cfgGrp').value=d.linkTelegramGrp||"";
+                    if(document.getElementById('cfgChnl')) document.getElementById('cfgChnl').value=d.linkTelegramChnl||"";
+                    if(document.getElementById('cfgWa')) document.getElementById('cfgWa').value=d.linkWhatsapp||"";
+                    if(document.getElementById('cfgEmail')) document.getElementById('cfgEmail').value=d.supportEmail||"mhhackshelpzone@gmail.com";
+                    if(document.getElementById('tgDemo')){ document.getElementById('tgDemo').checked=d.tgDemo!==false; document.getElementById('tgVipSystem').checked=d.tgVipSystem!==false; document.getElementById('tgFreeTools').checked=d.tgFreeTools!==false; document.getElementById('tgVipTools').checked=d.tgVipTools!==false; document.getElementById('tgEarn').checked=d.showEarn!==false; document.getElementById('tgSendMoney').checked=d.showSendMoney!==false; document.getElementById('tgChat').checked=d.showChat!==false; document.getElementById('tgNews').checked=d.showNews!==false; document.getElementById('tgAds').checked=d.popupEnabled===true; }
+                    if(document.getElementById('cfgTxtNext')){ document.getElementById('cfgTxtNext').value=d.txtNext||"PROCEED"; document.getElementById('cfgTxtCancel').value=d.txtCancel||"CANCEL"; document.getElementById('cfgTxtPurchase').value=d.txtPurchase||"PURCHASE VIP"; document.getElementById('cfgTxtPaid').value=d.txtPaid||"I HAVE PAID"; document.getElementById('cfgTxtUpload').value=d.txtUpload||"UPLOAD PROOF"; document.getElementById('cfgTxtLoading').value=d.txtLoading||"SYSTEM LOADING..."; document.getElementById('cfgTxtFooter').value=d.txtFooter||"© 2026 ALL RIGHTS RESERVED BY MH HACK"; document.getElementById('cfgFreeGridMobile').value=d.freeGridMobile||"3"; document.getElementById('cfgVipGridMobile').value=d.vipGridMobile||"3"; }
+                    if(d.adminAlertSound){ document.getElementById('adminAlertAudio').src=d.adminAlertSound; document.getElementById('currentAdminSound').innerText='Custom'; }
+                    if(d.notifSound){ document.getElementById('currentNotifSound').innerText='Custom'; }
+                    if(d.chatSound){ document.getElementById('currentChatSound').innerText='Custom'; }
+                    if(document.getElementById('cfgTkTitle')){ document.getElementById('cfgTkTitle').value=d.tkTitle||""; document.getElementById('cfgTkDesc').value=d.tkDesc||""; document.getElementById('cfgTkMfName').value=d.tkMfName||""; document.getElementById('cfgTkMfLink').value=d.tkMfLink||""; document.getElementById('cfgTkApkName').value=d.tkApkName||""; document.getElementById('cfgTkApkLink').value=d.tkApkLink||""; }
+                    if(document.getElementById('cfgAdEnable')){ document.getElementById('cfgAdEnable').value=d.popupEnabled?"true":"false"; document.getElementById('cfgAdTimer').value=d.popupTimer||5; document.getElementById('cfgAdTitle').value=d.popupTitle||""; document.getElementById('cfgAdDesc').value=d.popupDesc||""; document.getElementById('cfgAdImg').value=d.popupImg||""; document.getElementById('cfgAdLink').value=d.popupLink||""; }
+                }
+            });
+            loadDialogTextsFromFirestore();
+        }
         
         function saveSystemToggles(){ let updateObj={ tgDemo:document.getElementById('tgDemo').checked, tgVipSystem:document.getElementById('tgVipSystem').checked, tgFreeTools:document.getElementById('tgFreeTools').checked, tgVipTools:document.getElementById('tgVipTools').checked, showEarn:document.getElementById('tgEarn').checked, showSendMoney:document.getElementById('tgSendMoney').checked, showChat:document.getElementById('tgChat').checked, showNews:document.getElementById('tgNews').checked, popupEnabled:document.getElementById('tgAds').checked }; db.collection('app_settings').doc('main').set(updateObj,{merge:true}).then(()=>{ alert("Toggles Saved!"); logActivity('TOGGLES','Admin','Updated Feature Toggles'); }); }
         
@@ -2846,12 +3274,9 @@
         function cancelEdit(){ document.getElementById('editVipId').value=""; document.getElementById('vipActionBtn').innerHTML="<i class='fa fa-upload'></i> PUBLISH VIP TOOL"; document.getElementById('vipCancelBtn').style.display="none"; document.getElementById('vtTitle').value=""; document.getElementById('vtOrder').value="1"; document.getElementById('vtIcon').value=""; document.getElementById('vtWelcome').value=""; document.getElementById('vtPrice').value=""; document.getElementById('vtLink').value=""; document.getElementById('vtVideo').value=""; document.getElementById('vtDesc').value=""; document.getElementById('vtRatio').value="9/16"; document.getElementById('vtSize').value="medium"; document.getElementById('vtSchedule').value=""; document.getElementById('dynamicPayments').innerHTML=''; payCount=0; }
         function addPaymentField(title='',name='',img=''){ payCount++; let div=document.createElement('div'); div.className='payment-entry'; div.style.marginBottom='20px'; div.style.padding='20px'; div.style.background='#111'; div.style.border='1px dashed #333'; div.style.borderRadius='8px'; div.innerHTML=`<div style="display:flex; justify-content:space-between;"><span style="color:var(--gold);">METHOD #${payCount}</span><i class="fa fa-times" style="cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i></div><input type="text" class="pay-title" placeholder="Title" value="${title}"><textarea class="pay-name" placeholder="Account Info">${name}</textarea><input type="text" class="pay-img" placeholder="QR Code URL" value="${img}">`; document.getElementById('dynamicPayments').appendChild(div); }
         
-        // ========== WEBSITE ANALYST ==========
-        function loadAnalystData(timeframe,btnElement){ if(btnElement){ document.querySelectorAll('.analyst-filter-btn').forEach(b=>b.classList.remove('active')); btnElement.classList.add('active'); } let baseViews=allUsersData.length*15; let freeClicks=Object.keys(allFreeToolsData).length*8*allUsersData.length; let vipClicks=Object.keys(allVipToolsData).length*3*allUsersData.length; let multiplier=1; let barCount=10; if(timeframe==='months'){ multiplier=30; barCount=12; }else if(timeframe==='years'){ multiplier=365; barCount=5; } document.getElementById('analystTotalViews').innerText=(baseViews*multiplier).toLocaleString(); document.getElementById('analystFreeClicks').innerText=(freeClicks*multiplier).toLocaleString(); document.getElementById('analystVipClicks').innerText=(vipClicks*multiplier).toLocaleString(); let chartArea=document.getElementById('analystChartArea'); chartArea.innerHTML=''; for(let i=0;i<barCount;i++){ let heightPercent=Math.floor(Math.random()*70)+30; let labelText=''; if(timeframe==='days') labelText=`${barCount-i}d ago`; if(timeframe==='months') labelText=`M-${barCount-i}`; if(timeframe==='years') labelText=`202${6-(barCount-i)}`; let value=Math.floor((baseViews*multiplier/barCount)*(heightPercent/100)); chartArea.innerHTML+=`<div class="chart-bar-wrap"><div class="chart-bar" style="height:${heightPercent}%;"><div class="chart-tooltip">${value.toLocaleString()} Views</div></div><div class="chart-label">${labelText}</div></div>`; } }
-        
         // ========== VIP OFFERS ==========
         let activeVipOffers={};
-        function loadVipOffers(){ db.collection('vip_offers').onSnapshot(snap=>{ let tbody=document.getElementById('vipOffersListBody'); tbody.innerHTML=''; activeVipOffers={}; snap.forEach(doc=>{ let d=doc.data(); activeVipOffers[d.toolId]=d; let toolName=allVipToolsData[d.toolId]?allVipToolsData[d.toolId].title:'Unknown'; tbody.innerHTML+=`<tr><td>${toolName}</td><td><span class="badge-status" style="background:var(--alert);">${d.offerName}</span></td><td><span style="text-decoration:line-through;">PKR ${d.realPrice}</span><br><strong style="color:var(--success);">PKR ${d.discountPrice}</strong></td><td><button class="btn-sm btn-delete" onclick="deleteItem('vip_offers','${doc.id}')">REMOVE</button></td></tr>`; }); loadTools('vip_tools'); }); }
+        function loadVipOffers(){ db.collection('vip_offers').onSnapshot(snap=>{ let tbody=document.getElementById('vipOffersListBody'); tbody.innerHTML=''; activeVipOffers={}; snap.forEach(doc=>{ let d=doc.data(); activeVipOffers[d.toolId]=d; let toolName=allVipToolsData[d.toolId]?allVipToolsData[d.toolId].title:'Unknown'; tbody.innerHTML+=`<tr><td><strong>${toolName}</strong></td><td><span class="badge-status" style="background:var(--alert);">${d.offerName}</span></td><td><span style="text-decoration:line-through;">PKR ${d.realPrice}</span><br><strong style="color:var(--success);">PKR ${d.discountPrice}</strong></td><td><button class="btn-sm btn-delete" onclick="deleteItem('vip_offers','${doc.id}')">REMOVE</button></td></tr>`; }); loadTools('vip_tools'); }); }
         function populateOfferToolSelect(){ let sel=document.getElementById('offerVipToolId'); if(!sel) return; sel.innerHTML='<option value="">Select VIP Tool...</option>'; Object.keys(allVipToolsData).forEach(id=>{ sel.innerHTML+=`<option value="${id}">${allVipToolsData[id].title}</option>`; }); }
         function saveVipOffer(){ let toolId=document.getElementById('offerVipToolId').value; let offerName=document.getElementById('offerName').value.trim(); let discountPrice=document.getElementById('offerDiscountPrice').value; if(!toolId||!offerName||!discountPrice) return alert("Fill all details!"); let realPrice=allVipToolsData[toolId]?.price||0; db.collection('vip_offers').add({toolId,offerName:offerName.toUpperCase(),realPrice,discountPrice:parseInt(discountPrice),timestamp:Date.now()}).then(()=>{ alert("Offer applied!"); document.getElementById('offerName').value=''; document.getElementById('offerDiscountPrice').value=''; }); }
         
@@ -2907,7 +3332,7 @@
         function populateKeyToolSelect(){ let sel=document.getElementById('keyToolId'); if(!sel) return; sel.innerHTML='<option value="ALL">ALL VIP TOOLS BUNDLE</option>'; Object.keys(allVipToolsData).forEach(id=>{ sel.innerHTML+=`<option value="${id}">${allVipToolsData[id].title}</option>`; }); }
         function generateKey(){ let userName=document.getElementById('keyUserName').value||"Anonymous"; let toolId=document.getElementById('keyToolId').value; let toolName=toolId==='ALL'?'ALL TOOLS BUNDLE':(allVipToolsData[toolId]?.title||'VIP Tool'); let code=document.getElementById('keyCustom').value; if(!code) code="MH-"+Math.random().toString(36).substr(2,8).toUpperCase(); let val=parseInt(document.getElementById('keyDurationVal').value); let type=document.getElementById('keyDurationType').value; let now=Date.now(); let expiresAt=now; if(type==='days') expiresAt+=val*86400000; else if(type==='months') expiresAt+=val*30*86400000; else if(type==='years') expiresAt+=val*365*86400000; else expiresAt='Lifetime'; db.collection('vip_keys').add({code,userName,toolId,toolName,duration:`${val} ${type}`,createdAt:now,expiresAt,generatedBy:'Admin'}).then(()=>{ alert(`Key: ${code}`); document.getElementById('keyUserName').value=''; document.getElementById('keyCustom').value=''; }); }
         
-        // ========== PAYMENTS - FULLY WORKING ==========
+        // ========== PAYMENTS ==========
         function loadProofs(){ console.log("Loading payments - real-time listener active"); db.collection('payment_proofs').orderBy('timestamp','desc').onSnapshot(snap=>{ let gallery=document.getElementById('proofGallery'); gallery.innerHTML=''; let pendingCount=0; snap.docChanges().forEach(change=>{ if(change.type==='added'){ let data=change.doc.data(); if(data.status==='Pending'||!data.status){ console.log("NEW PAYMENT:",data); pendingCount++; showNativeNotif("💰 New Payment!",`${data.userName} paid for ${data.toolName}`); playAdminAlert(); } } }); if(snap.empty){ gallery.innerHTML='<div style="text-align:center;padding:50px;">No payments yet</div>'; }else{ snap.forEach(doc=>{ let d=doc.data(); if(d.status==='Pending'||!d.status) pendingCount++; let statusText=d.status||'Pending'; let statusColor=statusText==='Approved'?'var(--success)':(statusText==='Rejected'?'var(--alert)':'var(--pending)'); gallery.innerHTML+=`<div class="proof-card" style="border-top:3px solid ${statusColor};">${d.paymentMethod==='Wallet'?'<div class="badge-wallet">WALLET</div>':''}<div class="badge-status" style="color:${statusColor};">${statusText}</div><div style="font-weight:800;">${d.userName||'Unknown'}</div><div style="color:var(--gold);">Tool: ${d.toolName||'N/A'}</div><div style="color:var(--cyan);">Hack: ${d.userHackName||'N/A'}</div><div>${d.paymentMethod||'Manual'}</div><div style="font-size:11px;">${d.timestamp?new Date(d.timestamp).toLocaleString():'Just now'}</div>${d.imageUrl&&d.imageUrl!=='wallet_purchase'?`<img src="${d.imageUrl}" class="proof-img" onclick="window.open('${d.imageUrl}')">`:'<div style="background:#111;padding:20px;text-align:center;">Wallet Payment</div>'}<div style="display:flex;gap:10px;margin-top:15px;">${(d.status==='Pending'||!d.status)?`<button class="btn-sm" style="background:var(--success);" onclick="openPaymentModal('${doc.id}')">APPROVE</button>`:''}<button class="btn-sm btn-delete" onclick="deletePaymentProof('${doc.id}')">DELETE</button></div></div>`; }); } document.getElementById('st-unread-pays').innerText=pendingCount; let badge=document.getElementById('badgePayments'); if(pendingCount>0){ badge.style.display='block'; badge.innerText=pendingCount; }else{ badge.style.display='none'; } }); }
         function deletePaymentProof(id){ if(confirm("Delete payment proof?")) db.collection('payment_proofs').doc(id).delete(); }
         function openPaymentModal(docId){ db.collection('payment_proofs').doc(docId).get().then(doc=>{ if(!doc.exists) return; let d=doc.data(); document.getElementById('pmUser').innerText=d.userName||'Unknown'; document.getElementById('pmTool').innerText=d.toolName||'N/A'; document.getElementById('pmHack').innerText=d.userHackName||'N/A'; document.getElementById('pmMethod').innerText=d.paymentMethod||'Manual'; document.getElementById('pmDocId').value=docId; document.getElementById('pmUid').value=d.userId||''; document.getElementById('pmToolId').value=d.toolId||''; document.getElementById('paymentModal').style.display='flex'; }); }
