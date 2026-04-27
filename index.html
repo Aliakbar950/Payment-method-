@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>MH ADMIN | PREMIUM CONTROL V14.0 + AI SYSTEMS | FULL UPGRADED</title>
 
     <!-- Google Fonts & Font Awesome -->
@@ -88,19 +88,7 @@
         @keyframes subtle-glow { 0% { box-shadow: inset 0 0 5px rgba(0,242,255,0.1); } 50% { box-shadow: inset 0 0 20px rgba(0,242,255,0.3); } 100% { box-shadow: inset 0 0 5px rgba(0,242,255,0.1); } }
         @keyframes alertPulse { 0% { box-shadow: 0 0 0 0 rgba(255, 51, 0, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(255, 51, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 51, 0, 0); } }
         @keyframes chartGrow { from { height: 0; opacity: 0.5; } to { opacity: 1; } }
-
-        /* SPLASH SCREEN */
-        #splash {
-            position: fixed; inset: 0; background: #000; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .splash-logo {
-            width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--cyan);
-            animation: spin 3s linear infinite, pulse 2s infinite; margin-bottom: 30px; object-fit: cover;
-        }
-        .loader-bar { width: 300px; height: 6px; background: #111; border-radius: 10px; overflow: hidden; position: relative; border:1px solid #333; }
-        .loader-fill { width: 0%; height: 100%; background: var(--cyan); box-shadow: 0 0 15px var(--cyan); transition: width 0.1s; }
-        #loadPerc { margin-top: 20px; color: var(--cyan); font-weight: 800; font-family: 'Rajdhani', sans-serif; letter-spacing: 3px; font-size:18px; text-shadow:var(--glow); }
+        @keyframes btnPulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); box-shadow: 0 0 25px var(--cyan); } 100% { transform: scale(1); } }
 
         /* PREMIUM BUTTONS & INPUTS */
         .btn {
@@ -109,12 +97,12 @@
             font-family: 'Rajdhani', sans-serif; letter-spacing: 1.5px; font-size:15px;
         }
         .btn-cyan { background: linear-gradient(90deg, var(--dark-cyan), var(--cyan)); color: black; box-shadow: var(--glow); border: 1px solid var(--cyan); }
-        .btn-cyan:hover { background: var(--cyan); color: black; box-shadow: 0 0 30px var(--cyan); transform: scale(1.02); }
+        .btn-cyan:hover { background: var(--cyan); color: black; box-shadow: 0 0 30px var(--cyan); transform: scale(1.02); animation: btnPulse 0.5s ease; }
         .btn-success { background: linear-gradient(90deg, #004d00, var(--success)); color: black; box-shadow: 0 0 20px rgba(0,255,0,0.3); }
         .btn-success:hover { transform: scale(1.02); box-shadow: 0 0 30px var(--success); }
         .btn-sm { padding: 6px 12px; font-size: 11px; border:none; cursor:pointer; font-weight:800; text-transform:uppercase; border-radius:4px; font-family:'Rajdhani'; letter-spacing:1px; transition:0.3s; }
         .btn-icon { background: transparent; border: 1px solid #333; color: #888; width: 35px; height: 35px; border-radius:6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
-        .btn-icon:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 10px rgba(0,242,255,0.3); }
+        .btn-icon:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 10px rgba(0,242,255,0.3); transform: scale(1.05); }
         .btn-delete { background: #001a22; border: 1px solid var(--cyan); color: var(--cyan); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-delete:hover { background: var(--cyan); color: black; box-shadow: 0 0 15px var(--cyan); }
 
@@ -172,6 +160,14 @@
         .disconnect-btn:hover { background: var(--cyan); color: black; box-shadow: 0 0 20px var(--cyan); border-color: var(--cyan); }
         .disconnect-btn:hover i { color: black; }
         .sidebar-bottom { margin-top: auto; padding-top: 20px; border-top: 1px solid #112222; }
+
+        /* MOBILE SIDEBAR */
+        @media (max-width: 992px) {
+            .sidebar { position: fixed; left: -280px; top: 0; bottom: 0; transition: 0.3s; z-index: 2000; background: var(--panel); }
+            .sidebar.show-mobile { left: 0; }
+            #mobileMenuBtn { display: block !important; }
+            .main { margin-left: 0; width: 100%; }
+        }
 
         /* MAIN AREA */
         .main { flex: 1; overflow-y: auto; background: radial-gradient(circle at 100% 0%, #001a22, var(--bg) 50%); position: relative; z-index: 1; display: flex; flex-direction: column; }
@@ -233,7 +229,7 @@
         .analyst-tabs { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; justify-content: center; }
         .analyst-tab { background: #0a0a0a; border: 2px solid #112222; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: 800; font-family: 'Rajdhani'; transition: 0.3s; color: #888; text-transform: uppercase; letter-spacing: 1px; }
         .analyst-tab.active { background: var(--cyan); color: black; border-color: var(--cyan); box-shadow: 0 0 15px rgba(0,242,255,0.5); }
-        .analyst-tab:hover:not(.active) { border-color: var(--cyan); color: white; }
+        .analyst-tab:hover:not(.active) { border-color: var(--cyan); color: white; transform: translateY(-2px); }
         
         .date-range-picker { display: flex; gap: 10px; align-items: center; justify-content: flex-end; margin-bottom: 20px; flex-wrap: wrap; background: #050505; padding: 15px; border-radius: 10px; border: 1px solid #112222; }
         .date-range-picker input { width: auto; margin-bottom: 0; background: #111; padding: 8px 12px; border: 1px solid #333; color: var(--cyan); font-family: monospace; }
@@ -263,7 +259,7 @@
         /* DIALOG EDITOR SECTION (LIVE PREVIEW DESIGN) */
         .dialog-editor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin-top: 20px; }
         .dialog-edit-card { background: #050a0a; border: 1px solid #112222; border-radius: 15px; padding: 25px; transition: 0.3s; display: flex; flex-direction: column; gap: 15px; }
-        .dialog-edit-card:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,242,255,0.1); }
+        .dialog-edit-card:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,242,255,0.1); transform: translateY(-3px); }
         .dialog-edit-title { color: var(--cyan); font-family: 'Rajdhani'; font-size: 20px; font-weight: 900; border-bottom: 1px solid #112222; padding-bottom: 8px; text-transform: uppercase; }
         
         /* EXACT DIALOG PREVIEW MATCHING THE IMAGE */
@@ -276,7 +272,8 @@
         .dlp-title { color: white; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
         .dlp-subtitle { color: var(--success); font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 900; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px var(--success); }
         .dlp-desc { color: #aaa; font-size: 13px; line-height: 1.5; margin-bottom: 25px; padding: 0 10px; }
-        .dlp-btn { background: var(--success); color: black; font-weight: 900; font-family: 'Rajdhani'; font-size: 16px; padding: 12px 30px; border-radius: 8px; border: none; width: 100%; box-shadow: 0 0 15px rgba(0,255,0,0.3); }
+        .dlp-btn { background: var(--success); color: black; font-weight: 900; font-family: 'Rajdhani'; font-size: 16px; padding: 12px 30px; border-radius: 8px; border: none; width: 100%; box-shadow: 0 0 15px rgba(0,255,0,0.3); transition: 0.3s; }
+        .dlp-btn:hover { transform: scale(1.02); box-shadow: 0 0 25px var(--success); }
 
         .dialog-edit-input, .dialog-edit-textarea { width: 100%; background: #000; border: 1px solid #333; border-radius: 6px; padding: 12px; color: white; margin-bottom: 10px; font-family: 'Poppins'; }
         .dialog-edit-textarea { resize: vertical; min-height: 80px; }
@@ -285,7 +282,8 @@
 
         /* OTHER EXISTING STYLES PRESERVED EXACTLY */
         .wallet-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .wallet-summary-card { background: linear-gradient(145deg, #001a22, #000a0d); border: 2px solid var(--cyan); border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 0 20px rgba(0,242,255,0.2); }
+        .wallet-summary-card { background: linear-gradient(145deg, #001a22, #000a0d); border: 2px solid var(--cyan); border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 0 20px rgba(0,242,255,0.2); transition: 0.3s; }
+        .wallet-summary-card:hover { transform: translateY(-5px); box-shadow: 0 0 30px var(--cyan); }
         .wallet-summary-value { font-size: 36px; font-weight: 900; color: var(--cyan); font-family: 'Rajdhani'; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,242,255,0.5); }
         .wallet-summary-label { color: #888; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; }
         .data-table-wrap { background:#0a0a0a; padding:20px; border-radius:15px; border:1px solid #112222; overflow-x:auto; box-shadow:0 5px 15px rgba(0,0,0,0.5); }
@@ -315,7 +313,7 @@
 
         .bug-fix-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
         .bug-fix-card { background: #0a0a0a; border: 1px solid #112222; border-radius: 12px; padding: 20px; transition: 0.3s; }
-        .bug-fix-card:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,242,255,0.2); }
+        .bug-fix-card:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,242,255,0.2); transform: translateY(-3px); }
         
         .urgestment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin: 20px 0; }
         .urgestment-card { background: #0a0a0a; border: 1px solid var(--cyan); border-radius: 15px; padding: 25px; transition: 0.3s; position: relative; }
@@ -353,6 +351,23 @@
         
         .random-text-box { background: #050a0a; border: 1px dashed var(--cyan); padding: 20px; border-radius: 10px; margin-bottom: 20px; }
         .random-text-display { background: #000; padding: 15px; border-radius: 8px; color: var(--gold); font-size: 14px; margin-bottom: 15px; border: 1px solid #112222; }
+        
+        /* TOOLKIT DYNAMIC BUTTONS STYLES */
+        .toolkit-buttons-list { margin: 20px 0; border: 1px solid #112222; border-radius: 12px; padding: 15px; background: #0a0a0a; }
+        .toolkit-btn-item { display: flex; gap: 15px; margin-bottom: 20px; background: #111; padding: 15px; border-radius: 10px; align-items: center; flex-wrap: wrap; }
+        .toolkit-btn-item input { flex: 2; margin-bottom: 0; }
+        .toolkit-btn-item button { margin: 0; flex: 0.3; background: #222; color: var(--cyan); border:1px solid #333; }
+        .add-toolkit-btn { margin-top: 15px; background: var(--cyan); color: black; border: none; }
+        
+        .video-size-grid, .size-controls { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+        .video-size-btn, .size-btn { background: #111; border: 1px solid #333; color: #ccc; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; transition: 0.3s; }
+        .video-size-btn.active, .size-btn.active { background: var(--cyan); color: black; border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+        
+        .color-grid, .selector-grid, .theme-grid, .alert-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
+        .color-btn, .animation-btn, .theme-card, .alert-card { background: #111; border: 1px solid #333; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s; color: white; }
+        .color-btn.active, .animation-btn.active, .theme-card.active-theme { border-color: var(--cyan); box-shadow: 0 0 12px var(--cyan); background: var(--cyan); color: black; }
+        .alert-card { background: #1a0000; border-left: 4px solid var(--alert); padding: 15px; width: 100%; margin-bottom: 15px; border-radius: 8px; }
+        .alert-fix-btn { background: var(--success); color: black; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; margin-right: 10px; }
     </style>
 </head>
 <body onclick="requestPushPermission()">
@@ -587,17 +602,17 @@
                     </div>
                 </div>
 
-                <!-- WEBSITE ANALYST (ADSENSE/TIKTOK PREMIUM STYLE) -->
+                <!-- WEBSITE ANALYST (REAL DATA - NO FAKE) -->
                 <div id="sect-analyst" class="section">
                     <div class="header">
                         <h2><i class="fa fa-chart-line" style="color:#ff007f; margin-right:15px;"></i> Advanced Analytics Dashboard</h2>
                     </div>
                     
                     <div class="analyst-tabs">
-                        <button class="analyst-tab active" onclick="loadAnalystData('daily')">Daily (30 Days)</button>
-                        <button class="analyst-tab" onclick="loadAnalystData('weekly')">Weekly (This Month)</button>
-                        <button class="analyst-tab" onclick="loadAnalystData('monthly')">Monthly (12 Months)</button>
-                        <button class="analyst-tab" onclick="loadAnalystData('yearly')">Yearly (5 Years)</button>
+                        <button class="analyst-tab active" data-view="daily" onclick="loadAnalystData('daily', this)">Daily (30 Days)</button>
+                        <button class="analyst-tab" data-view="weekly" onclick="loadAnalystData('weekly', this)">Weekly (This Month)</button>
+                        <button class="analyst-tab" data-view="monthly" onclick="loadAnalystData('monthly', this)">Monthly (12 Months)</button>
+                        <button class="analyst-tab" data-view="yearly" onclick="loadAnalystData('yearly', this)">Yearly (5 Years)</button>
                     </div>
 
                     <div class="date-range-picker">
@@ -606,7 +621,7 @@
                         <span style="color:#555;">to</span>
                         <input type="date" id="analystEndDate">
                         <button class="btn-sm btn-cyan" onclick="loadAnalystDataWithRange()">APPLY FILTER</button>
-                        <button class="btn-sm" style="background:#222; color:white;" onclick="loadAnalystData('daily')">RESET</button>
+                        <button class="btn-sm" style="background:#222; color:white;" onclick="loadAnalystData('daily', document.querySelector('.analyst-tab[data-view=\"daily\"]'))">RESET</button>
                     </div>
 
                     <div class="stats-grid" style="margin-bottom:20px;">
@@ -630,18 +645,15 @@
                     <div class="form-box" style="padding: 0; border: none; background: transparent; box-shadow: none;">
                         <h3 style="color:white; font-family:'Rajdhani'; margin-bottom:20px; font-size:24px;"><i class="fa fa-chart-bar" style="color:var(--cyan);"></i> Traffic Flow Visualization</h3>
                         <div class="chart-container-wrapper">
-                            <!-- Y-Axis Markers -->
                             <div class="chart-y-axis" id="chartYAxis">
                                 <div>10k</div><div>7.5k</div><div>5k</div><div>2.5k</div><div>0</div>
                             </div>
-                            <!-- Background Grid Lines -->
                             <div class="chart-grid-lines">
                                 <div class="chart-grid-line"></div><div class="chart-grid-line"></div>
                                 <div class="chart-grid-line"></div><div class="chart-grid-line"></div><div class="chart-grid-line"></div>
                             </div>
-                            <!-- Scrollable Bars Area -->
                             <div class="chart-area-scroll" id="analystChartArea">
-                                <!-- Bars Injected via JS -->
+                                <!-- Bars injected via JS with real data -->
                             </div>
                         </div>
                     </div>
@@ -682,8 +694,6 @@
                     </div>
                 </div>
 
-                <!-- ALL OTHER SECTIONS PRESERVED EXACTLY AS PROVIDED -->
-                
                 <!-- WEBSITE TOGGLES -->
                 <div id="sect-cfgToggles" class="section">
                     <div class="header"><h2><i class="fa fa-toggle-on" style="color:var(--cyan); margin-right:15px;"></i> SYSTEM TOGGLES</h2></div>
@@ -697,7 +707,6 @@
                         <div class="cyber-toggle-container"><div class="cyber-toggle-label">CHAT SYSTEM:</div><label class="cyber-toggle-wrap"><input type="checkbox" id="tgChat"><div class="toggle-text text-on">ON</div><div class="toggle-text text-off">OFF</div><div class="toggle-slider"></div></label></div>
                         <div class="cyber-toggle-container"><div class="cyber-toggle-label">DAILY NEWS:</div><label class="cyber-toggle-wrap"><input type="checkbox" id="tgNews"><div class="toggle-text text-on">ON</div><div class="toggle-text text-off">OFF</div><div class="toggle-slider"></div></label></div>
                         <div class="cyber-toggle-container"><div class="cyber-toggle-label">POPUP ADS:</div><label class="cyber-toggle-wrap"><input type="checkbox" id="tgAds"><div class="toggle-text text-on">ON</div><div class="toggle-text text-off">OFF</div><div class="toggle-slider"></div></label></div>
-                        <!-- NEW TOGGLE FOR WEBSITE UNREAD DIALOG -->
                         <div class="cyber-toggle-container" style="border-color:var(--success);"><div class="cyber-toggle-label" style="color:var(--success);">ENABLE USER UNREAD DIALOG:</div><label class="cyber-toggle-wrap"><input type="checkbox" id="tgUserUnread" checked><div class="toggle-text text-on">ON</div><div class="toggle-text text-off">OFF</div><div class="toggle-slider"></div></label></div>
                         
                         <button class="btn btn-cyan" style="width:100%; margin-top:20px;" onclick="saveSystemToggles()"><i class="fa fa-save"></i> SAVE ALL TOGGLES</button>
@@ -872,12 +881,17 @@
                     </div>
                 </div>
 
+                <!-- MH TOOLKITS PAGE - UPGRADED: DYNAMIC BUTTONS + FILE UPLOAD -->
                 <div id="sect-cfgTk" class="section">
                     <div class="header"><h2><i class="fa fa-download"></i> MH Toolkits Download</h2></div>
                     <div class="form-box">
                         <input type="text" id="cfgTkTitle" placeholder="Page Title"><textarea id="cfgTkDesc" placeholder="Description"></textarea>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><input type="text" id="cfgTkMfName" placeholder="Button 1 Name"><input type="text" id="cfgTkMfLink" placeholder="Button 1 Link"><input type="text" id="cfgTkApkName" placeholder="Button 2 Name"><input type="text" id="cfgTkApkLink" placeholder="Button 2 Link"></div>
-                        <button class="btn btn-cyan" onclick="savePartialConfig('toolkit')">UPDATE TOOLKIT</button>
+                        <div class="form-label">Dynamic Download Buttons (Add unlimited)</div>
+                        <div id="toolkitButtonsContainer" class="toolkit-buttons-list">
+                            <!-- Buttons will be loaded here -->
+                        </div>
+                        <button type="button" id="addToolkitBtn" class="btn btn-cyan add-toolkit-btn" onclick="addToolkitButtonField()"><i class="fa fa-plus"></i> Add New Download Button</button>
+                        <button class="btn btn-cyan" onclick="saveToolkitButtonsConfig()"><i class="fa fa-save"></i> UPDATE TOOLKIT</button>
                     </div>
                 </div>
 
@@ -1018,7 +1032,6 @@
         </div>
     </div>
 
-    <!-- MAIN JAVASCRIPT SYSTEM -->
     <script>
         // ========== Firebase Config ==========
         const firebaseConfig = { 
@@ -1129,11 +1142,12 @@
             if(id==='alert') scanForWebsiteIssues(); 
             if(id==='earnManagement') loadEarnManagementData(); 
             if(id==='unreadHub') loadUnreadCenter(); 
-            if(id==='analyst') loadAnalystData('daily'); 
+            if(id==='analyst') loadAnalystData('daily', document.querySelector('.analyst-tab.active')); 
             if(id==='offers') loadVipOffers(); 
             if(id==='txApproval') loadPendingTransactions(); 
             if(id==='autoControl') loadAutoControls(); 
             if(id==='dialogEditor') loadDialogEditor(); 
+            if(id==='cfgTk') loadToolkitButtonsConfig();
             
             closeMobileSidebar(); 
         }
@@ -1188,12 +1202,12 @@
             loadVipOffers(); 
             loadAutoControls(); 
             loadPendingTransactions(); 
-            setTimeout(()=>{ loadAnalystData('daily'); },1000); 
+            setTimeout(()=>{ loadAnalystData('daily', document.querySelector('.analyst-tab')); },1000); 
             checkAndShowAdminUnread(); 
         }
         
         // =========================================================================
-        // NEW FEATURE: UPGRADED DIALOG EDITOR (LIVE PREVIEW)
+        // DIALOG EDITOR (Preserved & Upgraded)
         // =========================================================================
         let dialogTexts = {
             transactionSuccess: { title: "TRANSACTION SUCCESS", subtitle: "SUBMITTED", desc: "Tool Request sent to Admin securely!", btn: "CONTINUE" },
@@ -1206,15 +1220,13 @@
         
         function loadDialogEditor(){
             const container = document.getElementById('dialogEditorContainer');
+            if(!container) return;
             container.innerHTML = '';
-            
             Object.keys(dialogTexts).forEach(key => {
                 const text = dialogTexts[key];
                 container.innerHTML += `
                     <div class="dialog-edit-card" data-key="${key}">
                         <div class="dialog-edit-title"><i class="fa fa-edit"></i> ${key.replace(/([A-Z])/g, ' $1').toUpperCase()} DIALOG</div>
-                        
-                        <!-- LIVE PREVIEW AREA EXACTLY MATCHING THE PICTURE -->
                         <div class="dialog-live-preview" id="preview_${key}">
                             <div class="dlp-icon"><i class="fa fa-check"></i></div>
                             <div class="dlp-title" id="prev_title_${key}">${text.title}</div>
@@ -1222,19 +1234,14 @@
                             <div class="dlp-desc" id="prev_desc_${key}">${text.desc}</div>
                             <button class="dlp-btn" id="prev_btn_${key}">${text.btn}</button>
                         </div>
-                        
-                        <!-- EDITING CONTROLS -->
                         <div style="background:#000; padding:15px; border-radius:10px; border:1px solid #112222;">
-                            <label style="font-size:11px; color:var(--cyan); font-weight:bold; text-transform:uppercase;">Top Title</label>
+                            <label style="font-size:11px; color:var(--cyan);">Top Title</label>
                             <input type="text" class="dialog-edit-input" id="dialogTitle_${key}" value="${text.title}" onkeyup="updateDialogPreview('${key}')">
-                            
-                            <label style="font-size:11px; color:var(--success); font-weight:bold; text-transform:uppercase;">Glowing Subtitle</label>
+                            <label style="font-size:11px; color:var(--success);">Glowing Subtitle</label>
                             <input type="text" class="dialog-edit-input" id="dialogSub_${key}" value="${text.subtitle}" onkeyup="updateDialogPreview('${key}')">
-                            
-                            <label style="font-size:11px; color:#aaa; font-weight:bold; text-transform:uppercase;">Description Text</label>
+                            <label style="font-size:11px; color:#aaa;">Description Text</label>
                             <textarea class="dialog-edit-textarea" id="dialogDesc_${key}" onkeyup="updateDialogPreview('${key}')">${text.desc}</textarea>
-                            
-                            <label style="font-size:11px; color:white; font-weight:bold; text-transform:uppercase;">Button Text</label>
+                            <label style="font-size:11px; color:white;">Button Text</label>
                             <input type="text" class="dialog-edit-input" id="dialogBtn_${key}" value="${text.btn}" onkeyup="updateDialogPreview('${key}')">
                         </div>
                     </div>
@@ -1270,51 +1277,29 @@
                     for(let key in texts){
                         if(dialogTexts[key]) dialogTexts[key] = texts[key];
                     }
-                    if(document.getElementById('dialogEditorContainer').innerHTML !== '') loadDialogEditor();
+                    if(document.getElementById('dialogEditorContainer') && document.getElementById('dialogEditorContainer').innerHTML !== '') loadDialogEditor();
                 }
             });
         }
         
         // =========================================================================
-        // NEW FEATURE: PREMIUM WEBSITE ANALYST (AdSense/TikTok Style)
+        // WEBSITE ANALYST - REAL DATA (NO FAKE)
         // =========================================================================
         let analystCurrentType = 'daily';
         
-        async function loadAnalystData(viewType){
+        async function loadAnalystData(viewType, clickedTab){
             analystCurrentType = viewType;
-            
-            // Update Tab UI
-            document.querySelectorAll('.analyst-tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            let startDate, endDate;
-            const today = new Date();
-            
-            if(viewType === 'daily'){
-                // Last 30 Days
-                startDate = new Date(today);
-                startDate.setDate(today.getDate() - 30);
-                endDate = today;
-            } else if(viewType === 'weekly'){
-                // This Month (4 Weeks representation)
-                startDate = new Date(today);
-                startDate.setDate(today.getDate() - 28);
-                endDate = today;
-            } else if(viewType === 'monthly'){
-                // 12 Months
-                startDate = new Date(today);
-                startDate.setMonth(today.getMonth() - 12);
-                endDate = today;
-            } else if(viewType === 'yearly'){
-                // 5 Years
-                startDate = new Date(today);
-                startDate.setFullYear(today.getFullYear() - 5);
-                endDate = today;
+            if(clickedTab){
+                document.querySelectorAll('.analyst-tab').forEach(t=>t.classList.remove('active'));
+                clickedTab.classList.add('active');
             }
-            
+            let startDate, endDate, today = new Date();
+            if(viewType==='daily'){ startDate = new Date(today); startDate.setDate(today.getDate()-30); endDate = today; }
+            else if(viewType==='weekly'){ startDate = new Date(today); startDate.setDate(today.getDate()-28); endDate = today; }
+            else if(viewType==='monthly'){ startDate = new Date(today); startDate.setMonth(today.getMonth()-12); endDate = today; }
+            else if(viewType==='yearly'){ startDate = new Date(today); startDate.setFullYear(today.getFullYear()-5); endDate = today; }
             document.getElementById('analystStartDate').value = startDate.toISOString().split('T')[0];
             document.getElementById('analystEndDate').value = endDate.toISOString().split('T')[0];
-            
             await loadAnalystDataWithRange();
         }
         
@@ -1323,97 +1308,81 @@
             const end = new Date(document.getElementById('analystEndDate').value);
             if(isNaN(start) || isNaN(end)) return;
             
-            // Generate robust data mapping based on the selected view type
-            let dataPointsCount = 30; // default for daily
+            let dataPointsCount = 30;
             if(analystCurrentType === 'weekly') dataPointsCount = 4;
             if(analystCurrentType === 'monthly') dataPointsCount = 12;
             if(analystCurrentType === 'yearly') dataPointsCount = 5;
             
-            const viewsData = await generatePremiumAnalyticsData(dataPointsCount, 'views');
-            const freeClicksData = await generatePremiumAnalyticsData(dataPointsCount, 'free_clicks');
-            const vipClicksData = await generatePremiumAnalyticsData(dataPointsCount, 'vip_clicks');
+            // Initialize arrays
+            let viewsArr = new Array(dataPointsCount).fill(0);
+            let freeArr = new Array(dataPointsCount).fill(0);
+            let vipArr = new Array(dataPointsCount).fill(0);
             
-            const totalViews = viewsData.reduce((a,b)=>a+b,0);
-            const totalFreeClicks = freeClicksData.reduce((a,b)=>a+b,0);
-            const totalVipClicks = vipClicksData.reduce((a,b)=>a+b,0);
+            // Fetch real analytics from Firestore collection 'website_analytics'
+            const analyticsSnap = await db.collection('website_analytics').where('timestamp', '>=', start).where('timestamp', '<=', end).get();
+            analyticsSnap.forEach(doc => {
+                let data = doc.data();
+                let idx = 0;
+                if(analystCurrentType === 'daily'){
+                    let dayDiff = Math.floor((new Date(data.timestamp) - start) / (1000*60*60*24));
+                    idx = Math.min(dataPointsCount-1, Math.max(0, dayDiff));
+                } else if(analystCurrentType === 'weekly'){
+                    let weekDiff = Math.floor((new Date(data.timestamp) - start) / (1000*60*60*24*7));
+                    idx = Math.min(dataPointsCount-1, Math.max(0, weekDiff));
+                } else if(analystCurrentType === 'monthly'){
+                    let monthDiff = (new Date(data.timestamp).getFullYear() - start.getFullYear())*12 + (new Date(data.timestamp).getMonth() - start.getMonth());
+                    idx = Math.min(dataPointsCount-1, Math.max(0, monthDiff));
+                } else if(analystCurrentType === 'yearly'){
+                    let yearDiff = new Date(data.timestamp).getFullYear() - start.getFullYear();
+                    idx = Math.min(dataPointsCount-1, Math.max(0, yearDiff));
+                }
+                if(data.type === 'pageview') viewsArr[idx] += data.count || 1;
+                if(data.type === 'free_click') freeArr[idx] += data.count || 1;
+                if(data.type === 'vip_click') vipArr[idx] += data.count || 1;
+            });
             
-            // Number formatter
-            const formatNum = (num) => num > 1000 ? (num/1000).toFixed(1) + 'k' : num;
+            const totalViews = viewsArr.reduce((a,b)=>a+b,0);
+            const totalFree = freeArr.reduce((a,b)=>a+b,0);
+            const totalVip = vipArr.reduce((a,b)=>a+b,0);
             
-            document.getElementById('analystTotalViews').innerText = formatNum(totalViews);
-            document.getElementById('analystFreeClicks').innerText = formatNum(totalFreeClicks);
-            document.getElementById('analystVipClicks').innerText = formatNum(totalVipClicks);
+            document.getElementById('analystTotalViews').innerText = totalViews.toLocaleString();
+            document.getElementById('analystFreeClicks').innerText = totalFree.toLocaleString();
+            document.getElementById('analystVipClicks').innerText = totalVip.toLocaleString();
             
-            renderPremiumAnalystChart(viewsData, freeClicksData, vipClicksData, start, end, dataPointsCount);
+            renderRealAnalyticsChart(viewsArr, freeArr, vipArr, start, end, dataPointsCount);
         }
         
-        async function generatePremiumAnalyticsData(count, type){
-            let data = new Array(count).fill(0);
-            // Dynamic generation logic mimicking real traffic spikes
-            const baseMultiplier = type === 'views' ? 500 : (type === 'free_clicks' ? 200 : 50);
-            const userMultiplier = Math.max(1, allUsersData.length / 5);
-            
-            for(let i=0; i<count; i++){
-                // Add some sinusoidal noise to look like real data
-                let noise = Math.sin(i * 0.5) * 0.3 + 0.7; 
-                let randomFactor = Math.random() * 0.5 + 0.5;
-                // Grow slightly over time (i/count)
-                let growth = 1 + (i / count);
-                data[i] = Math.floor(baseMultiplier * userMultiplier * noise * randomFactor * growth);
-            }
-            return data;
-        }
-        
-        function renderPremiumAnalystChart(views, freeClicks, vipClicks, startDate, endDate, pointsCount){
+        function renderRealAnalyticsChart(views, free, vip, startDate, endDate, pointsCount){
             const container = document.getElementById('analystChartArea');
+            if(!container) return;
             container.innerHTML = '';
-            
-            const maxVal = Math.max(...views, ...freeClicks, ...vipClicks, 10);
-            
-            // Update Y-Axis labels based on max value
+            const maxVal = Math.max(...views, ...free, ...vip, 10);
             const yAxis = document.getElementById('chartYAxis');
-            yAxis.innerHTML = `
-                <div>${(maxVal).toLocaleString()}</div>
-                <div>${(maxVal * 0.75).toLocaleString()}</div>
-                <div>${(maxVal * 0.5).toLocaleString()}</div>
-                <div>${(maxVal * 0.25).toLocaleString()}</div>
-                <div>0</div>
-            `;
+            yAxis.innerHTML = `<div>${maxVal.toLocaleString()}</div><div>${Math.round(maxVal*0.75).toLocaleString()}</div><div>${Math.round(maxVal*0.5).toLocaleString()}</div><div>${Math.round(maxVal*0.25).toLocaleString()}</div><div>0</div>`;
             
             for(let i=0; i<pointsCount; i++){
                 let label = "";
-                
                 if(analystCurrentType === 'daily'){
-                    let d = new Date(startDate);
-                    d.setDate(startDate.getDate() + Math.floor((endDate - startDate)/(1000*60*60*24*pointsCount) * i));
+                    let d = new Date(startDate); d.setDate(startDate.getDate() + i);
                     label = `${d.getDate()}/${d.getMonth()+1}`;
-                } else if(analystCurrentType === 'weekly'){
-                    label = `Week ${i+1}`;
-                } else if(analystCurrentType === 'monthly'){
-                    let d = new Date(startDate);
-                    d.setMonth(startDate.getMonth() + i);
-                    label = d.toLocaleString('default', { month: 'short' });
+                } else if(analystCurrentType === 'weekly') label = `Week ${i+1}`;
+                else if(analystCurrentType === 'monthly'){
+                    let d = new Date(startDate); d.setMonth(startDate.getMonth() + i);
+                    label = d.toLocaleString('default',{month:'short'});
                 } else if(analystCurrentType === 'yearly'){
-                    let d = new Date(startDate);
-                    d.setFullYear(startDate.getFullYear() + i);
+                    let d = new Date(startDate); d.setFullYear(startDate.getFullYear() + i);
                     label = d.getFullYear();
                 }
-
-                const viewHeight = Math.max(5, (views[i]/maxVal)*100);
-                const freeHeight = Math.max(5, (freeClicks[i]/maxVal)*100);
-                const vipHeight = Math.max(5, (vipClicks[i]/maxVal)*100);
-                
+                const vHeight = Math.max(5, (views[i]/maxVal)*100);
+                const fHeight = Math.max(5, (free[i]/maxVal)*100);
+                const vipHeight = Math.max(5, (vip[i]/maxVal)*100);
                 const barWrap = document.createElement('div');
                 barWrap.className = 'chart-bar-wrap';
-                
-                // Add staggered animation delay
-                const delay = i * 0.05;
-                
                 barWrap.innerHTML = `
                     <div class="chart-bar-group">
-                        <div class="chart-bar views" style="height:${viewHeight}%; animation-delay: ${delay}s;"><div class="chart-tooltip">Views: ${views[i].toLocaleString()}</div></div>
-                        <div class="chart-bar free" style="height:${freeHeight}%; animation-delay: ${delay + 0.1}s;"><div class="chart-tooltip">Free: ${freeClicks[i].toLocaleString()}</div></div>
-                        <div class="chart-bar vip" style="height:${vipHeight}%; animation-delay: ${delay + 0.2}s;"><div class="chart-tooltip">VIP: ${vipClicks[i].toLocaleString()}</div></div>
+                        <div class="chart-bar views" style="height:${vHeight}%;"><div class="chart-tooltip">Views: ${views[i]}</div></div>
+                        <div class="chart-bar free" style="height:${fHeight}%;"><div class="chart-tooltip">Free: ${free[i]}</div></div>
+                        <div class="chart-bar vip" style="height:${vipHeight}%;"><div class="chart-tooltip">VIP: ${vip[i]}</div></div>
                     </div>
                     <div class="chart-label">${label}</div>
                 `;
@@ -1422,30 +1391,88 @@
         }
         
         // =========================================================================
-        // NEW FEATURE: ADMIN UNREAD SUMMARY MODAL 
+        // MH TOOLKITS - DYNAMIC BUTTONS + FILE UPLOAD
+        // =========================================================================
+        let toolkitButtonsArray = [];
+        
+        function loadToolkitButtonsConfig(){
+            db.collection('app_settings').doc('toolkit').get().then(doc=>{
+                if(doc.exists && doc.data().buttons){
+                    toolkitButtonsArray = doc.data().buttons;
+                } else {
+                    toolkitButtonsArray = [{name:"MH APK Tool", link:"https://example.com/apk.apk"},{name:"MH MF Tool", link:"https://example.com/mf.zip"}];
+                }
+                renderToolkitButtonsUI();
+            });
+        }
+        
+        function renderToolkitButtonsUI(){
+            const container = document.getElementById('toolkitButtonsContainer');
+            if(!container) return;
+            container.innerHTML = '';
+            toolkitButtonsArray.forEach((btn, idx) => {
+                const div = document.createElement('div');
+                div.className = 'toolkit-btn-item';
+                div.innerHTML = `
+                    <input type="text" placeholder="Button Name" value="${escapeHtml(btn.name)}" data-idx="${idx}" class="toolkit-name-input" style="flex:2;">
+                    <input type="text" placeholder="Download Link (URL or uploaded file)" value="${escapeHtml(btn.link)}" data-idx="${idx}" class="toolkit-link-input" style="flex:2;">
+                    <input type="file" class="toolkit-file-upload" data-idx="${idx}" accept="*/*" style="flex:1; padding:8px;">
+                    <button class="btn-sm btn-delete" onclick="removeToolkitButton(${idx})"><i class="fa fa-trash"></i> Remove</button>
+                `;
+                container.appendChild(div);
+            });
+            // attach event listeners
+            document.querySelectorAll('.toolkit-name-input').forEach(inp => inp.addEventListener('change', (e) => { toolkitButtonsArray[e.target.dataset.idx].name = e.target.value; }));
+            document.querySelectorAll('.toolkit-link-input').forEach(inp => inp.addEventListener('change', (e) => { toolkitButtonsArray[e.target.dataset.idx].link = e.target.value; }));
+            document.querySelectorAll('.toolkit-file-upload').forEach(inp => inp.addEventListener('change', (e) => uploadToolkitFile(e.target.dataset.idx, e.target.files[0])));
+        }
+        
+        function addToolkitButtonField(){
+            toolkitButtonsArray.push({ name: "New Button", link: "" });
+            renderToolkitButtonsUI();
+        }
+        
+        function removeToolkitButton(idx){
+            toolkitButtonsArray.splice(idx,1);
+            renderToolkitButtonsUI();
+        }
+        
+        async function uploadToolkitFile(idx, file){
+            if(!file) return;
+            const storageRef = storage.ref(`toolkit_files/${Date.now()}_${file.name}`);
+            await storageRef.put(file);
+            const url = await storageRef.getDownloadURL();
+            toolkitButtonsArray[idx].link = url;
+            renderToolkitButtonsUI();
+            alert("File uploaded! Link automatically set.");
+        }
+        
+        function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+        
+        async function saveToolkitButtonsConfig(){
+            await db.collection('app_settings').doc('toolkit').set({ buttons: toolkitButtonsArray }, { merge: true });
+            alert("Toolkit buttons saved. Website will display exactly these buttons.");
+            logActivity('TOOLKIT','Admin','Saved dynamic download buttons');
+        }
+        
+        // =========================================================================
+        // ADMIN UNREAD SUMMARY MODAL 
         // =========================================================================
         let adminUnreadTimer = null;
         
         async function checkAndShowAdminUnread(){
-            // Fetch all unread/pending statuses simultaneously
             const pendingPayments = await db.collection('payment_proofs').where('status','==','Pending').get();
             const pendingReports = await db.collection('user_reports').where('status','==','Pending').get();
             const unreadChats = await db.collection('chats').where('readByAdmin','==',false).get();
             const moneyRequests = await db.collection('admin_money_requests').where('status','==','pending').get();
-            
             const items =[];
-            
-            pendingPayments.forEach(doc => items.push({type:'Payment', color:'var(--success)', title:'Pending Payment', body:`${doc.data().userName} paid for ${doc.data().toolName}`, id:doc.id, section:'proofs', icon:'fa-file-invoice-dollar'}));
-            pendingReports.forEach(doc => items.push({type:'Report', color:'var(--pending)', title:'New Bug/Request', body:`${doc.data().type}: ${doc.data().title}`, id:doc.id, section:'reports', icon:'fa-bug'}));
-            unreadChats.forEach(doc => items.push({type:'Chat', color:'var(--cyan)', title:'Unread Message', body:`${doc.data().name} sent a message`, id:doc.id, section:'chat', icon:'fa-comments'}));
-            moneyRequests.forEach(doc => items.push({type:'Money', color:'var(--gold)', title:'Fund Request', body:`${doc.data().userName} requested PKR ${doc.data().amount}`, id:doc.id, section:'earnManagement', icon:'fa-money-bill'}));
-            
-            if(items.length === 0) return; // Silent if nothing is pending
-            
+            pendingPayments.forEach(doc => items.push({type:'Payment', color:'var(--success)', title:'Pending Payment', body:`${doc.data().userName} paid for ${doc.data().toolName}`, section:'proofs', icon:'fa-file-invoice-dollar'}));
+            pendingReports.forEach(doc => items.push({type:'Report', color:'var(--pending)', title:'New Bug/Request', body:`${doc.data().type}: ${doc.data().title}`, section:'reports', icon:'fa-bug'}));
+            unreadChats.forEach(doc => items.push({type:'Chat', color:'var(--cyan)', title:'Unread Message', body:`${doc.data().name} sent a message`, section:'chat', icon:'fa-comments'}));
+            moneyRequests.forEach(doc => items.push({type:'Money', color:'var(--gold)', title:'Fund Request', body:`${doc.data().userName} requested PKR ${doc.data().amount}`, section:'earnManagement', icon:'fa-money-bill'}));
+            if(items.length === 0) return;
             const container = document.getElementById('adminUnreadListContainer');
             container.innerHTML = '';
-            
-            // Limit to top 5 recent items to avoid cluttering the modal
             items.slice(0, 5).forEach(item => {
                 container.innerHTML += `
                     <div class="admin-unread-item" onclick="goToAdminUnreadSection('${item.section}')">
@@ -1461,20 +1488,15 @@
                     </div>
                 `;
             });
-            
             if(items.length > 5){
                 container.innerHTML += `<div style="text-align:center; padding:10px; color:#888; font-size:12px;">+ ${items.length - 5} more pending actions...</div>`;
             }
-            
             const modal = document.getElementById('adminUnreadModal');
             modal.style.display = 'flex';
-            playAdminAlert(); // Play the specific admin alert sound
-            
-            // 5 Second Auto-Close Timer
+            playAdminAlert();
             let secondsLeft = 5;
             const timerEl = document.getElementById('adminUnreadTimer');
             timerEl.innerText = `Auto-close in ${secondsLeft} seconds...`;
-            
             if(adminUnreadTimer) clearInterval(adminUnreadTimer);
             adminUnreadTimer = setInterval(() => {
                 secondsLeft--;
@@ -1486,22 +1508,13 @@
                     timerEl.innerText = `Auto-close in ${secondsLeft} seconds...`;
                 }
             }, 1000);
-            
-            // If admin hovers over the modal, stop the timer
             document.querySelector('.admin-unread-card').onmouseover = () => {
-                if(adminUnreadTimer){
-                    clearInterval(adminUnreadTimer);
-                    adminUnreadTimer = null;
-                    timerEl.innerText = `Timer paused.`;
-                }
+                if(adminUnreadTimer){ clearInterval(adminUnreadTimer); adminUnreadTimer = null; timerEl.innerText = `Timer paused.`; }
             };
         }
         
         function closeAdminUnreadModal(autoClosed = false){
-            if(adminUnreadTimer){
-                clearInterval(adminUnreadTimer);
-                adminUnreadTimer = null;
-            }
+            if(adminUnreadTimer){ clearInterval(adminUnreadTimer); adminUnreadTimer = null; }
             document.getElementById('adminUnreadModal').style.display = 'none';
         }
         
@@ -1509,9 +1522,9 @@
             closeAdminUnreadModal();
             nav(section, document.querySelector(`.menu-item[onclick*="nav('${section}'"]`));
         }
-
+        
         // =========================================================================
-        // PRESERVED APP CONFIG LOGIC (Added new Web Dialog Toggle)
+        // PRESERVED APP CONFIG LOGIC (All original functions kept intact)
         // =========================================================================
         function initAppConfig(){
             db.collection('app_settings').doc('main').onSnapshot(doc=>{
@@ -1557,10 +1570,6 @@
                     if(document.getElementById('cfgTkTitle')){ 
                         document.getElementById('cfgTkTitle').value=d.tkTitle||""; 
                         document.getElementById('cfgTkDesc').value=d.tkDesc||""; 
-                        document.getElementById('cfgTkMfName').value=d.tkMfName||""; 
-                        document.getElementById('cfgTkMfLink').value=d.tkMfLink||""; 
-                        document.getElementById('cfgTkApkName').value=d.tkApkName||""; 
-                        document.getElementById('cfgTkApkLink').value=d.tkApkLink||""; 
                     }
                     if(document.getElementById('cfgAdEnable')){ 
                         document.getElementById('cfgAdEnable').value=d.popupEnabled?"true":"false"; 
@@ -1572,7 +1581,8 @@
                     }
                 }
             });
-            loadDialogTextsFromFirestore(); // Load our new premium dialog texts
+            loadDialogTextsFromFirestore();
+            loadToolkitButtonsConfig();
         }
         
         function saveSystemToggles(){ 
@@ -1598,7 +1608,10 @@
             let updateObj={}; 
             if(type==='theme'){ updateObj={ themeName:currentThemeConfig.name, themePrimary:currentThemeConfig.primary, themeBg:currentThemeConfig.bg, themePanel:currentThemeConfig.panel, themeDark:currentThemeConfig.dark }; }
             else if(type==='brand'){ updateObj={ logoUrl:document.getElementById('cfgLogo').value, splashText:document.getElementById('cfgSplash').value, titleText:document.getElementById('cfgTitle').value, subText:document.getElementById('cfgSubText').value, linkTelegramGrp:document.getElementById('cfgGrp').value, linkTelegramChnl:document.getElementById('cfgChnl').value, linkWhatsapp:document.getElementById('cfgWa').value, supportEmail:document.getElementById('cfgEmail').value }; }
-            else if(type==='toolkit'){ updateObj={ tkTitle:document.getElementById('cfgTkTitle').value, tkDesc:document.getElementById('cfgTkDesc').value, tkMfName:document.getElementById('cfgTkMfName').value, tkMfLink:document.getElementById('cfgTkMfLink').value, tkApkName:document.getElementById('cfgTkApkName').value, tkApkLink:document.getElementById('cfgTkApkLink').value }; }
+            else if(type==='toolkit'){ 
+                updateObj={ tkTitle:document.getElementById('cfgTkTitle').value, tkDesc:document.getElementById('cfgTkDesc').value };
+                // Buttons are saved separately via saveToolkitButtonsConfig
+            }
             else if(type==='ad'){ updateObj={ popupEnabled:document.getElementById('cfgAdEnable').value==="true", popupTimer:parseInt(document.getElementById('cfgAdTimer').value), popupTitle:document.getElementById('cfgAdTitle').value, popupDesc:document.getElementById('cfgAdDesc').value, popupImg:document.getElementById('cfgAdImg').value, popupLink:document.getElementById('cfgAdLink').value }; }
             else if(type==='texts'){ updateObj={ txtNext:document.getElementById('cfgTxtNext').value, txtCancel:document.getElementById('cfgTxtCancel').value, txtPurchase:document.getElementById('cfgTxtPurchase').value, txtPaid:document.getElementById('cfgTxtPaid').value, txtUpload:document.getElementById('cfgTxtUpload').value, txtLoading:document.getElementById('cfgTxtLoading').value, txtFooter:document.getElementById('cfgTxtFooter').value }; }
             else if(type==='grid'){ updateObj={ freeGridMobile:document.getElementById('cfgFreeGridMobile').value, vipGridMobile:document.getElementById('cfgVipGridMobile').value }; } 
@@ -1608,9 +1621,9 @@
                 logActivity('CONFIG','Admin',`Updated ${type} configuration`); 
             }); 
         }
-
+        
         // =========================================================================
-        // PRESERVED USER MANAGEMENT
+        // PRESERVED USER MANAGEMENT (all original functions - shortened for brevity but fully functional)
         // =========================================================================
         function loadUsers(){ 
             db.collection('users').onSnapshot(snap=>{ 
@@ -1618,7 +1631,6 @@
                 let notifSelect=document.getElementById('notifTarget'); let chatList=document.getElementById('chatUserList'); 
                 let fundSelect=document.getElementById('fundUserId'); let vipDirectSelect=document.getElementById('vipDirectUser'); 
                 tbody.innerHTML=''; notifSelect.innerHTML='<option value="ALL">BROADCAST TO ALL AGENTS</option>'; chatList.innerHTML=''; fundSelect.innerHTML='<option value="">Select User...</option>'; vipDirectSelect.innerHTML='<option value="">Select User...</option>'; 
-                
                 snap.forEach(d=>{ 
                     let data=d.data(); data.uid=d.id; allUsersData.push(data); 
                     if(data.status==='online') online++; 
@@ -1627,14 +1639,12 @@
                         let walletCell=document.getElementById(`wallet-${d.id}`); 
                         if(walletCell) walletCell.innerText=`PKR ${wallet.exists?wallet.data().balance||0:0}`; 
                     }); 
-                    
                     tbody.innerHTML+=`<tr><td><strong>${data.name}</strong></td><td>${data.email}</td><td style="font-family:monospace;">${data.password}</td><td style="color:var(--cyan);">${data.referralCode||'N/A'}</td><td id="wallet-${d.id}">PKR 0</td><td><span style="color:${statusColor};">${data.status}</span></td><td><button class="btn-sm btn-delete" onclick="deleteItem('users','${d.id}')">PURGE</button><button class="btn-sm btn-delete" onclick="removeUserFromWebsite('${d.id}','${data.name}')">REMOVE</button></td></tr>`; 
                     notifSelect.innerHTML+=`<option value="${data.uid}">${data.name} (${data.email})</option>`; 
                     fundSelect.innerHTML+=`<option value="${data.uid}">${data.name} (${data.email})</option>`; 
                     vipDirectSelect.innerHTML+=`<option value="${data.uid}">${data.name} (${data.email})</option>`; 
                     chatList.innerHTML+=`<div class="chat-user-item" id="citem-${data.uid}" onclick="openChat('${data.uid}','${data.name}')"><span><i class="fa fa-user"></i> ${data.name}</span><div id="cdot-${data.uid}" style="display:none;" class="dot-unread"></div></div>`; 
                 }); 
-                
                 document.getElementById('st-users').innerText=snap.size; 
                 document.getElementById('st-online').innerText=online; 
                 document.getElementById('st-offline').innerText=snap.size-online; 
@@ -1654,9 +1664,9 @@
                 }); 
             } 
         }
-
+        
         // =========================================================================
-        // PRESERVED TOOLS (FREE & VIP)
+        // TOOLS (FREE & VIP) - all original functions kept
         // =========================================================================
         function loadTools(collection){ 
             db.collection(collection).orderBy('order','asc').onSnapshot(snap=>{ 
@@ -1664,20 +1674,15 @@
                 snap.forEach(doc=>{ 
                     let d=doc.data(); d.id=doc.id; 
                     if(isVip){ allVipToolsData[doc.id]=d; populateKeyToolSelect(); populateOfferToolSelect(); } else { allFreeToolsData[doc.id]=d; } 
-                    
                     let statusClass=d.isWorking!==false?'st-working':'st-maint'; 
                     let statusText=d.isWorking!==false?'OPERATIONAL':'MAINTENANCE'; 
                     let sizeIcon=d.size==='small'?'🔹':(d.size==='large'?'🔸':'🔷'); 
-                    
                     let scheduleText=''; 
                     if(d.timestamp>Date.now()) scheduleText=`<div style="color:var(--pending); font-size:11px;">Scheduled: ${new Date(d.timestamp).toLocaleString()}</div>`; 
-                    
                     let offerHtml=''; 
                     if(isVip&&activeVipOffers[doc.id]) offerHtml=`<div class="offer-badge">${activeVipOffers[doc.id].offerName} - ${activeVipOffers[doc.id].discountPrice} PKR</div>`; 
-                    
                     div.innerHTML+=`<div class="item-card"><div class="order-number">#${d.order||0}</div><img src="${d.icon}" class="item-img"><div style="flex:1;"><div>${d.title} <span style="font-size:14px;">${sizeIcon}</span></div>${isVip&&d.price?`<div style="color:var(--cyan);">PKR ${d.price}</div>`:''}${isVip&&offerHtml?`<div style="color:var(--success);">PKR ${activeVipOffers[doc.id].discountPrice}</div>`:''}<div class="status-badge ${statusClass}">${statusText}</div>${scheduleText}</div><div><div class="order-controls"><button class="order-btn" onclick="updateToolOrder('${collection}','${d.id}','up')"><i class="fa fa-arrow-up"></i></button><button class="order-btn" onclick="updateToolOrder('${collection}','${d.id}','down')"><i class="fa fa-arrow-down"></i></button></div><div style="display:flex; gap:8px; margin-top:10px;"><button class="btn-icon" onclick="${isVip?`editVipTool('${d.id}')`:`editFreeTool('${d.id}')`}"><i class="fa fa-edit"></i></button><button class="btn-icon btn-delete" onclick="deleteItem('${collection}','${d.id}')"><i class="fa fa-trash"></i></button></div></div></div>`; 
                 }); 
-                
                 if(collection==='free_tools') stats.free=snap.size; else stats.vip=snap.size; 
                 document.getElementById('st-total-tools').innerText=stats.free+stats.vip; 
                 document.getElementById('st-vip').innerText=stats.vip; 
@@ -1695,11 +1700,9 @@
             let isVip=type==='vip'; let data={isWorking:true}; 
             let scheduleInput=isVip?document.getElementById('vtSchedule').value:document.getElementById('ftSchedule').value; 
             if(scheduleInput) data.timestamp=new Date(scheduleInput).getTime(); else data.timestamp=Date.now(); 
-            
             if(type==='free'){ 
                 data.title=document.getElementById('ftTitle').value; data.icon=document.getElementById('ftIcon').value; data.link=document.getElementById('ftLink').value; data.order=parseInt(document.getElementById('ftOrder').value)||1; data.desc=document.getElementById('ftDesc').value||'No description'; data.welcomeMsg=document.getElementById('ftWelcomeMsg').value||'Welcome'; data.btnText=document.getElementById('ftBtnText').value||'DOWNLOAD'; data.size=document.getElementById('ftSize').value||'medium'; data.video=document.getElementById('ftVideo').value; data.videoRatio=document.getElementById('ftVideoRatio').value||'9/16'; 
                 if(!data.title) return alert("Title required"); 
-                
                 let editId=document.getElementById('editFreeId').value; 
                 if(editId){ 
                     if(!scheduleInput) delete data.timestamp; 
@@ -1709,13 +1712,10 @@
                 } 
             } else { 
                 data.title=document.getElementById('vtTitle').value; data.order=parseInt(document.getElementById('vtOrder').value)||1; data.icon=document.getElementById('vtIcon').value; data.welcome=document.getElementById('vtWelcome').value; data.price=parseInt(document.getElementById('vtPrice').value)||0; data.link=document.getElementById('vtLink').value; data.video=document.getElementById('vtVideo').value; data.videoRatio=document.getElementById('vtRatio').value||"9/16"; data.desc=document.getElementById('vtDesc').value; data.size=document.getElementById('vtSize').value||'medium'; 
-                
                 let payments=[]; 
                 document.querySelectorAll('.payment-entry').forEach(el=>{ payments.push({title:el.querySelector('.pay-title')?.value,name:el.querySelector('.pay-name')?.value,img:el.querySelector('.pay-img')?.value}); }); 
                 data.paymentMethods=payments; 
-                
                 if(!data.title) return alert("Title required"); 
-                
                 let editId=document.getElementById('editVipId').value; 
                 if(editId){ 
                     if(!scheduleInput) delete data.timestamp; 
@@ -1745,10 +1745,9 @@
             div.innerHTML=`<div style="display:flex; justify-content:space-between;"><span style="color:var(--gold);">METHOD #${payCount}</span><i class="fa fa-times" style="cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i></div><input type="text" class="pay-title" placeholder="Title" value="${title}"><textarea class="pay-name" placeholder="Account Info">${name}</textarea><input type="text" class="pay-img" placeholder="QR Code URL" value="${img}">`; 
             document.getElementById('dynamicPayments').appendChild(div); 
         }
-
+        
         // =========================================================================
-        // VIP OFFERS
-        // =========================================================================
+        // VIP OFFERS (preserved)
         let activeVipOffers={};
         function loadVipOffers(){ 
             db.collection('vip_offers').onSnapshot(snap=>{ 
@@ -1763,10 +1762,9 @@
         }
         function populateOfferToolSelect(){ let sel=document.getElementById('offerVipToolId'); if(!sel) return; sel.innerHTML='<option value="">Select VIP Tool...</option>'; Object.keys(allVipToolsData).forEach(id=>{ sel.innerHTML+=`<option value="${id}">${allVipToolsData[id].title}</option>`; }); }
         function saveVipOffer(){ let toolId=document.getElementById('offerVipToolId').value; let offerName=document.getElementById('offerName').value.trim(); let discountPrice=document.getElementById('offerDiscountPrice').value; if(!toolId||!offerName||!discountPrice) return alert("Fill all details!"); let realPrice=allVipToolsData[toolId]?.price||0; db.collection('vip_offers').add({toolId,offerName:offerName.toUpperCase(),realPrice,discountPrice:parseInt(discountPrice),timestamp:Date.now()}).then(()=>{ alert("Offer applied to website!"); document.getElementById('offerName').value=''; document.getElementById('offerDiscountPrice').value=''; }); }
-
+        
         // =========================================================================
-        // TRANSACTION APPROVALS
-        // =========================================================================
+        // TRANSACTION APPROVALS (preserved)
         function loadPendingTransactions(){ 
             db.collection('transactions').where('status','==','pending').onSnapshot(snap=>{ 
                 let tbody=document.getElementById('txApprovalListBody'); tbody.innerHTML=''; 
@@ -1781,10 +1779,9 @@
         }
         function approveTx(txId){ db.collection('transactions').doc(txId).update({status:'completed'}); }
         function rejectTx(txId){ db.collection('transactions').doc(txId).update({status:'rejected'}); }
-
+        
         // =========================================================================
-        // AUTO CONTROL AI
-        // =========================================================================
+        // AUTO CONTROL AI (preserved)
         function loadAutoControls(){ 
             db.collection('app_settings').doc('auto_ai').onSnapshot(doc=>{ 
                 if(doc.exists){ 
@@ -1803,10 +1800,9 @@
         }
         function aiBot_Transaction(){ db.collection('transactions').where('status','==','pending').get().then(snap=>{ if(!snap.empty&&AI_AUTO_APPROVE){ snap.forEach(doc=>{ doc.ref.update({status:'completed'}); }); } }); }
         function aiBot_Chat(){ db.collection('chats').where('readByAdmin','==',false).get().then(snap=>{ if(!snap.empty&&AI_AUTO_CHAT){ snap.forEach(doc=>{ doc.ref.update({readByAdmin:true}); doc.ref.collection('messages').add({text:"🤖 AI: Admin is busy. Will reply shortly.",sender:'admin',isAutoReply:true,time:Date.now()}); }); } }); }
-
+        
         // =========================================================================
-        // HISTORY CLEANUP
-        // =========================================================================
+        // HISTORY CLEANUP (preserved)
         function purgeHistory(type){ 
             if(!confirm(`⚠️ PERMANENTLY DELETE ALL ${type.toUpperCase()}? This cannot be undone!`)) return; 
             let collectionName=''; 
@@ -1815,7 +1811,6 @@
             if(type==='keys') collectionName='key_access_logs'; 
             if(type==='payments') collectionName='payment_proofs'; 
             if(!collectionName) return; 
-            
             db.collection(collectionName).get().then(snap=>{ 
                 let batch=db.batch(); let count=0; 
                 snap.forEach(doc=>{ batch.delete(doc.ref); count++; }); 
@@ -1823,10 +1818,9 @@
                 else { alert("Already empty!"); } 
             }); 
         }
-
+        
         // =========================================================================
-        // CUSTOM INJECTOR (WEB & ADMIN)
-        // =========================================================================
+        // CUSTOM INJECTOR (WEB & ADMIN) - preserved
         function saveCustomCode(type){ 
             let collection=type==='web'?'custom_pages':'admin_custom_pages'; 
             let title=document.getElementById(type==='web'?'customTitle':'adminCustomTitle').value; 
@@ -1834,26 +1828,21 @@
             let js=document.getElementById(type==='web'?'customCodeJs':'adminCustomCodeJs').value; 
             let enabled=document.getElementById(type==='web'?'customEnabled':'adminCustomEnabled').value==="true"; 
             let editId=document.getElementById(type==='web'?'editCustomId':'editAdminCustomId').value; 
-            
             if(!title||!source) return alert("Title and HTML required!"); 
             let data={title,sourceCode:source,jsCode:js,enabled,timestamp:Date.now()}; 
-            
             if(editId){ db.collection(collection).doc(editId).update(data).then(()=>{ alert("Injected Code Updated!"); cancelCustomEdit(type); }); }
             else{ db.collection(collection).add(data).then(()=>{ alert("Code Injected Successfully!"); cancelCustomEdit(type); }); } 
         }
-        
         function loadCustomSystems(type){ 
             let collection=type==='web'?'custom_pages':'admin_custom_pages'; let listBodyId=type==='web'?'customCodeListBody':'adminCustomCodeListBody'; 
             db.collection(collection).orderBy('timestamp','desc').onSnapshot(snap=>{ 
                 let tbody=document.getElementById(listBodyId); tbody.innerHTML=''; 
                 if(type==='admin'){ document.getElementById('adminPanelDynamicMenu').innerHTML=''; document.getElementById('dynamicAdminSectionsContainer').innerHTML=''; } 
-                
                 snap.forEach(doc=>{ 
                     let d=doc.data(); 
                     let statusText=d.enabled?'<span style="color:var(--success);">LIVE</span>':'<span style="color:#666;">HIDDEN</span>'; 
                     let btnColor=type==='web'?'#aa00ff':'var(--success)'; 
                     tbody.innerHTML+=`<tr><td><strong>${d.title}</strong></td><td>${statusText}</td><td><button class="btn-sm" style="background:${btnColor}; color:black;" onclick="editCustomSystem('${doc.id}','${type}')">EDIT</button><button class="btn-sm btn-delete" onclick="deleteItem('${collection}','${doc.id}')">DELETE</button></td></tr>`; 
-                    
                     if(type==='admin'&&d.enabled){ 
                         let menuId=`adminCustom_${doc.id}`; 
                         document.getElementById('adminPanelDynamicMenu').innerHTML+=`<div class="menu-item" onclick="nav('${menuId}',this)"><i class="fa fa-plug"></i> ${d.title}</div>`; 
@@ -1865,18 +1854,16 @@
         }
         function editCustomSystem(id,type){ db.collection(type==='web'?'custom_pages':'admin_custom_pages').doc(id).get().then(doc=>{ let d=doc.data(); document.getElementById(type==='web'?'customTitle':'adminCustomTitle').value=d.title; document.getElementById(type==='web'?'customCodeSource':'adminCustomCodeSource').value=d.sourceCode; document.getElementById(type==='web'?'customCodeJs':'adminCustomCodeJs').value=d.jsCode||''; document.getElementById(type==='web'?'customEnabled':'adminCustomEnabled').value=d.enabled?"true":"false"; document.getElementById(type==='web'?'editCustomId':'editAdminCustomId').value=id; }); }
         function cancelCustomEdit(type){ document.getElementById(type==='web'?'editCustomId':'editAdminCustomId').value=''; document.getElementById(type==='web'?'customTitle':'adminCustomTitle').value=''; document.getElementById(type==='web'?'customCodeSource':'adminCustomCodeSource').value=''; document.getElementById(type==='web'?'customCodeJs':'adminCustomCodeJs').value=''; document.getElementById(type==='web'?'customEnabled':'adminCustomEnabled').value="true"; }
-
+        
         // =========================================================================
-        // DEMO SYSTEM
-        // =========================================================================
+        // DEMO SYSTEM (preserved)
         function saveDemoSystem(){ let title=document.getElementById('demoTitle').value; let desc=document.getElementById('demoDesc').value; let videoUrl=document.getElementById('demoVideo').value; let ratio=document.getElementById('demoRatio').value; let enabled=document.getElementById('demoEnabled').value==="true"; let editId=document.getElementById('editDemoId').value; if(!title) return alert("Title required!"); let data={title,desc,videoUrl,videoRatio:ratio,enabled,timestamp:Date.now()}; if(editId){ db.collection('demo_systems').doc(editId).update(data).then(()=>{ alert("Demo updated on website!"); cancelDemoEdit(); }); }else{ db.collection('demo_systems').add(data).then(()=>{ alert("Demo added to website!"); cancelDemoEdit(); }); } }
         function loadDemoSystems(){ db.collection('demo_systems').orderBy('timestamp','desc').onSnapshot(snap=>{ let tbody=document.getElementById('demoListBody'); tbody.innerHTML=''; snap.forEach(doc=>{ let d=doc.data(); let statusText=d.enabled?'<span style="color:var(--success);">LIVE</span>':'<span style="color:#666;">HIDDEN</span>'; tbody.innerHTML+=`<tr><td><strong>${d.title}</strong></td><td>${statusText}</td><td>${d.videoRatio}</td><td><button class="btn-sm" style="background:var(--success); color:black;" onclick="editDemoSystem('${doc.id}')">EDIT</button><button class="btn-sm btn-delete" onclick="deleteItem('demo_systems','${doc.id}')">DELETE</button></td></tr>`; }); }); }
         function editDemoSystem(id){ db.collection('demo_systems').doc(id).get().then(doc=>{ let d=doc.data(); document.getElementById('demoTitle').value=d.title; document.getElementById('demoDesc').value=d.desc; document.getElementById('demoVideo').value=d.videoUrl; let btn=document.querySelector(`[onclick*="selectVideoSize(this, '${d.videoRatio}', 'demo')"]`); if(btn) selectVideoSize(btn,d.videoRatio,'demo'); document.getElementById('demoEnabled').value=d.enabled?"true":"false"; document.getElementById('editDemoId').value=id; }); }
         function cancelDemoEdit(){ document.getElementById('editDemoId').value=''; document.getElementById('demoTitle').value=''; document.getElementById('demoDesc').value=''; document.getElementById('demoVideo').value=''; document.getElementById('demoEnabled').value="true"; }
-
+        
         // =========================================================================
-        // VIP DIRECT ACCESS
-        // =========================================================================
+        // VIP DIRECT ACCESS (preserved)
         function assignVipDirect(){ 
             let uid=document.getElementById('vipDirectUser').value; let toolName=document.getElementById('vipDirectToolName').value.trim(); let accessKey=document.getElementById('vipDirectPassword').value.trim(); let duration=document.getElementById('vipDirectDuration').value.trim(); let price=document.getElementById('vipDirectPrice').value.trim(); 
             if(!uid||!toolName||!accessKey) return alert("All fields required!"); 
@@ -1888,10 +1875,9 @@
             }); 
         }
         function loadVipDirectLogs(){ db.collection('vip_direct_access').orderBy('timestamp','desc').onSnapshot(snap=>{ let tbody=document.getElementById('vipDirectListBody'); tbody.innerHTML=''; snap.forEach(doc=>{ let d=doc.data(); tbody.innerHTML+=`<tr><td><strong>${d.userName}</strong></td><td style="color:var(--gold);">${d.toolName}</td><td style="font-family:monospace;">${d.accessKey}</td><td>${d.duration}</td><td><button class="btn-sm btn-delete" onclick="deleteItem('vip_direct_access','${doc.id}')">DELETE</button></td></tr>`; }); }); }
-
+        
         // =========================================================================
-        // EMAIL BULK MAILER
-        // =========================================================================
+        // EMAIL BULK MAILER (preserved)
         function loadAllUserEmails(){ let emails=allUsersData.map(u=>u.email).filter(e=>e&&e.includes('@')); document.getElementById('mailerReceiverEmails').value=emails.join(', '); alert(`Loaded ${emails.length} verified emails`); }
         emailjs.init("4RqXhwyNixdqwQNUT"); 
         document.getElementById('adminEmailForm')?.addEventListener('submit',async function(e){ 
@@ -1908,10 +1894,9 @@
             sendBtn.innerHTML="Launch Bulk Email"; sendBtn.disabled=false; 
             logActivity('EMAIL BLAST','Admin',`Sent bulk email to ${success} users`);
         });
-
+        
         // =========================================================================
-        // URGESTMENT (TOOL ORDER/SIZE CONTROLS)
-        // =========================================================================
+        // URGESTMENT (preserved)
         function loadUrgestmentTools(){ 
             let container=document.getElementById('urgestmentToolsList'); if(!container) return; 
             let html=''; let allTools=[...Object.values(allFreeToolsData).map(t=>({...t,type:'free'})),...Object.values(allVipToolsData).map(t=>({...t,type:'vip'}))]; 
@@ -1925,22 +1910,18 @@
         function moveTool(toolId,type,direction){ let collection=type==='vip'?'vip_tools':'free_tools'; let tools=type==='vip'?allVipToolsData:allFreeToolsData; let currentTool=tools[toolId]; if(!currentTool) return; let allTools=Object.values(tools); allTools.sort((a,b)=>(a.order||0)-(b.order||0)); let newOrder=currentTool.order||1; if(direction==='up') newOrder-=1; else if(direction==='down') newOrder+=1; else if(direction==='top') newOrder=1; else if(direction==='bottom') newOrder=allTools.length; newOrder=Math.max(1,Math.min(newOrder,allTools.length)); db.collection(collection).doc(toolId).update({order:newOrder}); }
         function changeToolSize(toolId,type,size){ let collection=type==='vip'?'vip_tools':'free_tools'; db.collection(collection).doc(toolId).update({size}); }
         function saveAllUrgestments(){ alert("Website Layout Order & Sizes Saved!"); loadUrgestmentTools(); }
-
+        
         // =========================================================================
-        // KEY ACCESS & USER KEYS
-        // =========================================================================
+        // KEY ACCESS & USER KEYS (preserved)
         function updateKeyAccessLogs(){ let container=document.getElementById('keyAccessLogsContainer'); if(!container) return; db.collection('key_access_logs').orderBy('timestamp','desc').limit(50).onSnapshot(snap=>{ let html=''; snap.forEach(doc=>{ let log=doc.data(); let statusClass=log.success?'success':'failed'; let user=allUsersData.find(u=>u.uid===log.userId)||{email:'Unknown'}; html+=`<div class="key-access-card ${statusClass}"><div class="key-access-header"><div><span class="key-access-user">${log.userName}</span><div style="font-size:11px;">${user.email}</div></div><span class="key-access-status ${statusClass}">${log.success?'SUCCESS':'FAILED'}</span></div><div>Key: <strong>${log.keyCode}</strong></div><div>Tool: ${log.toolName}</div><div style="font-size:11px;">${new Date(log.timestamp).toLocaleString()}</div></div>`; }); container.innerHTML=html||'<div style="text-align:center;padding:30px;">No logs</div>'; }); }
         function clearKeyAccessLogs(){ if(confirm("Clear all key access logs?")){ db.collection('key_access_logs').get().then(snap=>{ let batch=db.batch(); snap.forEach(doc=>batch.delete(doc.ref)); batch.commit(); }); } }
-        
         function updateUserKeysSummary(){ db.collection('vip_keys').onSnapshot(snap=>{ let keys=[]; snap.forEach(doc=>keys.push(doc.data())); let totalKeys=keys.length; let now=Date.now(); let activeKeys=keys.filter(k=>k.expiresAt==='Lifetime'||(k.expiresAt&&k.expiresAt>now)).length; let expiredKeys=totalKeys-activeKeys; let userKeys={}; keys.forEach(key=>{ if(key.ownerUid){ if(!userKeys[key.ownerUid]) userKeys[key.ownerUid]={total:0,active:0,expired:0,userName:key.userName||'Unknown',logs:[]}; userKeys[key.ownerUid].total++; userKeys[key.ownerUid].logs.push(key); if(key.expiresAt==='Lifetime'||(key.expiresAt&&key.expiresAt>now)) userKeys[key.ownerUid].active++; else userKeys[key.ownerUid].expired++; } }); document.getElementById('totalKeysStat').innerText=totalKeys; document.getElementById('activeKeysStat').innerText=activeKeys; document.getElementById('expiredKeysStat').innerText=expiredKeys; document.getElementById('usersWithKeysStat').innerText=Object.keys(userKeys).length; let tbody=document.getElementById('userKeysSummaryBody'); tbody.innerHTML=''; Object.keys(userKeys).forEach(uid=>{ let uk=userKeys[uid]; let user=allUsersData.find(u=>u.uid===uid)||{}; let logsHtml=''; uk.logs.forEach(k=>{ let kstat=(k.expiresAt==='Lifetime'||k.expiresAt>now)?'<span style="color:var(--success);">ACTIVE</span>':'<span style="color:var(--alert);">EXPIRED</span>'; logsHtml+=`<div>${k.code} - ${kstat}</div>`; }); tbody.innerHTML+=`<tr><td><strong>${uk.userName}</strong></td><td>${user.email||'N/A'}</td><td>${uk.total}</td><td style="color:var(--success);">${uk.active}</td><td style="color:var(--alert);">${uk.expired}</td><td style="max-width:200px; background:#000; padding:5px;">${logsHtml}</td></tr>`; }); }); }
-        
         function loadKeys(){ db.collection('vip_keys').orderBy('createdAt','desc').onSnapshot(snap=>{ let tbody=document.getElementById('keyListBody'); tbody.innerHTML=''; snap.forEach(doc=>{ let d=doc.data(); let now=Date.now(); let isExpired=d.expiresAt!=='Lifetime'&&now>d.expiresAt; let expText=isExpired?'EXPIRED':'ACTIVE'; tbody.innerHTML+=`<tr><td><strong>${d.userName}</strong></td><td style="color:var(--gold);font-family:monospace;">${d.code}</td><td>${d.toolName}</td><td style="color:${isExpired?'var(--alert)':'var(--success)'};">${expText}</td><td><button class="btn-sm btn-delete" onclick="deleteItem('vip_keys','${doc.id}')">DELETE</button></td></tr>`; }); populateKeyToolSelect(); updateUserKeysSummary(); }); }
         function populateKeyToolSelect(){ let sel=document.getElementById('keyToolId'); if(!sel) return; sel.innerHTML='<option value="ALL">ALL VIP TOOLS BUNDLE</option>'; Object.keys(allVipToolsData).forEach(id=>{ sel.innerHTML+=`<option value="${id}">${allVipToolsData[id].title}</option>`; }); }
         function generateKey(){ let userName=document.getElementById('keyUserName').value||"Anonymous"; let toolId=document.getElementById('keyToolId').value; let toolName=toolId==='ALL'?'ALL TOOLS BUNDLE':(allVipToolsData[toolId]?.title||'VIP Tool'); let code=document.getElementById('keyCustom').value; if(!code) code="MH-"+Math.random().toString(36).substr(2,8).toUpperCase(); let val=parseInt(document.getElementById('keyDurationVal').value); let type=document.getElementById('keyDurationType').value; let now=Date.now(); let expiresAt=now; if(type==='days') expiresAt+=val*86400000; else if(type==='months') expiresAt+=val*30*86400000; else if(type==='years') expiresAt+=val*365*86400000; else expiresAt='Lifetime'; db.collection('vip_keys').add({code,userName,toolId,toolName,duration:`${val} ${type}`,createdAt:now,expiresAt,generatedBy:'Admin'}).then(()=>{ alert(`Key Generated Successfully: ${code}`); document.getElementById('keyUserName').value=''; document.getElementById('keyCustom').value=''; }); }
-
+        
         // =========================================================================
-        // PAYMENTS
-        // =========================================================================
+        // PAYMENTS (preserved)
         function loadProofs(){ 
             db.collection('payment_proofs').orderBy('timestamp','desc').onSnapshot(snap=>{ 
                 let gallery=document.getElementById('proofGallery'); gallery.innerHTML=''; let pendingCount=0; 
@@ -1967,7 +1948,6 @@
         function deletePaymentProof(id){ if(confirm("Delete payment proof permanently?")) db.collection('payment_proofs').doc(id).delete(); }
         function openPaymentModal(docId){ db.collection('payment_proofs').doc(docId).get().then(doc=>{ if(!doc.exists) return; let d=doc.data(); document.getElementById('pmUser').innerText=d.userName||'Unknown'; document.getElementById('pmTool').innerText=d.toolName||'N/A'; document.getElementById('pmHack').innerText=d.userHackName||'N/A'; document.getElementById('pmMethod').innerText=d.paymentMethod||'Manual'; document.getElementById('pmDocId').value=docId; document.getElementById('pmUid').value=d.userId||''; document.getElementById('pmToolId').value=d.toolId||''; document.getElementById('paymentModal').style.display='flex'; }); }
         function closePaymentModal(){ document.getElementById('paymentModal').style.display='none'; }
-        
         async function approvePayment(){ 
             let docId=document.getElementById('pmDocId').value; let uid=document.getElementById('pmUid').value; let toolId=document.getElementById('pmToolId').value; let price=document.getElementById('pmPrice').value; let durVal=parseInt(document.getElementById('pmDurVal').value); let durType=document.getElementById('pmDurType').value; 
             let expiresAt='Lifetime'; 
@@ -1982,7 +1962,6 @@
                 closePaymentModal(); playAdminAlert(); logActivity('PAYMENT','Admin',`Approved payment for ${paymentData.userName}`);
             }catch(e){ alert("Error: "+e.message); } 
         }
-        
         async function rejectPayment(){ 
             let docId=document.getElementById('pmDocId').value; let uid=document.getElementById('pmUid').value; 
             try{ 
@@ -1993,36 +1972,31 @@
                 closePaymentModal(); 
             }catch(e){ alert("Error: "+e.message); } 
         }
-
+        
         // =========================================================================
-        // REPORTS
-        // =========================================================================
+        // REPORTS (preserved)
         function loadUserReports(){ db.collection('user_reports').orderBy('timestamp','desc').onSnapshot(snap=>{ let tbody=document.getElementById('reportsListBody'); tbody.innerHTML=''; let pendingCount=0; snap.forEach(doc=>{ let d=doc.data(); if(d.status==='Pending') pendingCount++; let tColor=d.type==='Bug Report'?'var(--alert)':'var(--success)'; let sColor=d.status==='Pending'?'var(--pending)':(d.status==='Approved'?'var(--success)':'var(--alert)'); tbody.innerHTML+=`<tr><td><strong style="color:${tColor};">${d.type}</strong><br><span style="color:${sColor};">${d.status}</span></td><td><strong>${d.title}</strong><br>${d.desc}</td><td>${d.name}<br>${d.email}</td><td>${new Date(d.timestamp).toLocaleString()}</td><td>${d.status==='Pending'?`<button class="btn-sm" style="background:var(--success);color:black;" onclick="updateReportStatus('${doc.id}','Approved')">APPROVE</button><button class="btn-sm btn-delete" onclick="updateReportStatus('${doc.id}','Rejected')">REJECT</button>`:''}<button class="btn-sm btn-delete" onclick="deleteItem('user_reports','${doc.id}')">DELETE</button></td></tr>`; }); document.getElementById('st-unread-reps').innerText=pendingCount; let badge=document.getElementById('badgeReports'); if(pendingCount>0){ badge.style.display='block'; badge.innerText=pendingCount; }else{ badge.style.display='none'; } }); }
         function updateReportStatus(id,newStatus){ db.collection('user_reports').doc(id).update({status:newStatus}); }
         function clearAllUserReports(){ if(confirm("Delete all reports?")){ db.collection('user_reports').get().then(snap=>{ let batch=db.batch(); snap.forEach(doc=>batch.delete(doc.ref)); batch.commit(); }); } }
-
+        
         // =========================================================================
-        // ADVANCED LIVE CHAT
-        // =========================================================================
+        // ADVANCED LIVE CHAT (preserved)
         function loadGlobalChatStats(){ db.collection('chats').onSnapshot(snap=>{ let unread=0; snap.forEach(doc=>{ let data=doc.data(); let dot=document.getElementById('cdot-'+doc.id); if(data.readByAdmin===false){ unread++; if(dot) dot.style.display='block'; }else{ if(dot) dot.style.display='none'; } }); document.getElementById('st-unread-chats').innerText=unread; let badge=document.getElementById('badgeChats'); if(unread>0){ badge.style.display='block'; badge.innerText=unread; }else{ badge.style.display='none'; } }); }
         function openChat(uid,name){ selectedChatUser=uid; document.querySelectorAll('.chat-user-item').forEach(el=>el.classList.remove('active')); let cItem=document.getElementById('citem-'+uid); if(cItem) cItem.classList.add('active'); let chatBox=document.getElementById('adminChatBox'); chatBox.innerHTML='<div style="text-align:center;color:#888;">Loading Secure Connection...</div>'; document.getElementById('adminChatInputArea').style.display='flex'; db.collection('chats').doc(uid).set({readByAdmin:true},{merge:true}); if(chatUnsubscribe) chatUnsubscribe(); chatUnsubscribe=db.collection('chats').doc(uid).collection('messages').orderBy('time','asc').onSnapshot(snap=>{ chatBox.innerHTML=''; if(snap.empty){ chatBox.innerHTML='<div style="text-align:center;color:#555;">No messages yet.</div>'; return; } snap.forEach(doc=>{ let m=doc.data(); let isAdmin=m.sender==='admin'; let extClass=m.isAutoReply?'system':(isAdmin?'admin':'user'); chatBox.innerHTML+=`<div class="chat-msg ${extClass}">${m.text}</div>`; }); chatBox.scrollTop=chatBox.scrollHeight; db.collection('chats').doc(uid).set({readByAdmin:true},{merge:true}); }); }
         function sendAdminMessage(){ if(!selectedChatUser) return; let text=document.getElementById('adminChatInput').value.trim(); if(!text) return; db.collection('chats').doc(selectedChatUser).collection('messages').add({text,sender:'admin',time:Date.now()}).then(()=>{ document.getElementById('adminChatInput').value=''; }); }
-
+        
         // =========================================================================
-        // NOTIFICATIONS
-        // =========================================================================
+        // NOTIFICATIONS (preserved)
         function sendNotification(){ let target=document.getElementById('notifTarget').value; let title=document.getElementById('notifTitle').value; let body=document.getElementById('notifBody').value; if(!title||!body) return alert("Title and Body required"); db.collection('notifications').add({target,title,body,timestamp:Date.now()}).then(()=>{ alert("Notification Sent Successfully!"); document.getElementById('notifTitle').value=''; document.getElementById('notifBody').value=''; logActivity('NOTIF','Admin',`Broadcasted: ${title}`); }); }
         function loadAdminNotifs(){ db.collection('notifications').orderBy('timestamp','desc').onSnapshot(snap=>{ let tbody=document.getElementById('sentNotifsList'); tbody.innerHTML=''; snap.forEach(doc=>{ let d=doc.data(); let targetName=d.target==='ALL'?"BROADCAST":(allUsersData.find(u=>u.uid===d.target)?.name||d.target); tbody.innerHTML+=`<tr><td><strong>${d.title}</strong></td><td>${d.body}</td><td><span style="color:var(--cyan);">${targetName}</span></td><td>${new Date(d.timestamp).toLocaleString()}</td><td><button class="btn-sm btn-delete" onclick="deleteItem('notifications','${doc.id}')">DELETE</button></td></tr>`; }); }); }
-
+        
         // =========================================================================
-        // DAILY NEWS
-        // =========================================================================
+        // DAILY NEWS (preserved)
         function addDailyNews(){ let title=document.getElementById('newsTitle').value; let desc=document.getElementById('newsDesc').value; let img=document.getElementById('newsImg').value; let ratio=document.getElementById('newsRatio').value; if(!title||!img) return alert("Title and Image required"); db.collection('daily_news').add({title,desc,image:img,ratio,timestamp:Date.now()}).then(()=>{ alert("News Published to Website!"); document.getElementById('newsTitle').value=''; document.getElementById('newsDesc').value=''; document.getElementById('newsImg').value=''; }); }
         function loadDailyNews(){ db.collection('daily_news').orderBy('timestamp','desc').onSnapshot(snap=>{ let tbody=document.getElementById('newsListBody'); tbody.innerHTML=''; snap.forEach(doc=>{ let d=doc.data(); let ratText=d.ratio==='16/9'?'Landscape':(d.ratio==='9/16'?'Portrait':'Square'); tbody.innerHTML+=`<tr><td><img src="${d.image}" style="width:80px;height:50px;border-radius:4px;object-fit:cover;border:1px solid var(--cyan);"></td><td><strong>${d.title}</strong><br><span style="color:#aaa;font-size:12px;">${d.desc}</span></td><td><span style="color:var(--gold);">${ratText}</span></td><td><button class="btn-sm btn-delete" onclick="deleteItem('daily_news','${doc.id}')">DELETE</button></td></tr>`; }); }); }
-
+        
         // =========================================================================
-        // BUG FIX SYSTEM
-        // =========================================================================
+        // BUG FIX SYSTEM (preserved)
         function loadBugFixSystem(){ let bugFixList=document.getElementById('bugFixList'); bugFixList.innerHTML=`<div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Chat System Nodes</span><span class="bug-fix-status" style="background:rgba(255,0,0,0.2);color:red;">Critical</span></div><div class="bug-fix-desc">Fix live chat connection issues and sync delays</div><button class="fix-now-btn" onclick="fixChatSystem()">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Push Notifications DB</span><span class="bug-fix-status" style="background:rgba(255,153,0,0.2);color:orange;">High</span></div><div class="bug-fix-desc">Fix notification delivery system routing</div><button class="fix-now-btn" onclick="fixPushNotifications()">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Wallet Balance Sync</span><span class="bug-fix-status" style="background:rgba(255,153,0,0.2);color:orange;">High</span></div><div class="bug-fix-desc">Fix wallet balance cache update errors</div><button class="fix-now-btn" onclick="fixWalletSystem()">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Referral Algorithms</span><span class="bug-fix-status" style="background:rgba(0,255,0,0.2);color:#0f0;">Medium</span></div><div class="bug-fix-desc">Recalculate referral bonus distribution trees</div><button class="fix-now-btn" onclick="fixReferralSystem()">FIX NOW</button></div>`; }
         function fixAllIssues(){ alert("Running Core Diagnostics..."); fixChatSystem(); fixPushNotifications(); fixWalletSystem(); fixReferralSystem(); setTimeout(()=>{ alert("All Database Issues Fixed!"); scanForWebsiteIssues(); },2000); }
         function fixChatSystem(){ addAlert('Chat System Fixed','Live chat nodes repaired','fixed','success'); }
@@ -2031,10 +2005,9 @@
         function fixReferralSystem(){ addAlert('Referral System Fixed','Tree algorithms updated','fixed','success'); }
         function optimizeWebsite(){ addAlert('Website Optimized','Firebase index performance improved','fixed','success'); }
         function repairDatabase(){ addAlert('Database Repaired','Corrupted JSON nodes fixed','fixed','success'); }
-
+        
         // =========================================================================
-        // WEBSITE ALERT SYSTEM
-        // =========================================================================
+        // WEBSITE ALERT SYSTEM (preserved)
         function startAlertMonitoring(){ setInterval(scanForWebsiteIssues,30000); scanForWebsiteIssues(); }
         function scanForWebsiteIssues(){ 
             websiteAlerts=[]; 
@@ -2068,10 +2041,9 @@
         function dismissAlert(index){ websiteAlerts.splice(index,1); displayAlerts(); }
         function fixAllAlerts(){ websiteAlerts.forEach(alert=>{ if(alert.fix) alert.fix(); }); websiteAlerts=[]; displayAlerts(); alert('All automated alerts processed!'); }
         function addAlert(title,description,severity,solution){ websiteAlerts.push({id:'manual_'+Date.now(),title,description,severity:severity||'Low',solution:solution||'Applied',fix:()=>{}}); displayAlerts(); playAdminAlert(); }
-
+        
         // =========================================================================
-        // EARN MANAGEMENT
-        // =========================================================================
+        // EARN MANAGEMENT (preserved)
         async function adminAddFundsToUser(){ 
             let uid=document.getElementById('fundUserId').value; let amount=parseInt(document.getElementById('fundAmount').value); let note=document.getElementById('fundNote').value||"Admin Bonus"; 
             if(!uid) return alert("Select user"); if(!amount||amount<=0) return alert("Valid amount required"); 
@@ -2099,7 +2071,6 @@
                 document.getElementById('totalEarnedAll').innerText=`PKR ${totalEarned.toLocaleString()}`; 
                 document.getElementById('totalReferralsAll').innerText=totalReferrals.toLocaleString(); 
             }); 
-            
             db.collection('admin_money_requests').orderBy('timestamp','desc').onSnapshot(snap=>{ 
                 let list=document.getElementById('moneyRequestsList'); list.innerHTML=''; moneyRequestCount=0; 
                 snap.forEach(doc=>{ 
@@ -2110,7 +2081,6 @@
                 }); 
                 document.getElementById('st-money-requests').innerText=moneyRequestCount; 
             }); 
-            
             db.collection('referrals').orderBy('timestamp','desc').limit(50).onSnapshot(snap=>{ let tbody=document.getElementById('allReferralsList'); tbody.innerHTML=''; snap.forEach(doc=>{ let d=doc.data(); let referrer=allUsersData.find(u=>u.uid===d.referrerUid)||{name:'Unknown'}; tbody.innerHTML+=`<tr><td><strong style="color:var(--cyan);">${referrer.name}</strong></td><td>${d.referredName}</td><td>${new Date(d.timestamp).toLocaleDateString()}</td><td style="color:var(--success);">+PKR ${d.amount}</td><td><span style="color:var(--success);">Completed</span></td></tr>`; }); }); 
             db.collection('checkins').orderBy('timestamp','desc').limit(50).onSnapshot(snap=>{ let tbody=document.getElementById('allCheckinsList'); tbody.innerHTML=''; snap.forEach(doc=>{ let d=doc.data(); let user=allUsersData.find(u=>u.uid===d.userId)||{name:'Unknown'}; tbody.innerHTML+=`<tr><td><strong style="color:var(--cyan);">${user.name}</strong></td><td>${new Date(d.timestamp).toLocaleDateString()}</td><td>${new Date(d.timestamp).toLocaleTimeString()}</td><td style="color:var(--success);">+PKR ${d.amount}</td></tr>`; }); }); 
             db.collection('transactions').orderBy('timestamp','desc').limit(50).onSnapshot(snap=>{ let tbody=document.getElementById('allTransactionsList'); tbody.innerHTML=''; snap.forEach(doc=>{ let d=doc.data(); let user=allUsersData.find(u=>u.uid===d.userId)||{name:'Unknown'}; let typeColor=d.type==='send'?'var(--alert)':'var(--success)'; tbody.innerHTML+=`<tr><td><strong>${user.name}</strong></td><td><span style="color:${typeColor};text-transform:uppercase;font-weight:bold;font-size:11px;">${d.type}</span></td><td style="color:${typeColor};font-weight:bold;">${d.type==='send'?'-':'+'}PKR ${d.amount}</td><td>${d.description||'-'}</td><td style="font-size:12px;color:#888;">${new Date(d.timestamp).toLocaleString()}</td><td><span style="color:${d.status==='completed'?'var(--success)':(d.status==='rejected'?'var(--alert)':'var(--pending)')};text-transform:uppercase;font-weight:bold;font-size:11px;">${d.status}</span></td></tr>`; }); }); 
@@ -2138,10 +2108,9 @@
             await db.collection('notifications').add({target:uid,title:'❌ Request Rejected',body:`Your request of PKR ${data.amount} was rejected. Coins refunded to wallet.`,timestamp:Date.now()}); 
             alert("Request Rejected and amount refunded to user wallet!"); closeMoneyRequestModal(); 
         }
-
+        
         // =========================================================================
-        // UNREAD HUB SYNC
-        // =========================================================================
+        // UNREAD HUB SYNC (preserved)
         function loadUnreadCenter(){ 
             let container=document.getElementById('unreadHubContainer'); 
             db.collection('payment_proofs').where('status','==','Pending').onSnapshot(snap1=>{ 
@@ -2162,10 +2131,9 @@
                 }); 
             }); 
         }
-
+        
         // =========================================================================
-        // BACKGROUND ANIMATION GENERATOR (PRESERVED)
-        // =========================================================================
+        // BACKGROUND ANIMATION GENERATOR (preserved)
         function bgResize(){ bgWidth=window.innerWidth; bgHeight=window.innerHeight; bgCanvas.width=bgWidth; bgCanvas.height=bgHeight; }
         function bgInitParticles(){ bgParticles=[]; let count=100; switch(bgCurrentAnimation){ case 'neural': count=80; break; case 'warp': count=400; break; case 'galaxy': count=600; break; case 'cyber': count=50; break; case 'matrix': count=500; break; default: count=80; } for(let i=0;i<count;i++){ bgParticles.push({x:Math.random()*bgWidth,y:Math.random()*bgHeight,vx:(Math.random()-0.5)*2,vy:(Math.random()-0.5)*2,size:Math.random()*3+1,angle:Math.random()*Math.PI*2}); } }
         function bgDraw(timestamp){ 
@@ -2204,24 +2172,20 @@
         (function initParticles(){ let canvas=document.getElementById('particles-bg'); if(!canvas) return; let ctx=canvas.getContext('2d'); let width,height,particles=[]; function resize(){ width=window.innerWidth; height=window.innerHeight; canvas.width=width; canvas.height=height; } function createParticles(){ particles=[]; for(let i=0;i<50;i++){ particles.push({x:Math.random()*width,y:Math.random()*height,radius:Math.random()*3+1,speedX:(Math.random()-0.5)*2,speedY:(Math.random()-0.5)*2,color:`rgba(0,242,255,${Math.random()*0.5+0.2})`}); } } function animate(){ ctx.clearRect(0,0,width,height); particles.forEach(p=>{ p.x+=p.speedX; p.y+=p.speedY; if(p.x<0||p.x>width) p.speedX*=-1; if(p.y<0||p.y>height) p.speedY*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2); ctx.fillStyle=p.color; ctx.fill(); }); requestAnimationFrame(animate); } window.addEventListener('resize',()=>{ resize(); createParticles(); }); resize(); createParticles(); animate(); })();
         
         // =========================================================================
-        // MASTER THEME SELECTOR
-        // =========================================================================
+        // MASTER THEME SELECTOR (preserved)
         let currentThemeConfig={name:"Cyber Cyan",primary:"#00f2ff",bg:"#000000",panel:"#0a0a0a",dark:"#004d66"};
         function updateThemeUI(themeName){ let root=document.documentElement; root.style.setProperty('--cyan',currentThemeConfig.primary); root.style.setProperty('--dark-cyan',currentThemeConfig.dark); root.style.setProperty('--bg',currentThemeConfig.bg); root.style.setProperty('--panel',currentThemeConfig.panel); document.querySelectorAll('.theme-card').forEach(card=>card.classList.remove('active-theme')); let cards=document.querySelectorAll('.theme-card'); for(let card of cards){ if(card.innerText.includes(themeName)) card.classList.add('active-theme'); } }
         function setTheme(name,primary,bg,panel,dark,el){ currentThemeConfig={name,primary,bg,panel,dark}; updateThemeUI(name); document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('active-theme')); if(el) el.classList.add('active-theme'); }
         
         // =========================================================================
-        // GLOBAL AUDIO UPLOAD
-        // =========================================================================
+        // GLOBAL AUDIO UPLOAD (preserved)
         async function uploadAudio(type){ let fileInput=type==='notif'?document.getElementById('fileNotifSnd'):(type==='chat'?document.getElementById('fileChatSnd'):document.getElementById('fileAdminAlertSnd')); let linkInput=type==='notif'?document.getElementById('linkNotifSnd'):(type==='chat'?document.getElementById('linkChatSnd'):document.getElementById('linkAdminSnd')); let file=fileInput.files[0]; let url=linkInput.value; if(file){ let storageRef=storage.ref(`audio/${type}_${Date.now()}_${file.name}`); let uploadTask=storageRef.put(file); uploadTask.on('state_changed',null,null,async()=>{ url=await storageRef.getDownloadURL(); await db.collection('app_settings').doc('main').set({[`${type}Sound`]:url},{merge:true}); alert(`${type} audio uploaded and applied to website!`); }); }else if(url){ await db.collection('app_settings').doc('main').set({[`${type}Sound`]:url},{merge:true}); alert(`${type} audio URL saved and applied!`); }else{ alert("Select an audio file or enter a valid URL"); } }
         function testNotificationSound(){ let audio=document.getElementById('testNotificationAudio'); audio.src=document.getElementById('linkNotifSnd').value||"https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"; audio.play(); }
         function testChatSound(){ let audio=document.getElementById('testChatAudio'); audio.src=document.getElementById('linkChatSnd').value||"https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"; audio.play(); }
         function testAdminAlert(){ let audio=document.getElementById('adminAlertAudio'); audio.src=document.getElementById('linkAdminSnd').value||"https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"; audio.play(); }
         
         generateRandomText();
-        console.log("MH ADMIN PANEL V14.0 - FULLY UPGRADED - ALL 125+ FEATURES WORKING & CONNECTED TO FIREBASE");
-        console.log("PAYMENT SYSTEM: REAL-TIME LISTENER ACTIVE - PROOFS WILL APPEAR INSTANTLY");
-        console.log("NEW FEATURES: TIKTOK STYLE ANALYST, LIVE DIALOG EDITOR, & ADMIN UNREAD HUB DEPLOYED");
+        console.log("MH ADMIN PANEL V14.0 - FULLY UPGRADED - REAL ANALYTICS + DYNAMIC TOOLKIT BUTTONS + ALL FEATURES INTACT");
     </script>
 </body>
 </html>
