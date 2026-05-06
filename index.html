@@ -1138,7 +1138,7 @@
     </div>
 
     <script>
-        // ========== Firebase Config ==========
+        // 🔒 IMPORTANT: Restrict Firebase API key usage in Firebase console to prevent unauthorized access.
         const firebaseConfig = { 
             apiKey: "AIzaSyBiDFZ4SiW6UJlnG7o6tmXl967GkrPSRmg", 
             authDomain: "mh-hacks-toolkit.firebaseapp.com", 
@@ -1164,6 +1164,7 @@
         let payCount = 0;
         let moneyRequestCount = 0;
         let stats = { free: 0, vip: 0 };
+        let authBootInterval = null; // to prevent multiple intervals
         
         let CHECKIN_AMOUNT = 5;
         let REFERRAL_AMOUNT = 10;
@@ -1276,29 +1277,29 @@
                     let remaining = Math.max(0, 2000 - elapsed);
                     setTimeout(() => {
                         window.bootComplete = true;
-                        // hide splash immediately after checkAuth will handle
                     }, remaining);
-                    // but checkAuth runs later, we need to ensure splash hidden only when bootComplete true
                 }
             }, 30);
         };
         
         function checkAuth() { 
             auth.onAuthStateChanged(user => { 
+                // Clean up any existing boot interval
+                if (authBootInterval) { clearInterval(authBootInterval); authBootInterval = null; }
                 if(window.bootComplete) {
                     document.getElementById('splash').style.display = 'none'; 
+                    proceedAfterSplash(user);
                 } else {
                     // wait until bootComplete
-                    let waitInterval = setInterval(() => {
+                    authBootInterval = setInterval(() => {
                         if(window.bootComplete) {
-                            clearInterval(waitInterval);
+                            clearInterval(authBootInterval);
+                            authBootInterval = null;
                             document.getElementById('splash').style.display = 'none'; 
                             proceedAfterSplash(user);
                         }
                     }, 50);
-                    return;
                 }
-                proceedAfterSplash(user);
             }); 
         }
         
@@ -1674,9 +1675,26 @@
                         timerEl.innerText = `Auto-close in ${secondsLeft} seconds...`;
                     }
                 }, 1000);
-                document.querySelector('.admin-unread-card').onmouseover = () => {
-                    if(adminUnreadTimer) { clearInterval(adminUnreadTimer); adminUnreadTimer = null; timerEl.innerText = `Timer paused.`; }
-                };
+                const adminCard = document.querySelector('.admin-unread-card');
+                if (adminCard) {
+                    adminCard.onmouseover = () => {
+                        if(adminUnreadTimer) { clearInterval(adminUnreadTimer); adminUnreadTimer = null; timerEl.innerText = `Timer paused.`; }
+                    };
+                    adminCard.onmouseleave = () => {
+                        if(!adminUnreadTimer) {
+                            adminUnreadTimer = setInterval(() => {
+                                secondsLeft--;
+                                if(secondsLeft <= 0) {
+                                    clearInterval(adminUnreadTimer);
+                                    adminUnreadTimer = null;
+                                    closeAdminUnreadModal(true);
+                                } else {
+                                    timerEl.innerText = `Auto-close in ${secondsLeft} seconds...`;
+                                }
+                            }, 1000);
+                        }
+                    };
+                }
             } catch(e) { console.error("Admin unread error:", e); }
         }
         
@@ -2151,11 +2169,16 @@
         function loadVipDirectLogs() { db.collection('vip_direct_access').orderBy('timestamp','desc').onSnapshot(snap => { let tbody = document.getElementById('vipDirectListBody'); tbody.innerHTML = ''; snap.forEach(doc => { let d = doc.data(); tbody.innerHTML += `<tr><td><strong>${d.userName}</strong></td><td style="color:var(--gold);">${d.toolName}</td><td style="font-family:monospace;">${d.accessKey}</td><td>${d.duration}</td><td><button class="btn-sm btn-delete" onclick="deleteItem('vip_direct_access','${doc.id}')">DELETE</button></td></tr>`; }); }, err => console.error("VIP direct logs snapshot error:", err)); }
         
         // =========================================================================
-        // EMAIL BULK MAILER (preserved + scheduled, H1 fix)
+        // EMAIL BULK MAILER (preserved + scheduled, H1 fix) + emailjs safety
+        // =========================================================================
         function loadAllUserEmails() { let emails = allUsersData.map(u => u.email).filter(e => e && e.includes('@')); document.getElementById('mailerReceiverEmails').value = emails.join(', '); alert(`Loaded ${emails.length} verified emails`); }
-        emailjs.init("4RqXhwyNixdqwQNUT"); 
+        // Initialize EmailJS with error handling
+        if (typeof emailjs !== 'undefined') {
+            try { emailjs.init("4RqXhwyNixdqwQNUT"); } catch(e) { console.warn("EmailJS init failed:", e); }
+        } else { console.warn("EmailJS library not loaded – email features disabled."); }
         document.getElementById('adminEmailForm')?.addEventListener('submit', async function(e) { 
             e.preventDefault(); 
+            if (typeof emailjs === 'undefined') { alert("Email service not available."); return; }
             let sendBtn = document.querySelector('.email-btn'); let statusDiv = document.getElementById('emailStatus'); let rawEmails = document.getElementById('mailerReceiverEmails').value; let subject = document.getElementById('mailerSubject').value.trim(); let message = document.getElementById('mailerMessage').value.trim(); 
             let emailList = rawEmails.split(',').map(e => e.trim()).filter(e => e !== ""); 
             if(emailList.length === 0) { statusDiv.innerHTML = "❌ No valid emails"; statusDiv.className = "email-error"; return; } 
@@ -2205,6 +2228,7 @@
         }
 
         async function sendSingleScheduled(id) {
+            if (typeof emailjs === 'undefined') { alert("Email service not available."); return; }
             const doc = await db.collection('scheduled_emails').doc(id).get().catch(err => alert("Fetch failed: "+err.message));
             if(!doc || !doc.exists) return;
             const d = doc.data();
@@ -2225,6 +2249,7 @@
         }
 
         async function sendScheduledEmails() {
+            if (typeof emailjs === 'undefined') { alert("Email service not available."); return; }
             const snap = await db.collection('scheduled_emails').where('status','==','scheduled').where('scheduledAt','<=',Date.now()).get().catch(err => alert("Fetch failed: "+err.message));
             if(!snap || snap.empty) return alert('No pending scheduled emails');
             for(let doc of snap.docs) {
@@ -2626,6 +2651,9 @@
         function testAdminAlert() { let audio = document.getElementById('adminAlertAudio'); audio.src = document.getElementById('linkAdminSnd').value || "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"; audio.play().catch(e => {}); }
         
         console.log("MH ADMIN PANEL V15.0 - FULLY UPGRADED - ALL SYSTEMS REALTIME");
+        
+        // ========== CRITICAL FIX: Actually call checkAuth to start the auth observer ==========
+        checkAuth();
     </script>
 </body>
 </html>
