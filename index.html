@@ -121,13 +121,22 @@
         @keyframes chartGrow { from { height: 0; opacity: 0.5; } to { opacity: 1; } }
         @keyframes btnPulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); box-shadow: 0 0 25px var(--cyan); } 100% { transform: scale(1); } }
         @keyframes glassReveal { 0% { opacity:0; transform: scale(0.95); } 100% { opacity:1; transform: scale(1); } }
+        @keyframes slideInRight { from { opacity:0; transform: translateX(100px); } to { opacity:1; transform: translateX(0); } }
+        @keyframes floating { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes wave { 0% { height: 5px; } 50% { height: 20px; } 100% { height: 5px; } }
+        @keyframes spinCoin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
 
         /* PREMIUM BUTTONS & INPUTS */
         .btn {
             padding: 12px 25px; border-radius: 8px; border: none; cursor: pointer;
             font-weight: 800; transition: 0.3s; text-transform: uppercase;
             font-family: 'Rajdhani', sans-serif; letter-spacing: 1.5px; font-size:15px;
+            position: relative; overflow: hidden;
         }
+        .btn::after {
+            content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(255,255,255,0.3); transform: translate(-50%,-50%); transition: width 0.6s, height 0.6s;
+        }
+        .btn:active::after { width: 300px; height: 300px; }
         .btn-cyan { background: linear-gradient(90deg, var(--dark-cyan), var(--cyan)); color: black; box-shadow: var(--glow); border: 1px solid var(--cyan); }
         .btn-cyan:hover { background: var(--cyan); color: black; box-shadow: 0 0 30px var(--cyan); transform: scale(1.02); animation: btnPulse 0.5s ease; }
         .btn-success { background: linear-gradient(90deg, #004d00, var(--success)); color: black; box-shadow: 0 0 20px rgba(0,255,0,0.3); }
@@ -137,6 +146,8 @@
         .btn-icon:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 10px rgba(0,242,255,0.3); transform: scale(1.05); }
         .btn-delete { background: #001a22; border: 1px solid var(--cyan); color: var(--cyan); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-delete:hover { background: var(--cyan); color: black; box-shadow: 0 0 15px var(--cyan); }
+        .btn.loading { pointer-events: none; opacity: 0.7; }
+        .btn.loading::before { content: ''; display: inline-block; width: 16px; height: 16px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 8px; vertical-align: middle; }
 
         input, select, textarea {
             width: 100%; background: #050505; border: 1px solid #222; border-radius:8px;
@@ -237,9 +248,10 @@
         .item-img { width: 70px; height: 70px; object-fit: cover; border: 2px solid #222; border-radius: 50%; transition:0.3s; }
         .item-card:hover .item-img { border-color:var(--cyan); box-shadow:0 0 10px var(--cyan); }
 
-        /* MODALS (GENERAL) */
+        /* MODALS (GENERAL) - Enhanced */
         .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:99999; display:none; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
-        .modal-box { background:#0a0a0a; border:1px solid var(--cyan); padding:40px; border-radius:20px; width:90%; max-width:550px; position:relative; box-shadow:0 0 30px rgba(0,242,255,0.3); max-height: 90vh; overflow-y: auto; }
+        .modal-box { background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); border: 1px solid var(--cyan); border-radius: 20px; padding: 40px; width: 90%; max-width: 550px; position: relative; box-shadow: 0 0 40px rgba(0,242,255,0.4); max-height: 90vh; overflow-y: auto; }
+        .modal-box h2 { color: var(--cyan); font-family: 'Rajdhani'; font-size: 28px; font-weight: 900; margin-bottom: 15px; }
 
         /* ADMIN UNREAD SUMMARY MODAL - PREMIUM PULSING DESIGN */
         #adminUnreadModal { display:none; }
@@ -277,7 +289,9 @@
             border-radius: 12px;
             padding: 20px;
             text-align: center;
+            transition: 0.3s;
         }
+        .analyst-box:hover { border-color: var(--cyan); box-shadow: 0 0 15px rgba(0,242,255,0.2); }
         .analyst-box .label {
             font-size: 14px;
             color: #aaa;
@@ -470,6 +484,28 @@
         .color-btn.active, .animation-btn.active, .theme-card.active-theme { border-color: var(--cyan); box-shadow: 0 0 12px var(--cyan); background: var(--cyan); color: black; }
         .alert-card { background: #1a0000; border-left: 4px solid var(--alert); padding: 15px; width: 100%; margin-bottom: 15px; border-radius: 8px; }
         .alert-fix-btn { background: var(--success); color: black; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; margin-right: 10px; }
+        
+        /* New UI enhancements */
+        .audio-card { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px; margin-bottom: 25px; transition: 0.3s; position: relative; }
+        .audio-card:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,242,255,0.3); }
+        .audio-card.notif { border-left: 4px solid var(--cyan); }
+        .audio-card.chat { border-left: 4px solid var(--success); }
+        .audio-card.admin { border-left: 4px solid var(--gold); }
+        .audio-wave { display: flex; align-items: flex-end; gap: 3px; height: 30px; margin-left: 15px; }
+        .audio-wave .bar { width: 4px; background: var(--cyan); border-radius: 2px; animation: wave 1s infinite ease-in-out; }
+        .audio-wave .bar:nth-child(2) { animation-delay: 0.1s; }
+        .audio-wave .bar:nth-child(3) { animation-delay: 0.2s; }
+        .audio-wave .bar:nth-child(4) { animation-delay: 0.3s; }
+        .audio-wave .bar:nth-child(5) { animation-delay: 0.4s; }
+        .text-preview-box { background: #020606; border: 1px solid var(--cyan); border-radius: 12px; padding: 20px; margin-top: 15px; animation: slideUp 0.5s; }
+        .alert-card-high { border-left: 6px solid var(--alert); animation: alertPulse 2s infinite; }
+        .alert-card-medium { border-left: 6px solid var(--pending); }
+        .alert-card-low { border-left: 6px solid var(--warning); }
+        .floating-coins { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
+        .coin { position: absolute; font-size: 24px; color: var(--gold); opacity: 0.3; animation: spinCoin 4s linear infinite, floating 3s ease-in-out infinite; }
+        .btn-glow { box-shadow: 0 0 15px var(--cyan); }
+        .cleanup-confirm-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999999; display: none; align-items: center; justify-content: center; }
+        .cleanup-confirm-card { background: #111; border: 2px solid var(--cyan); border-radius: 16px; padding: 30px; max-width: 400px; text-align: center; }
     </style>
 </head>
 <body> <!-- FIX #2: removed onclick -->
@@ -813,9 +849,10 @@
                     </div>
                 </div>
 
+                <!-- Global Text Editor - Enhanced with previews -->
                 <div id="sect-cfgText" class="section">
                     <div class="header"><h2><i class="fa fa-language" style="color:var(--cyan); margin-right:15px;"></i> Global Text Editor</h2></div>
-                    <div class="form-box">
+                    <div class="form-box" style="border-left: 4px solid var(--cyan);">
                         <div class="form-label">Modal Button Texts</div>
                         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
                             <div><label style="font-size:11px;">"PROCEED" Button:</label><input type="text" id="cfgTxtNext" value="PROCEED"></div>
@@ -823,6 +860,15 @@
                             <div><label style="font-size:11px;">"PURCHASE VIP" Button:</label><input type="text" id="cfgTxtPurchase" value="PURCHASE VIP"></div>
                             <div><label style="font-size:11px;">"I HAVE PAID" Button:</label><input type="text" id="cfgTxtPaid" value="I HAVE PAID"></div>
                             <div><label style="font-size:11px;">"UPLOAD PROOF" Button:</label><input type="text" id="cfgTxtUpload" value="UPLOAD PROOF"></div>
+                        </div>
+                        <div class="text-preview-box" id="modalBtnPreview">
+                            <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+                                <span class="badge-status" style="background:var(--cyan); color:black; padding:10px 20px; font-size:14px;" id="prevNext">PROCEED</span>
+                                <span class="badge-status" style="background:#222; color:#aaa; padding:10px 20px; font-size:14px;" id="prevCancel">CANCEL</span>
+                                <span class="badge-status" style="background:var(--gold); color:black; padding:10px 20px; font-size:14px;" id="prevPurchase">PURCHASE VIP</span>
+                                <span class="badge-status" style="background:var(--success); color:black; padding:10px 20px; font-size:14px;" id="prevPaid">I HAVE PAID</span>
+                                <span class="badge-status" style="background:var(--pending); color:black; padding:10px 20px; font-size:14px;" id="prevUpload">UPLOAD PROOF</span>
+                            </div>
                         </div>
                         <div class="form-label">Loading Screen Text</div><input type="text" id="cfgTxtLoading" value="SYSTEM LOADING...">
                         <div class="form-label">Website Footer Text</div><input type="text" id="cfgTxtFooter" value="© 2026 ALL RIGHTS RESERVED BY MH HACK">
@@ -953,7 +999,9 @@
                 <div id="sect-bgAnimation" class="section">
                     <div class="header"><h2><i class="fa fa-paint-brush"></i> Live Background Animation (22 Styles)</h2></div>
                     <div class="form-box">
-                        <div class="bg-preview-mini" id="bgPreview"></div>
+                        <div class="bg-preview-mini" id="bgPreview" style="width:100%; height:150px; border:1px solid var(--cyan); border-radius:12px; margin-bottom:20px; overflow:hidden; background:#000;">
+                            <canvas id="bgLivePreview" width="100%" height="150" style="width:100%; height:100%;"></canvas>
+                        </div>
                         <div class="form-label">🎨 Color Themes (22)</div><div class="color-grid" id="bg-color-grid"></div>
                         <div class="form-label">🎬 Animation Effects (22)</div><div class="selector-grid" id="bg-animation-grid"></div>
                         <button class="btn btn-cyan" onclick="publishBackgroundSettings()">PUBLISH TO WEBSITE</button>
@@ -965,11 +1013,21 @@
                     <div class="form-box"><div class="theme-grid" id="themeGrid"><div class="theme-card active-theme" onclick="setTheme('Cyber Cyan','#00f2ff','#000000','#0a0a0a','#004d66',this)"><div style="height:25px; background:#00f2ff; margin-bottom:10px;"></div>Cyber Cyan</div><div class="theme-card" onclick="setTheme('Dark Blood','#ff0000','#000000','#0a0a0a','#500000',this)"><div style="height:25px; background:#ff0000; margin-bottom:10px;"></div>Dark Blood</div><div class="theme-card" onclick="setTheme('Neon Green','#00ff00','#001a00','#002b00','#004d00',this)"><div style="height:25px; background:#00ff00; margin-bottom:10px;"></div>Neon Green</div><div class="theme-card" onclick="setTheme('Gold VIP','#ffd700','#1a1500','#2b2400','#665200',this)"><div style="height:25px; background:#ffd700; margin-bottom:10px;"></div>Gold VIP</div></div><button class="btn btn-cyan" onclick="savePartialConfig('theme')">SAVE THEME</button></div>
                 </div>
 
+                <!-- Branding / Links - enhanced with WhatsApp Group Link -->
                 <div id="sect-cfgBrand" class="section">
-                    <div class="header"><h2><i class="fa fa-font"></i> Branding & Text</h2></div>
-                    <div class="form-box">
-                        <input type="text" id="cfgLogo" placeholder="Logo URL"><input type="text" id="cfgSplash" placeholder="Splash Text"><input type="text" id="cfgTitle" placeholder="Title Text"><input type="text" id="cfgSubText" placeholder="Subtitle">
-                        <div class="form-label">Social Links</div><input type="text" id="cfgGrp" placeholder="Telegram Group"><input type="text" id="cfgChnl" placeholder="Telegram Channel"><input type="text" id="cfgWa" placeholder="WhatsApp"><input type="text" id="cfgEmail" placeholder="Support Email">
+                    <div class="header"><h2><i class="fa fa-font"></i> Branding & Social Links</h2></div>
+                    <div class="form-box" style="border-left: 4px solid var(--cyan);">
+                        <div class="form-label"><i class="fa fa-image"></i> Logo & Text</div>
+                        <input type="text" id="cfgLogo" placeholder="Logo URL">
+                        <input type="text" id="cfgSplash" placeholder="Splash Text">
+                        <input type="text" id="cfgTitle" placeholder="Title Text">
+                        <input type="text" id="cfgSubText" placeholder="Subtitle">
+                        <div class="form-label"><i class="fa fa-share-alt"></i> Social Links</div>
+                        <input type="text" id="cfgGrp" placeholder="Telegram Group">
+                        <input type="text" id="cfgChnl" placeholder="Telegram Channel">
+                        <input type="text" id="cfgWa" placeholder="WhatsApp Number">
+                        <input type="text" id="cfgWaGroup" placeholder="WhatsApp Group Invite Link">
+                        <input type="text" id="cfgEmail" placeholder="Support Email">
                         <button class="btn btn-cyan" onclick="savePartialConfig('brand')">UPDATE BRANDING</button>
                     </div>
                 </div>
@@ -988,22 +1046,54 @@
                     </div>
                 </div>
 
+                <!-- Popup Ad Config - with live preview -->
                 <div id="sect-cfgAd" class="section">
                     <div class="header"><h2><i class="fa fa-ad"></i> Popup Ad Configuration</h2></div>
-                    <div class="form-box">
+                    <div class="form-box" style="border-left: 4px solid var(--gold);">
                         <div style="display:flex; gap:15px;"><select id="cfgAdEnable"><option value="false">NO</option><option value="true">YES</option></select><input type="number" id="cfgAdTimer" value="5" placeholder="Timer (sec)"></div>
-                        <input type="text" id="cfgAdTitle" placeholder="Ad Title"><textarea id="cfgAdDesc" placeholder="Ad Description"></textarea><input type="text" id="cfgAdImg" placeholder="Image URL"><input type="text" id="cfgAdLink" placeholder="Target Link">
-                        <button class="btn btn-cyan" onclick="savePartialConfig('ad')">PUSH AD LIVE</button>
+                        <input type="text" id="cfgAdTitle" placeholder="Ad Title">
+                        <textarea id="cfgAdDesc" placeholder="Ad Description"></textarea>
+                        <input type="text" id="cfgAdImg" placeholder="Image URL">
+                        <input type="text" id="cfgAdLink" placeholder="Target Link">
+                        <div class="text-preview-box" id="adLivePreview" style="margin-top:20px; text-align:center;">
+                            <div style="background:#111; padding:20px; border-radius:12px; border:1px dashed var(--gold);">
+                                <img id="previewAdImg" src="" onerror="this.style.display='none'" style="max-width:100%; max-height:120px; border-radius:8px; margin-bottom:10px; display:none;">
+                                <h4 style="color:var(--gold);" id="previewAdTitle">Sample Ad Title</h4>
+                                <p style="color:#ccc;" id="previewAdDesc">Ad description preview</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-cyan" onclick="savePartialConfig('ad')" style="margin-top:15px;">PUSH AD LIVE</button>
                     </div>
                 </div>
 
+                <!-- Global Audio System - Enhanced -->
                 <div id="sect-cfgAudio" class="section">
                     <div class="header"><h2><i class="fa fa-volume-up"></i> Global Audio Systems</h2></div>
-                    <div class="form-box">
-                        <div><h3 style="color:var(--cyan);">Audio Test Panel</h3><div style="display:flex; gap:10px;"><button class="btn-sm" onclick="testNotificationSound()">Test Notif</button><button class="btn-sm" onclick="testChatSound()">Test Chat</button><button class="btn-sm" onclick="testAdminAlert()">Test Alert</button></div></div>
-                        <div style="background:#111; padding:15px; margin-top:15px;"><strong>Notification Ringtone</strong><input type="text" id="linkNotifSnd" placeholder="Audio URL"><input type="file" id="fileNotifSnd" accept="audio/*"><button class="btn-sm" onclick="uploadAudio('notif')">Save</button><div>Current: <span id="currentNotifSound">Default</span></div></div>
-                        <div style="background:#111; padding:15px;"><strong>Chat Ringtone</strong><input type="text" id="linkChatSnd" placeholder="Audio URL"><input type="file" id="fileChatSnd" accept="audio/*"><button class="btn-sm" onclick="uploadAudio('chat')">Save</button><div>Current: <span id="currentChatSound">Default</span></div></div>
-                        <div style="background:#111; padding:15px;"><strong>Admin Alert Tone</strong><input type="text" id="linkAdminSnd" placeholder="Audio URL"><input type="file" id="fileAdminAlertSnd" accept="audio/*"><button class="btn-sm" onclick="uploadAudio('admin')">Save</button><div>Current: <span id="currentAdminSound">Default</span></div></div>
+                    <div class="form-box" style="border-left: 4px solid var(--cyan);">
+                        <div style="display:flex; gap:10px; margin-bottom:20px;">
+                            <button class="btn-sm" onclick="testNotificationSound()">Test Notif</button>
+                            <button class="btn-sm" onclick="testChatSound()">Test Chat</button>
+                            <button class="btn-sm" onclick="testAdminAlert()">Test Alert</button>
+                            <div class="audio-wave"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+                        </div>
+                        <div class="audio-card notif">
+                            <strong style="color:var(--cyan);">Notification Ringtone</strong>
+                            <input type="text" id="linkNotifSnd" placeholder="Audio URL"><input type="file" id="fileNotifSnd" accept="audio/*">
+                            <button class="btn-sm" onclick="uploadAudio('notif')">Save</button>
+                            <div>Current: <span id="currentNotifSound">Default</span></div>
+                        </div>
+                        <div class="audio-card chat">
+                            <strong style="color:var(--success);">Chat Ringtone</strong>
+                            <input type="text" id="linkChatSnd" placeholder="Audio URL"><input type="file" id="fileChatSnd" accept="audio/*">
+                            <button class="btn-sm" onclick="uploadAudio('chat')">Save</button>
+                            <div>Current: <span id="currentChatSound">Default</span></div>
+                        </div>
+                        <div class="audio-card admin">
+                            <strong style="color:var(--gold);">Admin Alert Tone</strong>
+                            <input type="text" id="linkAdminSnd" placeholder="Audio URL"><input type="file" id="fileAdminAlertSnd" accept="audio/*">
+                            <button class="btn-sm" onclick="uploadAudio('admin')">Save</button>
+                            <div>Current: <span id="currentAdminSound">Default</span></div>
+                        </div>
                     </div>
                 </div>
 
@@ -1086,7 +1176,10 @@
 
                 <div id="sect-proofs" class="section">
                     <div class="header"><h2><i class="fa fa-file-invoice-dollar" style="color:var(--success);"></i> Payment Processing</h2></div>
-                    <div id="proofGallery" class="proof-grid"></div>
+                    <div style="position:relative;">
+                        <div class="floating-coins" id="coinsContainer"></div>
+                        <div id="proofGallery" class="proof-grid"></div>
+                    </div>
                 </div>
 
                 <div id="sect-reports" class="section">
@@ -1114,15 +1207,29 @@
                     <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Image</th><th>Headline</th><th>Format</th><th>Action</th></tr></thead><tbody id="newsListBody"></tbody></table></div>
                 </div>
 
+                <!-- Bug Fix System - enhanced -->
                 <div id="sect-bugfix" class="section">
                     <div class="header"><h2><i class="fa fa-tools"></i> Bug Fix System</h2></div>
-                    <div class="stats-grid"><div class="stat-card" onclick="fixAllIssues()"><div class="stat-title">FIX ALL ISSUES</div><div class="stat-val"><i class="fa fa-magic"></i></div></div><div class="stat-card" onclick="optimizeWebsite()"><div class="stat-title">OPTIMIZE WEBSITE</div><div class="stat-val"><i class="fa fa-rocket"></i></div></div><div class="stat-card" onclick="repairDatabase()"><div class="stat-title">REPAIR DATABASE</div><div class="stat-val"><i class="fa fa-database"></i></div></div></div>
+                    <div class="stats-grid"><div class="stat-card" onclick="fixAllIssues()" id="fixAllCard"><div class="stat-title">FIX ALL ISSUES</div><div class="stat-val"><i class="fa fa-magic"></i></div></div><div class="stat-card" onclick="optimizeWebsite()"><div class="stat-title">OPTIMIZE WEBSITE</div><div class="stat-val"><i class="fa fa-rocket"></i></div></div><div class="stat-card" onclick="repairDatabase()"><div class="stat-title">REPAIR DATABASE</div><div class="stat-val"><i class="fa fa-database"></i></div></div></div>
                     <div class="bug-fix-grid" id="bugFixList"></div>
                 </div>
 
+                <!-- History Cleanup - enhanced with confirm modal and new notifications cleanup -->
                 <div id="sect-historyCleanup" class="section">
                     <div class="header"><h2><i class="fa fa-eraser" style="color:var(--alert);"></i> Secure History Cleanup</h2></div>
-                    <div class="form-box"><div class="cleanup-grid"><div class="cleanup-card" onclick="purgeHistory('transactions')"><i class="fa fa-exchange-alt"></i><div class="cleanup-title">Transaction History</div></div><div class="cleanup-card" onclick="purgeHistory('reports')"><i class="fa fa-bug"></i><div class="cleanup-title">Reports & Requests</div></div><div class="cleanup-card" onclick="purgeHistory('keys')"><i class="fa fa-key"></i><div class="cleanup-title">Key Access Logs</div></div><div class="cleanup-card" onclick="purgeHistory('payments')"><i class="fa fa-file-invoice-dollar"></i><div class="cleanup-title">Payment Proofs</div></div></div></div>
+                    <div class="form-box"><div class="cleanup-grid"><div class="cleanup-card" onclick="showCleanupConfirm('transactions')"><i class="fa fa-exchange-alt"></i><div class="cleanup-title">Transaction History</div></div><div class="cleanup-card" onclick="showCleanupConfirm('reports')"><i class="fa fa-bug"></i><div class="cleanup-title">Reports & Requests</div></div><div class="cleanup-card" onclick="showCleanupConfirm('keys')"><i class="fa fa-key"></i><div class="cleanup-title">Key Access Logs</div></div><div class="cleanup-card" onclick="showCleanupConfirm('payments')"><i class="fa fa-file-invoice-dollar"></i><div class="cleanup-title">Payment Proofs</div></div><div class="cleanup-card" onclick="showCleanupConfirm('notifications')" style="border-color:var(--cyan);"><i class="fa fa-bell"></i><div class="cleanup-title">Notification Alert History</div></div></div></div>
+                </div>
+
+                <div class="cleanup-confirm-modal" id="cleanupConfirmModal">
+                    <div class="cleanup-confirm-card">
+                        <i class="fa fa-exclamation-triangle" style="font-size:40px; color:var(--alert);"></i>
+                        <h3 style="color:white; margin:15px 0;">Confirm Deletion</h3>
+                        <p id="cleanupConfirmText"></p>
+                        <div style="display:flex; gap:15px; justify-content:center; margin-top:20px;">
+                            <button class="btn" style="background:var(--alert);" id="confirmDeleteBtn">DELETE</button>
+                            <button class="btn" style="background:#222; color:#aaa;" onclick="closeCleanupConfirm()">CANCEL</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="sect-alert" class="section">
@@ -1178,6 +1285,7 @@
         let AI_AUTO_BACKUP = false;
         
         let bgCanvas, bgCtx, bgWidth, bgHeight, bgTime = 0, bgCurrentAnimation = 'cyber', bgCurrentTheme = { r:0, g:242, b:255 }, bgParticles = [];
+        let bgLivePreviewCanvas, bgLivePreviewCtx;
         
         const animColorThemes = [{ name:'Cyan',r:0,g:242,b:255},{ name:'Red',r:255,g:0,b:0},{ name:'Green',r:0,g:255,b:0},{ name:'Blue',r:0,g:0,b:255},{ name:'Purple',r:128,g:0,b:128},{ name:'Orange',r:255,g:165,b:0},{ name:'Pink',r:255,g:192,b:203},{ name:'Yellow',r:255,g:255,b:0},{ name:'Teal',r:0,g:128,b:128},{ name:'Indigo',r:75,g:0,b:130},{ name:'Rose',r:255,g:0,b:128},{ name:'Amber',r:255,g:191,b:0},{ name:'Violet',r:238,g:130,b:238},{ name:'Lavender',r:230,g:230,b:250},{ name:'Sky',r:135,g:206,b:235},{ name:'Navy',r:0,g:0,b:128},{ name:'Royal',r:65,g:105,b:225},{ name:'Cobalt',r:0,g:71,b:171},{ name:'Periwinkle',r:204,g:204,b:255},{ name:'Cornflower',r:100,g:149,b:237},{ name:'Magenta',r:255,g:0,b:255},{ name:'Lime',r:50,g:205,b:50}];
         const animList = [{ id:'neural', name:'🧠 Neural'},{ id:'galaxy', name:'🌌 Galaxy'},{ id:'cyber', name:'💻 Cyber Grid'},{ id:'warp', name:'🚀 Warp'},{ id:'sparkle', name:'✨ Sparkle'},{ id:'vortex', name:'🌀 Vortex'},{ id:'rain', name:'☔ Rain'},{ id:'snow', name:'❄️ Snow'},{ id:'fireflies', name:'✨ Fireflies'},{ id:'comet', name:'☄️ Comet'},{ id:'blackhat', name:'🎩 Black Hat'},{ id:'linux', name:'🐧 Linux'},{ id:'electric', name:'⚡ Electric'},{ id:'bubble', name:'🫧 Bubbles'},{ id:'pulse', name:'💓 Pulse'},{ id:'neon', name:'🌈 Neon'},{ id:'solar', name:'☀️ Solar'},{ id:'ripple', name:'💧 Ripple'},{ id:'plasma', name:'🔥 Plasma'},{ id:'geometric', name:'🔷 Geometric'},{ id:'matrix', name:'💚 Matrix'},{ id:'aurora', name:'✨ Aurora'}];
@@ -1259,6 +1367,7 @@
             if(id === 'dialogEditor') loadDialogEditor(); 
             if(id === 'cfgTk') loadToolkitButtonsConfig();
             if(id === 'emailSender') loadScheduledEmails();
+            if(id === 'bgAnimation') { setTimeout(() => drawLiveBgPreview(), 100); }
             
             closeMobileSidebar(); 
         }
@@ -1290,7 +1399,6 @@
                     document.getElementById('splash').style.display = 'none'; 
                     proceedAfterSplash(user);
                 } else {
-                    // wait until bootComplete
                     authBootInterval = setInterval(() => {
                         if(window.bootComplete) {
                             clearInterval(authBootInterval);
@@ -1365,6 +1473,55 @@
             setTimeout(() => { refreshAnalystDisplay(); }, 1000); 
             checkAndShowAdminUnread(); 
             initAIListeners();
+            initLivePreviews(); // new live previews for ad and texts
+            spawnFloatingCoins();
+        }
+        
+        // New live preview for popup ad
+        function initLivePreviews() {
+            const adInputs = ['cfgAdTitle','cfgAdDesc','cfgAdImg'];
+            adInputs.forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.addEventListener('input', updateAdPreview);
+            });
+            updateAdPreview();
+            // modal button previews
+            const textInputs = ['cfgTxtNext','cfgTxtCancel','cfgTxtPurchase','cfgTxtPaid','cfgTxtUpload'];
+            textInputs.forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.addEventListener('input', updateModalBtnPreview);
+            });
+            updateModalBtnPreview();
+        }
+        
+        function updateAdPreview() {
+            document.getElementById('previewAdTitle').innerText = document.getElementById('cfgAdTitle').value || 'Sample Ad Title';
+            document.getElementById('previewAdDesc').innerText = document.getElementById('cfgAdDesc').value || 'Ad description preview';
+            let imgSrc = document.getElementById('cfgAdImg').value;
+            let imgEl = document.getElementById('previewAdImg');
+            if(imgSrc) { imgEl.src = imgSrc; imgEl.style.display = 'block'; } else { imgEl.style.display = 'none'; }
+        }
+        function updateModalBtnPreview() {
+            document.getElementById('prevNext').innerText = document.getElementById('cfgTxtNext').value || 'PROCEED';
+            document.getElementById('prevCancel').innerText = document.getElementById('cfgTxtCancel').value || 'CANCEL';
+            document.getElementById('prevPurchase').innerText = document.getElementById('cfgTxtPurchase').value || 'PURCHASE VIP';
+            document.getElementById('prevPaid').innerText = document.getElementById('cfgTxtPaid').value || 'I HAVE PAID';
+            document.getElementById('prevUpload').innerText = document.getElementById('cfgTxtUpload').value || 'UPLOAD PROOF';
+        }
+        
+        // Floating coins for payment section
+        function spawnFloatingCoins() {
+            let container = document.getElementById('coinsContainer');
+            if(!container) return;
+            for(let i = 0; i < 10; i++) {
+                let coin = document.createElement('span');
+                coin.className = 'coin';
+                coin.innerHTML = '💰';
+                coin.style.left = Math.random()*100 + '%';
+                coin.style.top = Math.random()*100 + '%';
+                coin.style.animationDelay = Math.random()*5 + 's';
+                container.appendChild(coin);
+            }
         }
         
         // =========================================================================
@@ -1722,6 +1879,7 @@
                     if(document.getElementById('cfgGrp')) document.getElementById('cfgGrp').value = d.linkTelegramGrp||"";
                     if(document.getElementById('cfgChnl')) document.getElementById('cfgChnl').value = d.linkTelegramChnl||"";
                     if(document.getElementById('cfgWa')) document.getElementById('cfgWa').value = d.linkWhatsapp||"";
+                    if(document.getElementById('cfgWaGroup')) document.getElementById('cfgWaGroup').value = d.linkWhatsappGroup||"";
                     if(document.getElementById('cfgEmail')) document.getElementById('cfgEmail').value = d.supportEmail||"mhhackshelpzone@gmail.com";
                     
                     if(document.getElementById('tgDemo')) { 
@@ -1793,7 +1951,7 @@
         function savePartialConfig(type) { 
             let updateObj = {}; 
             if(type === 'theme') { updateObj = { themeName: currentThemeConfig.name, themePrimary: currentThemeConfig.primary, themeBg: currentThemeConfig.bg, themePanel: currentThemeConfig.panel, themeDark: currentThemeConfig.dark }; }
-            else if(type === 'brand') { updateObj = { logoUrl: document.getElementById('cfgLogo').value, splashText: document.getElementById('cfgSplash').value, titleText: document.getElementById('cfgTitle').value, subText: document.getElementById('cfgSubText').value, linkTelegramGrp: document.getElementById('cfgGrp').value, linkTelegramChnl: document.getElementById('cfgChnl').value, linkWhatsapp: document.getElementById('cfgWa').value, supportEmail: document.getElementById('cfgEmail').value }; }
+            else if(type === 'brand') { updateObj = { logoUrl: document.getElementById('cfgLogo').value, splashText: document.getElementById('cfgSplash').value, titleText: document.getElementById('cfgTitle').value, subText: document.getElementById('cfgSubText').value, linkTelegramGrp: document.getElementById('cfgGrp').value, linkTelegramChnl: document.getElementById('cfgChnl').value, linkWhatsapp: document.getElementById('cfgWa').value, linkWhatsappGroup: document.getElementById('cfgWaGroup').value, supportEmail: document.getElementById('cfgEmail').value }; }
             else if(type === 'toolkit') { 
                 updateObj = { tkTitle: document.getElementById('cfgTkTitle').value, tkDesc: document.getElementById('cfgTkDesc').value };
             }
@@ -2094,14 +2252,31 @@
         }
         
         // =========================================================================
-        // HISTORY CLEANUP (preserved)
-        function purgeHistory(type) { 
-            if(!confirm(`⚠️ PERMANENTLY DELETE ALL ${type.toUpperCase()}? This cannot be undone!`)) return; 
+        // HISTORY CLEANUP (preserved) + Notification Cleanup + confirm modal
+        let pendingCleanupType = null;
+        function showCleanupConfirm(type) {
+            pendingCleanupType = type;
+            let modal = document.getElementById('cleanupConfirmModal');
+            document.getElementById('cleanupConfirmText').innerText = `Are you sure you want to permanently delete all ${type}?`;
+            modal.style.display = 'flex';
+        }
+        function closeCleanupConfirm() {
+            document.getElementById('cleanupConfirmModal').style.display = 'none';
+            pendingCleanupType = null;
+        }
+        document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+            if(pendingCleanupType) {
+                executePurge(pendingCleanupType);
+                closeCleanupConfirm();
+            }
+        });
+        function executePurge(type) {
             let collectionName = ''; 
             if(type === 'transactions') collectionName = 'transactions'; 
             if(type === 'reports') collectionName = 'user_reports'; 
             if(type === 'keys') collectionName = 'key_access_logs'; 
             if(type === 'payments') collectionName = 'payment_proofs'; 
+            if(type === 'notifications') collectionName = 'notifications';
             if(!collectionName) return; 
             db.collection(collectionName).get().then(snap => { 
                 let batch = db.batch(); let count = 0; 
@@ -2109,6 +2284,9 @@
                 if(count > 0) { batch.commit().then(() => { alert(`Purged ${count} records from ${type}!`); logActivity('PURGE', 'Admin', `Cleared all ${type}`); }).catch(err => alert("Purge failed: "+err.message)); } 
                 else { alert("Already empty!"); } 
             }).catch(err => alert("Fetch failed: "+err.message)); 
+        }
+        function purgeHistory(type) { // kept for compatibility
+            showCleanupConfirm(type);
         }
         
         // =========================================================================
@@ -2309,7 +2487,6 @@
             } else {
                 expiresAt = new Date(document.getElementById('keyExactExpiry').value).getTime();
                 if(isNaN(expiresAt)) return alert("Please select a valid expiry date/time");
-                // F2: past expiry warning
                 if(expiresAt < Date.now()) {
                     if(!confirm("The expiry date is in the past. Are you sure you want to create an expired key?")) return;
                 }
@@ -2337,7 +2514,7 @@
                         let d = doc.data(); if(d.status === 'Pending' || !d.status) pendingCount++; 
                         let statusText = d.status || 'Pending'; 
                         let statusColor = statusText === 'Approved' ? 'var(--success)' : (statusText === 'Rejected' ? 'var(--alert)' : 'var(--pending)'); 
-                        gallery.innerHTML += `<div class="proof-card" style="border-top:3px solid ${statusColor};">${d.paymentMethod === 'Wallet' ? '<div class="badge-wallet">WALLET</div>' : ''}<div class="badge-status" style="color:${statusColor};">${statusText}</div><div style="font-weight:900;font-size:18px;">${d.userName||'Unknown'}</div><div style="color:var(--gold);">Tool: ${d.toolName||'N/A'}</div><div style="color:var(--cyan);">Hack: ${d.userHackName||'N/A'}</div><div>Method: ${d.paymentMethod||'Manual'}</div><div style="font-size:11px;color:#888;">${d.timestamp?new Date(d.timestamp).toLocaleString():'Just now'}</div>${d.imageUrl&&d.imageUrl!=='wallet_purchase'?`<img src="${d.imageUrl}" class="proof-img" onclick="window.open('${d.imageUrl}')">`:'<div style="background:#111;padding:20px;text-align:center;margin-top:10px;border-radius:8px;">Paid via Wallet</div>'}<div style="display:flex;gap:10px;margin-top:15px;">${(d.status==='Pending'||!d.status)?`<button class="btn" style="flex:1;background:var(--success);color:black;padding:8px;" onclick="openPaymentModal('${doc.id}')">PROCESS</button>`:''}<button class="btn btn-delete" style="flex:1;padding:8px;" onclick="deletePaymentProof('${doc.id}')">DELETE</button></div></div>`; 
+                        gallery.innerHTML += `<div class="proof-card" style="border-top:3px solid ${statusColor}; animation: slideInRight 0.6s ease;">${d.paymentMethod === 'Wallet' ? '<div class="badge-wallet">WALLET</div>' : ''}<div class="badge-status" style="color:${statusColor}; text-shadow: 0 0 8px ${statusColor};">${statusText}</div><div style="font-weight:900;font-size:18px;">${d.userName||'Unknown'}</div><div style="color:var(--gold);">Tool: ${d.toolName||'N/A'}</div><div style="color:var(--cyan);">Hack: ${d.userHackName||'N/A'}</div><div>Method: ${d.paymentMethod||'Manual'}</div><div style="font-size:11px;color:#888;">${d.timestamp?new Date(d.timestamp).toLocaleString():'Just now'}</div>${d.imageUrl&&d.imageUrl!=='wallet_purchase'?`<img src="${d.imageUrl}" class="proof-img" onclick="window.open('${d.imageUrl}')">`:'<div style="background:#111;padding:20px;text-align:center;margin-top:10px;border-radius:8px;">Paid via Wallet</div>'}<div style="display:flex;gap:10px;margin-top:15px;">${(d.status==='Pending'||!d.status)?`<button class="btn" style="flex:1;background:var(--success);color:black;padding:8px;" onclick="openPaymentModal('${doc.id}')">PROCESS</button>`:''}<button class="btn btn-delete" style="flex:1;padding:8px;" onclick="deletePaymentProof('${doc.id}')">DELETE</button></div></div>`; 
                     }); 
                 } 
                 document.getElementById('st-unread-pays').innerText = pendingCount; 
@@ -2407,15 +2584,20 @@
         
         // =========================================================================
         // BUG FIX SYSTEM (I2: real operations)
-        function loadBugFixSystem() { let bugFixList = document.getElementById('bugFixList'); bugFixList.innerHTML = `<div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Chat System Nodes</span><span class="bug-fix-status" style="background:rgba(255,0,0,0.2);color:red;">Critical</span></div><div class="bug-fix-desc">Fix live chat connection issues and sync delays</div><button class="fix-now-btn" onclick="fixChatSystem()">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Push Notifications DB</span><span class="bug-fix-status" style="background:rgba(255,153,0,0.2);color:orange;">High</span></div><div class="bug-fix-desc">Fix notification delivery system routing</div><button class="fix-now-btn" onclick="fixPushNotifications()">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Wallet Balance Sync</span><span class="bug-fix-status" style="background:rgba(255,153,0,0.2);color:orange;">High</span></div><div class="bug-fix-desc">Fix wallet balance cache update errors</div><button class="fix-now-btn" onclick="fixWalletSystem()">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Referral Algorithms</span><span class="bug-fix-status" style="background:rgba(0,255,0,0.2);color:#0f0;">Medium</span></div><div class="bug-fix-desc">Recalculate referral bonus distribution trees</div><button class="fix-now-btn" onclick="fixReferralSystem()">FIX NOW</button></div>`; }
-        function fixAllIssues() { alert("Running Core Diagnostics..."); fixChatSystem(); fixPushNotifications(); fixWalletSystem(); fixReferralSystem(); setTimeout(() => { alert("All Database Issues Fixed!"); scanForWebsiteIssues(); },2000); }
+        function loadBugFixSystem() { let bugFixList = document.getElementById('bugFixList'); bugFixList.innerHTML = `<div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Chat System Nodes</span><span class="bug-fix-status" style="background:rgba(255,0,0,0.2);color:red;">Critical</span></div><div class="bug-fix-desc">Fix live chat connection issues and sync delays</div><button class="fix-now-btn btn btn-sm" style="background:var(--alert); color:white;" onclick="this.classList.add('loading'); fixChatSystem().then(()=>this.classList.remove('loading'))">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Push Notifications DB</span><span class="bug-fix-status" style="background:rgba(255,153,0,0.2);color:orange;">High</span></div><div class="bug-fix-desc">Fix notification delivery system routing</div><button class="fix-now-btn btn btn-sm" style="background:var(--pending); color:black;" onclick="this.classList.add('loading'); fixPushNotifications(); setTimeout(()=>this.classList.remove('loading'),1500)">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Wallet Balance Sync</span><span class="bug-fix-status" style="background:rgba(255,153,0,0.2);color:orange;">High</span></div><div class="bug-fix-desc">Fix wallet balance cache update errors</div><button class="fix-now-btn btn btn-sm" style="background:var(--pending); color:black;" onclick="this.classList.add('loading'); fixWalletSystem(); setTimeout(()=>this.classList.remove('loading'),1500)">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Referral Algorithms</span><span class="bug-fix-status" style="background:rgba(0,255,0,0.2);color:#0f0;">Medium</span></div><div class="bug-fix-desc">Recalculate referral bonus distribution trees</div><button class="fix-now-btn btn btn-sm" style="background:var(--success); color:black;" onclick="this.classList.add('loading'); fixReferralSystem(); setTimeout(()=>this.classList.remove('loading'),1500)">FIX NOW</button></div>`; }
         async function fixChatSystem() {
-            // mark all chats as read
             let snap = await db.collection('chats').where('readByAdmin','==',false).get();
             let batch = db.batch();
             snap.forEach(doc => batch.update(doc.ref, {readByAdmin:true}));
             await batch.commit().catch(e=>{});
             addAlert('Chat System Fixed','Live chat nodes repaired','fixed','success');
+        }
+        function fixAllIssues() { 
+            let btn = document.getElementById('fixAllCard'); if(btn) btn.classList.add('loading');
+            setTimeout(async () => {
+                await fixChatSystem(); fixPushNotifications(); fixWalletSystem(); fixReferralSystem(); 
+                setTimeout(() => { alert("All Issues Fixed!"); if(btn) btn.classList.remove('loading'); }, 500);
+            }, 500);
         }
         function fixPushNotifications() { addAlert('Push Notifications Fixed','Notification routing verified','fixed','success'); }
         function fixWalletSystem() { addAlert('Wallet System Fixed','Balance cache synchronized','fixed','success'); }
@@ -2448,7 +2630,8 @@
             } else { 
                 let html = ''; 
                 websiteAlerts.forEach((alert,index) => { 
-                    html += `<div class="alert-card"><div class="alert-time">${new Date().toLocaleTimeString()}</div><div class="alert-title">${alert.title}</div><div class="alert-desc">${alert.description}</div><div class="alert-details">Severity: <span style="color:var(--alert);">${alert.severity}</span><br>Solution: <span style="color:var(--success);">${alert.solution}</span></div><div class="alert-actions"><button class="alert-fix-btn" onclick="fixAlert(${index})">FIX ISSUE NOW</button><button class="alert-dismiss-btn" onclick="dismissAlert(${index})">IGNORE</button></div></div>`; 
+                    let sevClass = alert.severity === 'High' ? 'alert-card-high' : (alert.severity === 'Medium' ? 'alert-card-medium' : 'alert-card-low');
+                    html += `<div class="alert-card ${sevClass}" style="animation: slideInRight 0.5s ease;"><div class="alert-time">${new Date().toLocaleTimeString()}</div><div class="alert-title">${alert.title}</div><div class="alert-desc">${alert.description}</div><div class="alert-details">Severity: <span style="color:var(--alert);">${alert.severity}</span><br>Solution: <span style="color:var(--success);">${alert.solution}</span></div><div class="alert-actions"><button class="alert-fix-btn" onclick="fixAlert(${index})">FIX ISSUE NOW</button><button class="alert-dismiss-btn" onclick="dismissAlert(${index})">IGNORE</button></div></div>`; 
                 }); 
                 container.innerHTML = html; alertCount.innerText = websiteAlerts.length; healthScore.innerText = Math.max(0,100 - (websiteAlerts.length * 10)) + '%'; 
                 badgeAlerts.style.display = 'block'; badgeAlerts.innerText = websiteAlerts.length; 
@@ -2510,7 +2693,6 @@
         async function approveMoneyRequest() { 
             let docId = document.getElementById('mrDocId').value; let uid = document.getElementById('mrUid').value; 
             let doc = await db.collection('admin_money_requests').doc(docId).get().catch(err => alert("Fetch failed: "+err.message)); if(!doc) return; let data = doc.data(); 
-            // G1: credit recipient if exists and not admin
             if(data.recipientUid && data.recipientUid !== 'ADMIN') {
                 await db.collection('wallets').doc(data.recipientUid).set({
                     balance: firebase.firestore.FieldValue.increment(data.amount),
@@ -2535,7 +2717,6 @@
         async function rejectMoneyRequest() { 
             let docId = document.getElementById('mrDocId').value; let uid = document.getElementById('mrUid').value; 
             let doc = await db.collection('admin_money_requests').doc(docId).get().catch(err => alert("Fetch failed: "+err.message)); if(!doc) return; let data = doc.data(); 
-            // G2: check if transaction already completed, then do not refund
             let txSnap = await db.collection('transactions').where('userId','==',uid).where('timestamp','==',data.timestamp).get();
             let alreadyCompleted = false;
             txSnap.forEach(d => { if(d.data().status === 'completed') alreadyCompleted = true; });
@@ -2573,7 +2754,7 @@
         }
         
         // =========================================================================
-        // BACKGROUND ANIMATION GENERATOR (J2 load from Firestore)
+        // BACKGROUND ANIMATION GENERATOR (J2 load from Firestore) + live preview canvas
         let resizeTimeout;
         function bgResize() { 
             clearTimeout(resizeTimeout);
@@ -2606,18 +2787,37 @@
         }
         function initBgControls() { 
             let cg = document.getElementById('bg-color-grid'); cg.innerHTML = ''; 
-            animColorThemes.forEach((t,i) => { let b = document.createElement('div'); b.className = `color-btn ${i===0?'active':''}`; b.style.backgroundColor = `rgb(${t.r},${t.g},${t.b})`; b.title = t.name; b.onclick = () => { document.querySelectorAll('#bg-color-grid .color-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); bgCurrentTheme = t; }; cg.appendChild(b); }); 
+            animColorThemes.forEach((t,i) => { let b = document.createElement('div'); b.className = `color-btn ${i===0?'active':''}`; b.style.backgroundColor = `rgb(${t.r},${t.g},${t.b})`; b.title = t.name; b.onclick = () => { document.querySelectorAll('#bg-color-grid .color-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); bgCurrentTheme = t; drawLiveBgPreview(); }; cg.appendChild(b); }); 
             let ag = document.getElementById('bg-animation-grid'); ag.innerHTML = ''; 
-            animList.forEach(a => { let b = document.createElement('button'); b.className = `animation-btn ${a.id==='cyber'?'active':''}`; b.textContent = a.name; b.onclick = () => { document.querySelectorAll('#bg-animation-grid .animation-btn').forEach(x => { x.classList.remove('active'); }); b.classList.add('active'); bgCurrentAnimation = a.id; bgCtx.fillStyle = '#000'; bgCtx.fillRect(0,0,bgWidth,bgHeight); bgInitParticles(); }; ag.appendChild(b); }); 
+            animList.forEach(a => { let b = document.createElement('button'); b.className = `animation-btn ${a.id==='cyber'?'active':''}`; b.textContent = a.name; b.onclick = () => { document.querySelectorAll('#bg-animation-grid .animation-btn').forEach(x => { x.classList.remove('active'); }); b.classList.add('active'); bgCurrentAnimation = a.id; drawLiveBgPreview(); }; ag.appendChild(b); }); 
+            // live preview canvas initialization
+            bgLivePreviewCanvas = document.getElementById('bgLivePreview');
+            if(bgLivePreviewCanvas) {
+                bgLivePreviewCtx = bgLivePreviewCanvas.getContext('2d');
+                drawLiveBgPreview();
+            }
+        }
+        function drawLiveBgPreview() {
+            if(!bgLivePreviewCtx) return;
+            const w = bgLivePreviewCanvas.width; const h = bgLivePreviewCanvas.height;
+            const t = Date.now() * 0.001;
+            bgLivePreviewCtx.clearRect(0,0,w,h);
+            // simple cyber/neural preview
+            if(bgCurrentAnimation === 'cyber') {
+                bgLivePreviewCtx.strokeStyle = `rgba(${bgCurrentTheme.r},${bgCurrentTheme.g},${bgCurrentTheme.b},0.5)`;
+                for(let i=0;i<8;i++){ let x = (i*60 + t*20)%w; bgLivePreviewCtx.beginPath(); bgLivePreviewCtx.moveTo(x,0); bgLivePreviewCtx.lineTo(x,h); bgLivePreviewCtx.stroke(); }
+            } else {
+                bgLivePreviewCtx.fillStyle = `rgba(${bgCurrentTheme.r},${bgCurrentTheme.g},${bgCurrentTheme.b},0.5)`;
+                for(let i=0;i<10;i++){ bgLivePreviewCtx.beginPath(); bgLivePreviewCtx.arc(Math.sin(i+t)*30+w/2, Math.cos(i+t)*30+h/2, 2,0,Math.PI*2); bgLivePreviewCtx.fill(); }
+            }
+            requestAnimationFrame(() => drawLiveBgPreview());
         }
         function publishBackgroundSettings() { db.collection('app_settings').doc('background').set({colorTheme:bgCurrentTheme,animation:bgCurrentAnimation,updated:Date.now()}).then(() => { alert("Background published to website!"); logActivity('BACKGROUND','Admin',`Color: ${bgCurrentTheme.name}, Anim: ${bgCurrentAnimation}`); }).catch(err => alert("Publish failed: "+err.message)); }
-        // J2: listen to background settings from Firestore
         db.collection('app_settings').doc('background').onSnapshot(doc => {
             if(doc.exists) {
                 let data = doc.data();
                 if(data.colorTheme) bgCurrentTheme = data.colorTheme;
                 if(data.animation) bgCurrentAnimation = data.animation;
-                // update active buttons
                 document.querySelectorAll('#bg-color-grid .color-btn').forEach(btn => {
                     let col = btn.style.backgroundColor;
                     if(col === `rgb(${bgCurrentTheme.r}, ${bgCurrentTheme.g}, ${bgCurrentTheme.b})`) btn.classList.add('active');
@@ -2627,8 +2827,7 @@
                     if(btn.textContent.includes(animList.find(a=>a.id===bgCurrentAnimation)?.name)) btn.classList.add('active');
                     else btn.classList.remove('active');
                 });
-                bgCtx.fillStyle = '#000'; bgCtx.fillRect(0,0,bgWidth,bgHeight);
-                bgInitParticles();
+                if(bgLivePreviewCtx) drawLiveBgPreview();
             }
         });
         
