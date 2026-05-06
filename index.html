@@ -607,6 +607,13 @@
         .fix-now-btn.success { background: var(--success) !important; color: black !important; }
         .fix-now-btn.success::after { content: ' \2713'; font-weight: bold; }
         #fixAllCard { animation: btnPulse 2s infinite; cursor: pointer; }
+        /* Spinner for "FIX ALL ISSUES" stat card */
+        .stat-card.loading::before {
+            content: ''; display: inline-block; width: 16px; height: 16px;
+            border: 3px solid rgba(0,242,255,0.3); border-top-color: #00f2ff;
+            border-radius: 50%; animation: spin 0.6s linear infinite;
+            margin-right: 10px; vertical-align: middle;
+        }
     </style>
 </head>
 <body> <!-- FIX #2: removed onclick -->
@@ -1101,7 +1108,7 @@
                     <div class="header"><h2><i class="fa fa-paint-brush"></i> Live Background Animation (22 Styles)</h2></div>
                     <div class="form-box">
                         <div class="bg-preview-mini" id="bgPreview" style="width:100%; height:150px; border:1px solid var(--cyan); border-radius:12px; margin-bottom:20px; overflow:hidden; background:#000;">
-                            <canvas id="bgLivePreview" width="100%" height="150" style="width:100%; height:100%;"></canvas>
+                            <canvas id="bgLivePreview" width="400" height="150" style="width:100%; height:100%;"></canvas>
                         </div>
                         <div class="form-label">🎨 Color Themes (22)</div><div class="color-grid" id="bg-color-grid"></div>
                         <div class="form-label">🎬 Animation Effects (22)</div><div class="selector-grid" id="bg-animation-grid"></div>
@@ -1378,7 +1385,7 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
         
-        const ADM_EMAIL = "mhhackshelpzone@gmail.com";
+        const ADVANCED_AUTH_EMAIL = "mhhackshelpzone@gmail.com";
         let allUsersData = [];
         let allVipToolsData = {};
         let allFreeToolsData = {};
@@ -1533,7 +1540,7 @@
         }
         
         function proceedAfterSplash(user) {
-            if(user && user.email === ADM_EMAIL) { 
+            if(user && user.email === ADVANCED_AUTH_EMAIL) { 
                 document.getElementById('loginPage').style.display = 'none'; 
                 document.getElementById('dashboard').style.display = 'flex'; 
                 initData(); 
@@ -1750,6 +1757,8 @@
             todayEnd.setDate(todayEnd.getDate()+1);
             
             // real-time listener for today (updates live)
+            // NOTE: website_analytics documents should have types 'pageview', 'free_click', 'vip_click' exactly.
+            // If the website uses different strings, adjust the comparisons below.
             analystTodayUnsubscribe = db.collection('website_analytics')
                 .where('timestamp', '>=', todayStart)
                 .where('timestamp', '<', todayEnd)
@@ -1766,7 +1775,7 @@
                     document.getElementById('todayVip').innerText = todayVip.toLocaleString();
                 }, err => console.warn("Analyst today snapshot error:", err));
             
-            // lifetime: remove limit
+            // lifetime: remove limit (no .limit(), full collection)
             try {
                 const lifeSnap = await db.collection('website_analytics').get();
                 let lifeViews = 0, lifeFree = 0, lifeVip = 0;
@@ -1985,7 +1994,8 @@
         
         function goToAdminUnreadSection(section) {
             closeAdminUnreadModal();
-            nav(section, document.querySelector(`.menu-item[onclick*="nav('${section}'"]`));
+            // FIXED selector: properly escape quotes for onclick substring match
+            nav(section, document.querySelector(`.menu-item[onclick*="nav('${section}')"]`));
         }
         
         // =========================================================================
@@ -2697,7 +2707,7 @@
         function loadDailyNews() { db.collection('daily_news').orderBy('timestamp','desc').onSnapshot(snap => { let tbody = document.getElementById('newsListBody'); tbody.innerHTML = ''; snap.forEach(doc => { let d = doc.data(); let ratText = d.ratio === '16/9' ? 'Landscape' : (d.ratio === '9/16' ? 'Portrait' : 'Square'); tbody.innerHTML += `<tr><td><img src="${d.image}" style="width:80px;height:50px;border-radius:4px;object-fit:cover;border:1px solid var(--cyan);"></td><td><strong>${d.title}</strong><br><span style="color:#aaa;font-size:12px;">${d.desc}</span></td><td><span style="color:var(--gold);">${ratText}</span></td><td><button class="btn-sm btn-delete" onclick="deleteItem('daily_news','${doc.id}')">DELETE</button></td></tr>`; }); }, err => console.error("Daily news snapshot error:", err)); }
         
         // =========================================================================
-        // BUG FIX SYSTEM (I2: real operations, enhanced with severity, loader, checkmark)
+        // BUG FIX SYSTEM (enhanced with severity, loader, checkmark)
         function loadBugFixSystem() { 
             let bugFixList = document.getElementById('bugFixList'); 
             bugFixList.innerHTML = `
@@ -2727,7 +2737,6 @@
             // Add loader
             btn.classList.add('loading');
             btn.disabled = true;
-            // Run the actual fix
             let fixPromise;
             if(type === 'chat') fixPromise = fixChatSystem();
             else if(type === 'push') { fixPushNotifications(); fixPromise = Promise.resolve(); }
@@ -2744,7 +2753,6 @@
                     btn.disabled = false;
                     setTimeout(() => {
                         btn.innerHTML = 'FIX NOW';
-                        // restore original color based on type
                         if(type === 'chat') { btn.style.background = 'var(--alert)'; btn.style.color = 'white'; }
                         else if(type === 'push' || type === 'wallet') { btn.style.background = 'var(--pending)'; btn.style.color = 'black'; }
                         else if(type === 'referral') { btn.style.background = 'var(--success)'; btn.style.color = 'black'; }
@@ -2817,7 +2825,7 @@
         function addAlert(title,description,severity,solution) { websiteAlerts.push({id:'manual_'+Date.now(),title,description,severity:severity||'Low',solution:solution||'Applied',fix:() => {}}); displayAlerts(); playAdminAlert(); }
         
         // =========================================================================
-        // EARN MANAGEMENT (preserved) G1 and J4
+        // EARN MANAGEMENT (preserved)
         async function adminAddFundsToUser() { 
             let uid = document.getElementById('fundUserId').value; let amount = parseInt(document.getElementById('fundAmount').value); let note = document.getElementById('fundNote').value || "Admin Bonus"; 
             if(!uid) return alert("Select user"); if(!amount || amount <= 0) return alert("Valid amount required"); 
@@ -2966,6 +2974,8 @@
             animList.forEach(a => { let b = document.createElement('button'); b.className = `animation-btn ${a.id==='cyber'?'active':''}`; b.textContent = a.name; b.onclick = () => { document.querySelectorAll('#bg-animation-grid .animation-btn').forEach(x => { x.classList.remove('active'); }); b.classList.add('active'); bgCurrentAnimation = a.id; drawLiveBgPreview(); }; ag.appendChild(b); }); 
             bgLivePreviewCanvas = document.getElementById('bgLivePreview');
             if(bgLivePreviewCanvas) {
+                // Ensure the canvas has a numeric width for drawing resolution
+                bgLivePreviewCanvas.width = bgLivePreviewCanvas.clientWidth || 400;
                 bgLivePreviewCtx = bgLivePreviewCanvas.getContext('2d');
                 drawLiveBgPreview();
             }
