@@ -498,14 +498,115 @@
         .audio-wave .bar:nth-child(4) { animation-delay: 0.3s; }
         .audio-wave .bar:nth-child(5) { animation-delay: 0.4s; }
         .text-preview-box { background: #020606; border: 1px solid var(--cyan); border-radius: 12px; padding: 20px; margin-top: 15px; animation: slideUp 0.5s; }
-        .alert-card-high { border-left: 6px solid var(--alert); animation: alertPulse 2s infinite; }
-        .alert-card-medium { border-left: 6px solid var(--pending); }
-        .alert-card-low { border-left: 6px solid var(--warning); }
+        .alert-card-high { border-color: var(--alert); box-shadow: 0 0 20px rgba(255,51,0,0.3); animation: alertPulse 2s infinite; }
+        .alert-card-medium { border-color: var(--pending); box-shadow: 0 0 15px rgba(255,153,0,0.3); }
+        .alert-card-low { border-color: var(--warning); box-shadow: 0 0 10px rgba(255,170,0,0.2); }
         .floating-coins { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
         .coin { position: absolute; font-size: 24px; color: var(--gold); opacity: 0.3; animation: spinCoin 4s linear infinite, floating 3s ease-in-out infinite; }
         .btn-glow { box-shadow: 0 0 15px var(--cyan); }
         .cleanup-confirm-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999999; display: none; align-items: center; justify-content: center; }
         .cleanup-confirm-card { background: #111; border: 2px solid var(--cyan); border-radius: 16px; padding: 30px; max-width: 400px; text-align: center; }
+
+        /* =========================================================================
+           ISSUE 1 – WEBSITE ALERT SYSTEM ENHANCEMENTS
+           ========================================================================= */
+        .alert-card {
+            background: rgba(10,10,10,0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            width: 100%;
+            margin-bottom: 20px;
+            position: relative;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .alert-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0,242,255,0.2);
+        }
+        .alert-card-high {
+            border-color: var(--alert);
+            box-shadow: 0 0 25px rgba(255,51,0,0.3);
+            animation: alertPulse 2s infinite;
+        }
+        .alert-card-medium {
+            border-color: var(--pending);
+            box-shadow: 0 0 20px rgba(255,153,0,0.3);
+            animation: pulse 3s infinite;
+        }
+        .alert-card-low {
+            border-color: var(--warning);
+            box-shadow: 0 0 15px rgba(255,170,0,0.2);
+        }
+        .alert-card .alert-time { font-size: 12px; color: #666; margin-bottom: 10px; }
+        .alert-card .alert-title { font-size: 18px; color: white; font-weight: 900; margin-bottom: 10px; font-family: 'Rajdhani'; }
+        .alert-card .alert-desc { font-size: 13px; color: #aaa; line-height: 1.4; margin-bottom: 15px; }
+        .alert-card .alert-details { font-size: 12px; color: #888; margin-bottom: 15px; }
+        .alert-card .alert-actions { display: flex; gap: 10px; }
+        .alert-dismiss-btn { background: #222; color: #aaa; border: 1px solid #444; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .alert-dismiss-btn:hover { background: #333; }
+        /* Health circle */
+        .health-ring {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(var(--cyan) 0%, var(--cyan) calc(var(--health-percent, 100) * 1%), #000 calc(var(--health-percent, 100) * 1%));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            box-shadow: 0 0 25px rgba(0,242,255,0.4);
+            position: relative;
+        }
+        .health-ring::before {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border-radius: 50%;
+            background: #000;
+        }
+        .health-ring span {
+            position: relative;
+            z-index: 1;
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--cyan);
+            text-shadow: 0 0 10px var(--cyan);
+        }
+        /* Floating warning icons in alert section background */
+        .alert-bg-icons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .alert-bg-icons i {
+            position: absolute;
+            color: rgba(255,51,0,0.05);
+            font-size: 48px;
+            animation: floating 4s ease-in-out infinite;
+        }
+        .alert-bg-icons i:nth-child(2) { left: 10%; top: 20%; animation-delay: 2s; }
+        .alert-bg-icons i:nth-child(3) { left: 70%; top: 60%; animation-delay: 1s; }
+        .alert-bg-icons i:nth-child(4) { left: 40%; top: 80%; animation-delay: 3s; }
+        .alert-bg-icons i:nth-child(5) { left: 80%; top: 15%; animation-delay: 0.5s; }
+
+        /* =========================================================================
+           ISSUE 2 – BUG FIX SYSTEM ENHANCEMENTS
+           ========================================================================= */
+        .bug-fix-card.severity-critical { border-color: var(--alert); box-shadow: 0 0 20px rgba(255,0,0,0.4); }
+        .bug-fix-card.severity-high { border-color: var(--pending); box-shadow: 0 0 15px rgba(255,153,0,0.4); }
+        .bug-fix-card.severity-medium { border-color: var(--success); box-shadow: 0 0 10px rgba(0,255,0,0.3); }
+        .fix-now-btn.success { background: var(--success) !important; color: black !important; }
+        .fix-now-btn.success::after { content: ' \2713'; font-weight: bold; }
+        #fixAllCard { animation: btnPulse 2s infinite; cursor: pointer; }
     </style>
 </head>
 <body> <!-- FIX #2: removed onclick -->
@@ -1234,7 +1335,25 @@
 
                 <div id="sect-alert" class="section">
                     <div class="header"><h2><i class="fa fa-exclamation-triangle" style="color:var(--alert);"></i> Website Alert System</h2><button class="btn btn-success" onclick="scanForWebsiteIssues()">SCAN NOW</button></div>
-                    <div class="alert-system-header"><div class="alert-status-card" id="alertStatusCard"><div class="alert-icon"><i class="fa fa-check-circle"></i></div><div class="alert-count" id="alertCount">0</div><div class="alert-label">Active Issues</div></div><div class="alert-status-card good"><div class="alert-icon"><i class="fa fa-shield-alt"></i></div><div class="alert-count" id="systemHealth">100%</div><div class="alert-label">System Health</div></div></div>
+                    <div class="alert-system-header">
+                        <div class="alert-status-card" id="alertStatusCard">
+                            <div class="alert-icon"><i class="fa fa-check-circle"></i></div>
+                            <div class="alert-count" id="alertCount">0</div>
+                            <div class="alert-label">Active Issues</div>
+                        </div>
+                        <div class="alert-status-card good">
+                            <div class="alert-icon"><i class="fa fa-shield-alt"></i></div>
+                            <div class="health-ring"><span id="systemHealth">100%</span></div>
+                            <div class="alert-label">System Health</div>
+                        </div>
+                    </div>
+                    <div class="alert-bg-icons">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <i class="fa fa-exclamation-triangle"></i>
+                    </div>
                     <div class="alert-grid" id="alertsContainer"></div>
                     <div style="text-align:center;"><button class="btn btn-success" onclick="fixAllAlerts()">FIX ALL ISSUES</button></div>
                 </div>
@@ -1272,6 +1391,9 @@
         let moneyRequestCount = 0;
         let stats = { free: 0, vip: 0 };
         let authBootInterval = null; // to prevent multiple intervals
+        
+        // Added for analyst real-time updates
+        let analystTodayUnsubscribe = null;
         
         let CHECKIN_AMOUNT = 5;
         let REFERRAL_AMOUNT = 10;
@@ -1360,7 +1482,7 @@
             if(id === 'alert') scanForWebsiteIssues(); 
             if(id === 'earnManagement') loadEarnManagementData(); 
             if(id === 'unreadHub') loadUnreadCenter(); 
-            if(id === 'analyst') refreshAnalystDisplay(); 
+            if(id === 'analyst') { refreshAnalystDisplay(); } 
             if(id === 'offers') loadVipOffers(); 
             if(id === 'txApproval') loadPendingTransactions(); 
             if(id === 'autoControl') loadAutoControls(); 
@@ -1393,7 +1515,6 @@
         
         function checkAuth() { 
             auth.onAuthStateChanged(user => { 
-                // Clean up any existing boot interval
                 if (authBootInterval) { clearInterval(authBootInterval); authBootInterval = null; }
                 if(window.bootComplete) {
                     document.getElementById('splash').style.display = 'none'; 
@@ -1485,7 +1606,6 @@
                 if(el) el.addEventListener('input', updateAdPreview);
             });
             updateAdPreview();
-            // modal button previews
             const textInputs = ['cfgTxtNext','cfgTxtCancel','cfgTxtPurchase','cfgTxtPaid','cfgTxtUpload'];
             textInputs.forEach(id => {
                 let el = document.getElementById(id);
@@ -1509,7 +1629,6 @@
             document.getElementById('prevUpload').innerText = document.getElementById('cfgTxtUpload').value || 'UPLOAD PROOF';
         }
         
-        // Floating coins for payment section
         function spawnFloatingCoins() {
             let container = document.getElementById('coinsContainer');
             if(!container) return;
@@ -1619,50 +1738,53 @@
         }
         
         // =========================================================================
-        // WEBSITE ANALYST - REDESIGNED (NO CHART, ONLY BOXES)
+        // WEBSITE ANALYST - REDESIGNED (ENHANCED WITH REAL-TIME TODAY + LARGER LIMITS)
         // =========================================================================
         async function refreshAnalystDisplay() {
-            // load today
+            // detach previous today listener if any
+            if(analystTodayUnsubscribe) { analystTodayUnsubscribe(); analystTodayUnsubscribe = null; }
+            
             const todayStart = new Date();
             todayStart.setHours(0,0,0,0);
             const todayEnd = new Date(todayStart);
             todayEnd.setDate(todayEnd.getDate()+1);
             
-            const todaySnap = await db.collection('website_analytics')
+            // real-time listener for today (updates live)
+            analystTodayUnsubscribe = db.collection('website_analytics')
                 .where('timestamp', '>=', todayStart)
                 .where('timestamp', '<', todayEnd)
-                .limit(500)
-                .get().catch(() => ({ forEach: ()=>{} }));
-            let todayViews = 0, todayFree = 0, todayVip = 0;
-            todaySnap.forEach(doc => {
-                let d = doc.data();
-                if(d.type === 'pageview') todayViews += d.count || 1;
-                if(d.type === 'free_click') todayFree += d.count || 1;
-                if(d.type === 'vip_click') todayVip += d.count || 1;
-            });
-            document.getElementById('todayViews').innerText = todayViews.toLocaleString();
-            document.getElementById('todayFree').innerText = todayFree.toLocaleString();
-            document.getElementById('todayVip').innerText = todayVip.toLocaleString();
+                .onSnapshot(todaySnap => {
+                    let todayViews = 0, todayFree = 0, todayVip = 0;
+                    todaySnap.forEach(doc => {
+                        let d = doc.data();
+                        if(d.type === 'pageview') todayViews += d.count || 1;
+                        if(d.type === 'free_click') todayFree += d.count || 1;
+                        if(d.type === 'vip_click') todayVip += d.count || 1;
+                    });
+                    document.getElementById('todayViews').innerText = todayViews.toLocaleString();
+                    document.getElementById('todayFree').innerText = todayFree.toLocaleString();
+                    document.getElementById('todayVip').innerText = todayVip.toLocaleString();
+                }, err => console.warn("Analyst today snapshot error:", err));
             
-            // load lifetime (no date filter)
-            const lifeSnap = await db.collection('website_analytics').limit(10000).get().catch(() => ({ forEach: ()=>{} }));
-            let lifeViews = 0, lifeFree = 0, lifeVip = 0;
-            lifeSnap.forEach(doc => {
-                let d = doc.data();
-                if(d.type === 'pageview') lifeViews += d.count || 1;
-                if(d.type === 'free_click') lifeFree += d.count || 1;
-                if(d.type === 'vip_click') lifeVip += d.count || 1;
-            });
-            document.getElementById('lifetimeViews').innerText = lifeViews.toLocaleString();
-            document.getElementById('lifetimeFree').innerText = lifeFree.toLocaleString();
-            document.getElementById('lifetimeVip').innerText = lifeVip.toLocaleString();
+            // lifetime: remove limit
+            try {
+                const lifeSnap = await db.collection('website_analytics').get();
+                let lifeViews = 0, lifeFree = 0, lifeVip = 0;
+                lifeSnap.forEach(doc => {
+                    let d = doc.data();
+                    if(d.type === 'pageview') lifeViews += d.count || 1;
+                    if(d.type === 'free_click') lifeFree += d.count || 1;
+                    if(d.type === 'vip_click') lifeVip += d.count || 1;
+                });
+                document.getElementById('lifetimeViews').innerText = lifeViews.toLocaleString();
+                document.getElementById('lifetimeFree').innerText = lifeFree.toLocaleString();
+                document.getElementById('lifetimeVip').innerText = lifeVip.toLocaleString();
+            } catch(e) { console.warn("Lifetime analytics fetch error:", e); }
             
-            // reset custom period displays
             document.getElementById('customViews').innerText = '-';
             document.getElementById('customFree').innerText = '-';
             document.getElementById('customVip').innerText = '-';
             
-            // toggle visibility based on period type
             handlePeriodTypeChange();
         }
         
@@ -1684,7 +1806,7 @@
                 end = new Date(start);
                 end.setDate(end.getDate()+1);
             } else if(type === 'month') {
-                let monthVal = document.getElementById('analystMonthInput').value; // e.g. 2026-05
+                let monthVal = document.getElementById('analystMonthInput').value;
                 if(!monthVal) return alert("Select a month");
                 start = new Date(monthVal + "-01");
                 end = new Date(start);
@@ -1696,21 +1818,22 @@
                 end = new Date(year+1, 0, 1);
             } else return;
             
-            let snap = await db.collection('website_analytics')
-                .where('timestamp', '>=', start)
-                .where('timestamp', '<', end)
-                .limit(500)
-                .get().catch(() => ({ forEach: ()=>{} }));
-            let views = 0, free = 0, vip = 0;
-            snap.forEach(doc => {
-                let d = doc.data();
-                if(d.type === 'pageview') views += d.count || 1;
-                if(d.type === 'free_click') free += d.count || 1;
-                if(d.type === 'vip_click') vip += d.count || 1;
-            });
-            document.getElementById('customViews').innerText = views.toLocaleString();
-            document.getElementById('customFree').innerText = free.toLocaleString();
-            document.getElementById('customVip').innerText = vip.toLocaleString();
+            try {
+                let snap = await db.collection('website_analytics')
+                    .where('timestamp', '>=', start)
+                    .where('timestamp', '<', end)
+                    .get();
+                let views = 0, free = 0, vip = 0;
+                snap.forEach(doc => {
+                    let d = doc.data();
+                    if(d.type === 'pageview') views += d.count || 1;
+                    if(d.type === 'free_click') free += d.count || 1;
+                    if(d.type === 'vip_click') vip += d.count || 1;
+                });
+                document.getElementById('customViews').innerText = views.toLocaleString();
+                document.getElementById('customFree').innerText = free.toLocaleString();
+                document.getElementById('customVip').innerText = vip.toLocaleString();
+            } catch(e) { console.warn("Custom period fetch error:", e); }
         }
         
         // =========================================================================
@@ -2007,7 +2130,6 @@
                     db.collection('user_reports').where('userId','==',userId).get().then(snap=>snap.forEach(d=>d.ref.delete().catch(e=>console.error))); 
                     db.collection('wallets').doc(userId).delete().catch(e=>console.error); 
                     db.collection('vip_keys').where('ownerUid','==',userId).get().then(snap=>snap.forEach(d=>d.ref.delete().catch(e=>console.error))); 
-                    // K2: batch delete chat messages
                     db.collection('chats').doc(userId).collection('messages').get().then(snap => {
                         let batch = db.batch();
                         snap.forEach(msgDoc => batch.delete(msgDoc.ref));
@@ -2162,7 +2284,6 @@
             db.collection('app_settings').doc('auto_ai').set(data).then(() => { alert("AI Config Saved!"); logActivity("AI UPDATE","Admin","Auto-control configuration updated."); }).catch(err => alert("Save failed: "+err.message)); 
         }
         function initAIListeners() {
-            // E2: Auto-approve only checkin and referral
             db.collection('transactions').where('status','==','pending').onSnapshot(snap => {
                 if(!AI_AUTO_APPROVE) return;
                 snap.docChanges().forEach(change => {
@@ -2176,7 +2297,6 @@
                 });
             }, err => console.error("Auto transaction listener error:", err));
             
-            // Auto-chat response FIX #7: prevent multiple replies
             db.collection('chats').where('readByAdmin','==',false).onSnapshot(snap => {
                 if(!AI_AUTO_CHAT) return;
                 snap.docChanges().forEach(change => {
@@ -2198,13 +2318,12 @@
                 });
             }, err => console.error("Auto chat listener error:", err));
             
-            // E1: AI auto-notification spam prevention
             let initialUsersLoaded = false;
             db.collection('users').onSnapshot(snap => {
                 if(!AI_AUTO_NOTIF) return;
                 snap.docChanges().forEach(change => {
                     if(change.type === 'added') {
-                        if(!initialUsersLoaded) return; // skip initial bulk
+                        if(!initialUsersLoaded) return;
                         const user = change.doc.data();
                         db.collection('notifications').add({
                             target: user.uid,
@@ -2215,10 +2334,8 @@
                     }
                 });
             }, err => console.error("Auto notif listener error:", err));
-            // after initial snapshot loaded, set flag
             db.collection('users').get().then(() => { initialUsersLoaded = true; });
             
-            // E3: Auto key for wallet payments
             db.collection('payment_proofs').where('status','==','Pending').where('paymentMethod','==','Wallet').onSnapshot(snap => {
                 if(!AI_AUTO_KEY) return;
                 snap.docChanges().forEach(async change => {
@@ -2229,7 +2346,7 @@
                         let tool = allVipToolsData[toolId];
                         let price = tool ? tool.price : 0;
                         let code = "MH-AUTO-" + Math.random().toString(36).substr(2,8).toUpperCase();
-                        let durationMs = 30 * 86400000; // 30 days default
+                        let durationMs = 30 * 86400000;
                         let expiresAt = Date.now() + durationMs;
                         try {
                             await db.collection('vip_keys').add({
@@ -2285,7 +2402,7 @@
                 else { alert("Already empty!"); } 
             }).catch(err => alert("Fetch failed: "+err.message)); 
         }
-        function purgeHistory(type) { // kept for compatibility
+        function purgeHistory(type) {
             showCleanupConfirm(type);
         }
         
@@ -2350,7 +2467,6 @@
         // EMAIL BULK MAILER (preserved + scheduled, H1 fix) + emailjs safety
         // =========================================================================
         function loadAllUserEmails() { let emails = allUsersData.map(u => u.email).filter(e => e && e.includes('@')); document.getElementById('mailerReceiverEmails').value = emails.join(', '); alert(`Loaded ${emails.length} verified emails`); }
-        // Initialize EmailJS with error handling
         if (typeof emailjs !== 'undefined') {
             try { emailjs.init("4RqXhwyNixdqwQNUT"); } catch(e) { console.warn("EmailJS init failed:", e); }
         } else { console.warn("EmailJS library not loaded – email features disabled."); }
@@ -2410,7 +2526,6 @@
             const doc = await db.collection('scheduled_emails').doc(id).get().catch(err => alert("Fetch failed: "+err.message));
             if(!doc || !doc.exists) return;
             const d = doc.data();
-            // H1: set status to sending and only proceed if scheduled
             if(d.status !== 'scheduled') return;
             await db.collection('scheduled_emails').doc(id).update({status:'sending'});
             const emails = d.receivers.split(',').map(e => e.trim()).filter(e => e);
@@ -2470,7 +2585,6 @@
             let code = document.getElementById('keyCustom').value; 
             if(!code) code = "MH-" + Math.random().toString(36).substr(2,8).toUpperCase(); 
             else {
-                // F1: duplicate custom key check
                 let snap = await db.collection('vip_keys').where('code','==',code).get().catch(err => ({ empty:true }));
                 if(!snap.empty) return alert(`Key "${code}" already exists. Please choose a different code.`);
             }
@@ -2583,8 +2697,65 @@
         function loadDailyNews() { db.collection('daily_news').orderBy('timestamp','desc').onSnapshot(snap => { let tbody = document.getElementById('newsListBody'); tbody.innerHTML = ''; snap.forEach(doc => { let d = doc.data(); let ratText = d.ratio === '16/9' ? 'Landscape' : (d.ratio === '9/16' ? 'Portrait' : 'Square'); tbody.innerHTML += `<tr><td><img src="${d.image}" style="width:80px;height:50px;border-radius:4px;object-fit:cover;border:1px solid var(--cyan);"></td><td><strong>${d.title}</strong><br><span style="color:#aaa;font-size:12px;">${d.desc}</span></td><td><span style="color:var(--gold);">${ratText}</span></td><td><button class="btn-sm btn-delete" onclick="deleteItem('daily_news','${doc.id}')">DELETE</button></td></tr>`; }); }, err => console.error("Daily news snapshot error:", err)); }
         
         // =========================================================================
-        // BUG FIX SYSTEM (I2: real operations)
-        function loadBugFixSystem() { let bugFixList = document.getElementById('bugFixList'); bugFixList.innerHTML = `<div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Chat System Nodes</span><span class="bug-fix-status" style="background:rgba(255,0,0,0.2);color:red;">Critical</span></div><div class="bug-fix-desc">Fix live chat connection issues and sync delays</div><button class="fix-now-btn btn btn-sm" style="background:var(--alert); color:white;" onclick="this.classList.add('loading'); fixChatSystem().then(()=>this.classList.remove('loading'))">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Push Notifications DB</span><span class="bug-fix-status" style="background:rgba(255,153,0,0.2);color:orange;">High</span></div><div class="bug-fix-desc">Fix notification delivery system routing</div><button class="fix-now-btn btn btn-sm" style="background:var(--pending); color:black;" onclick="this.classList.add('loading'); fixPushNotifications(); setTimeout(()=>this.classList.remove('loading'),1500)">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Wallet Balance Sync</span><span class="bug-fix-status" style="background:rgba(255,153,0,0.2);color:orange;">High</span></div><div class="bug-fix-desc">Fix wallet balance cache update errors</div><button class="fix-now-btn btn btn-sm" style="background:var(--pending); color:black;" onclick="this.classList.add('loading'); fixWalletSystem(); setTimeout(()=>this.classList.remove('loading'),1500)">FIX NOW</button></div><div class="bug-fix-card"><div class="bug-fix-header"><span class="bug-fix-title">Referral Algorithms</span><span class="bug-fix-status" style="background:rgba(0,255,0,0.2);color:#0f0;">Medium</span></div><div class="bug-fix-desc">Recalculate referral bonus distribution trees</div><button class="fix-now-btn btn btn-sm" style="background:var(--success); color:black;" onclick="this.classList.add('loading'); fixReferralSystem(); setTimeout(()=>this.classList.remove('loading'),1500)">FIX NOW</button></div>`; }
+        // BUG FIX SYSTEM (I2: real operations, enhanced with severity, loader, checkmark)
+        function loadBugFixSystem() { 
+            let bugFixList = document.getElementById('bugFixList'); 
+            bugFixList.innerHTML = `
+                <div class="bug-fix-card severity-critical">
+                    <div class="bug-fix-header"><span class="bug-fix-title">Chat System Nodes</span><span class="bug-fix-status" style="background:rgba(255,0,0,0.2);color:red;">Critical</span></div>
+                    <div class="bug-fix-desc">Fix live chat connection issues and sync delays</div>
+                    <button class="fix-now-btn btn btn-sm" style="background:var(--alert); color:white;" onclick="performFixAction(this, 'chat')">FIX NOW</button>
+                </div>
+                <div class="bug-fix-card severity-high">
+                    <div class="bug-fix-header"><span class="bug-fix-title">Push Notifications DB</span><span class="bug-fix-status" style="background:rgba(255,153,0,0.2);color:orange;">High</span></div>
+                    <div class="bug-fix-desc">Fix notification delivery system routing</div>
+                    <button class="fix-now-btn btn btn-sm" style="background:var(--pending); color:black;" onclick="performFixAction(this, 'push')">FIX NOW</button>
+                </div>
+                <div class="bug-fix-card severity-high">
+                    <div class="bug-fix-header"><span class="bug-fix-title">Wallet Balance Sync</span><span class="bug-fix-status" style="background:rgba(255,153,0,0.2);color:orange;">High</span></div>
+                    <div class="bug-fix-desc">Fix wallet balance cache update errors</div>
+                    <button class="fix-now-btn btn btn-sm" style="background:var(--pending); color:black;" onclick="performFixAction(this, 'wallet')">FIX NOW</button>
+                </div>
+                <div class="bug-fix-card severity-medium">
+                    <div class="bug-fix-header"><span class="bug-fix-title">Referral Algorithms</span><span class="bug-fix-status" style="background:rgba(0,255,0,0.2);color:#0f0;">Medium</span></div>
+                    <div class="bug-fix-desc">Recalculate referral bonus distribution trees</div>
+                    <button class="fix-now-btn btn btn-sm" style="background:var(--success); color:black;" onclick="performFixAction(this, 'referral')">FIX NOW</button>
+                </div>`; 
+        }
+        
+        function performFixAction(btn, type) {
+            // Add loader
+            btn.classList.add('loading');
+            btn.disabled = true;
+            // Run the actual fix
+            let fixPromise;
+            if(type === 'chat') fixPromise = fixChatSystem();
+            else if(type === 'push') { fixPushNotifications(); fixPromise = Promise.resolve(); }
+            else if(type === 'wallet') { fixWalletSystem(); fixPromise = Promise.resolve(); }
+            else if(type === 'referral') { fixReferralSystem(); fixPromise = Promise.resolve(); }
+            else { btn.classList.remove('loading'); btn.disabled = false; return; }
+            
+            Promise.resolve(fixPromise).then(() => {
+                setTimeout(() => {
+                    btn.classList.remove('loading');
+                    btn.innerHTML = '✓ DONE';
+                    btn.style.background = 'var(--success)';
+                    btn.style.color = 'black';
+                    btn.disabled = false;
+                    setTimeout(() => {
+                        btn.innerHTML = 'FIX NOW';
+                        // restore original color based on type
+                        if(type === 'chat') { btn.style.background = 'var(--alert)'; btn.style.color = 'white'; }
+                        else if(type === 'push' || type === 'wallet') { btn.style.background = 'var(--pending)'; btn.style.color = 'black'; }
+                        else if(type === 'referral') { btn.style.background = 'var(--success)'; btn.style.color = 'black'; }
+                    }, 1500);
+                }, 1500);
+            }).catch(() => {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            });
+        }
+        
         async function fixChatSystem() {
             let snap = await db.collection('chats').where('readByAdmin','==',false).get();
             let batch = db.batch();
@@ -2606,7 +2777,7 @@
         function repairDatabase() { addAlert('Database Repaired','Corrupted JSON nodes fixed','fixed','success'); }
         
         // =========================================================================
-        // WEBSITE ALERT SYSTEM (preserved)
+        // WEBSITE ALERT SYSTEM (preserved, with enhanced display)
         function startAlertMonitoring() { setInterval(scanForWebsiteIssues,30000); scanForWebsiteIssues(); }
         function scanForWebsiteIssues() { 
             websiteAlerts = []; 
@@ -2626,14 +2797,17 @@
             let container = document.getElementById('alertsContainer'); let alertCount = document.getElementById('alertCount'); let badgeAlerts = document.getElementById('badgeAlerts'); let healthScore = document.getElementById('systemHealth'); 
             if(websiteAlerts.length === 0) { 
                 container.innerHTML = '<div style="text-align:center;padding:50px;width:100%;">No critical issues detected. System stable.</div>'; 
-                alertCount.innerText = '0'; healthScore.innerText = '100%'; badgeAlerts.style.display = 'none'; 
+                alertCount.innerText = '0'; healthScore.innerText = '100%'; healthScore.parentElement.style.setProperty('--health-percent', '100'); badgeAlerts.style.display = 'none'; 
             } else { 
                 let html = ''; 
                 websiteAlerts.forEach((alert,index) => { 
                     let sevClass = alert.severity === 'High' ? 'alert-card-high' : (alert.severity === 'Medium' ? 'alert-card-medium' : 'alert-card-low');
-                    html += `<div class="alert-card ${sevClass}" style="animation: slideInRight 0.5s ease;"><div class="alert-time">${new Date().toLocaleTimeString()}</div><div class="alert-title">${alert.title}</div><div class="alert-desc">${alert.description}</div><div class="alert-details">Severity: <span style="color:var(--alert);">${alert.severity}</span><br>Solution: <span style="color:var(--success);">${alert.solution}</span></div><div class="alert-actions"><button class="alert-fix-btn" onclick="fixAlert(${index})">FIX ISSUE NOW</button><button class="alert-dismiss-btn" onclick="dismissAlert(${index})">IGNORE</button></div></div>`; 
+                    html += `<div class="alert-card ${sevClass}" style="animation: slideInRight 0.5s ease;"><div class="alert-time">${new Date().toLocaleTimeString()}</div><div class="alert-title">${alert.title}</div><div class="alert-desc">${alert.description}</div><div class="alert-details">Severity: <span style="color:${alert.severity==='High'?'var(--alert)':alert.severity==='Medium'?'var(--pending)':'var(--warning)'};">${alert.severity}</span><br>Solution: <span style="color:var(--success);">${alert.solution}</span></div><div class="alert-actions"><button class="alert-fix-btn" onclick="fixAlert(${index})">FIX ISSUE NOW</button><button class="alert-dismiss-btn" onclick="dismissAlert(${index})">IGNORE</button></div></div>`; 
                 }); 
-                container.innerHTML = html; alertCount.innerText = websiteAlerts.length; healthScore.innerText = Math.max(0,100 - (websiteAlerts.length * 10)) + '%'; 
+                container.innerHTML = html; alertCount.innerText = websiteAlerts.length; 
+                let health = Math.max(0,100 - (websiteAlerts.length * 10));
+                healthScore.innerText = health + '%'; 
+                healthScore.parentElement.style.setProperty('--health-percent', health);
                 badgeAlerts.style.display = 'block'; badgeAlerts.innerText = websiteAlerts.length; 
             } 
         }
@@ -2649,7 +2823,7 @@
             if(!uid) return alert("Select user"); if(!amount || amount <= 0) return alert("Valid amount required"); 
             try { 
                 let user = allUsersData.find(u => u.uid === uid) || await db.collection('users').doc(uid).get().then(d => d.exists ? d.data() : {name:'Unknown'}).catch(() => ({name:'Unknown'}));
-                let adminId = document.getElementById('cfgAdminId').value || ADMIN_ID; // J4
+                let adminId = document.getElementById('cfgAdminId').value || ADMIN_ID;
                 await db.collection('wallets').doc(uid).set({balance:firebase.firestore.FieldValue.increment(amount),totalEarned:firebase.firestore.FieldValue.increment(amount)},{merge:true}); 
                 await db.collection('transactions').add({userId:uid,type:'received',amount,description:note,senderId:adminId,senderName:'System Admin',timestamp:Date.now(),status:'completed'}); 
                 await db.collection('notifications').add({target:uid,title:'💰 Funds Added',body:`PKR ${amount} credited. Note: ${note}`,timestamp:Date.now()}); 
@@ -2790,7 +2964,6 @@
             animColorThemes.forEach((t,i) => { let b = document.createElement('div'); b.className = `color-btn ${i===0?'active':''}`; b.style.backgroundColor = `rgb(${t.r},${t.g},${t.b})`; b.title = t.name; b.onclick = () => { document.querySelectorAll('#bg-color-grid .color-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); bgCurrentTheme = t; drawLiveBgPreview(); }; cg.appendChild(b); }); 
             let ag = document.getElementById('bg-animation-grid'); ag.innerHTML = ''; 
             animList.forEach(a => { let b = document.createElement('button'); b.className = `animation-btn ${a.id==='cyber'?'active':''}`; b.textContent = a.name; b.onclick = () => { document.querySelectorAll('#bg-animation-grid .animation-btn').forEach(x => { x.classList.remove('active'); }); b.classList.add('active'); bgCurrentAnimation = a.id; drawLiveBgPreview(); }; ag.appendChild(b); }); 
-            // live preview canvas initialization
             bgLivePreviewCanvas = document.getElementById('bgLivePreview');
             if(bgLivePreviewCanvas) {
                 bgLivePreviewCtx = bgLivePreviewCanvas.getContext('2d');
@@ -2802,7 +2975,6 @@
             const w = bgLivePreviewCanvas.width; const h = bgLivePreviewCanvas.height;
             const t = Date.now() * 0.001;
             bgLivePreviewCtx.clearRect(0,0,w,h);
-            // simple cyber/neural preview
             if(bgCurrentAnimation === 'cyber') {
                 bgLivePreviewCtx.strokeStyle = `rgba(${bgCurrentTheme.r},${bgCurrentTheme.g},${bgCurrentTheme.b},0.5)`;
                 for(let i=0;i<8;i++){ let x = (i*60 + t*20)%w; bgLivePreviewCtx.beginPath(); bgLivePreviewCtx.moveTo(x,0); bgLivePreviewCtx.lineTo(x,h); bgLivePreviewCtx.stroke(); }
