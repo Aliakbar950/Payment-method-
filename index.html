@@ -470,7 +470,7 @@
         
         /* TOOLKIT DYNAMIC BUTTONS STYLES */
         .toolkit-buttons-list { margin: 20px 0; border: 1px solid #112222; border-radius: 12px; padding: 15px; background: rgba(10,10,10,0.8); backdrop-filter: blur(5px); }
-        .toolkit-btn-item { display: flex; gap: 15px; margin-bottom: 20px; background: #111; padding: 15px; border-radius: 10px; align-items: center; flex-wrap: wrap; }
+        .toolkit-btn-item { display: flex; gap: 15px; margin-bottom: 20px; background: #111; padding: 15px; border-radius: 10px; align-items: flex-start; flex-wrap: wrap; }
         .toolkit-btn-item input { flex: 2; margin-bottom: 0; }
         .toolkit-btn-item button { margin: 0; flex: 0.3; background: #222; color: var(--cyan); border:1px solid #333; }
         .add-toolkit-btn { margin-top: 15px; background: var(--cyan); color: black; border: none; }
@@ -1140,7 +1140,7 @@
                     </div>
                 </div>
 
-                <!-- MH TOOLKITS PAGE - UPGRADED: DYNAMIC BUTTONS + FILE UPLOAD -->
+                <!-- MH TOOLKITS PAGE - UPGRADED: DYNAMIC BUTTONS + FILE UPLOAD + FULL DETAILS -->
                 <div id="sect-cfgTk" class="section">
                     <div class="header"><h2><i class="fa fa-download"></i> MH Toolkits Download</h2></div>
                     <div class="form-box">
@@ -1861,16 +1861,25 @@
         }
         
         // =========================================================================
-        // MH TOOLKITS - DYNAMIC BUTTONS + FILE UPLOAD
+        // MH TOOLKITS - DYNAMIC BUTTONS + FILE UPLOAD + FULL DETAILS (UPGRADED)
         // =========================================================================
         let toolkitButtonsArray = [];
         
         function loadToolkitButtonsConfig() {
             db.collection('app_settings').doc('toolkit').get().then(doc => {
                 if(doc.exists && doc.data().buttons) {
-                    toolkitButtonsArray = doc.data().buttons;
+                    toolkitButtonsArray = doc.data().buttons.map(item => ({
+                        name: item.name || '',
+                        description: item.description || '',
+                        images: item.images || ['', '', ''],
+                        link: item.link || '',
+                        fileUrl: item.fileUrl || ''
+                    }));
                 } else {
-                    toolkitButtonsArray = [{name:"MH APK Tool", link:"https://example.com/apk.apk"},{name:"MH MF Tool", link:"https://example.com/mf.zip"}];
+                    toolkitButtonsArray = [
+                        { name: "MH APK Tool", description: "", images: ["", "", ""], link: "https://example.com/apk.apk", fileUrl: "" },
+                        { name: "MH MF Tool", description: "", images: ["", "", ""], link: "https://example.com/mf.zip", fileUrl: "" }
+                    ];
                 }
                 renderToolkitButtonsUI();
             }).catch(err => { console.error("Firestore error:", err); });
@@ -1881,23 +1890,71 @@
             if(!container) return;
             container.innerHTML = '';
             toolkitButtonsArray.forEach((btn, idx) => {
+                // ensure all fields exist
+                btn.description = btn.description || '';
+                btn.images = btn.images || ['', '', ''];
+                btn.fileUrl = btn.fileUrl || '';
+                btn.link = btn.link || '';
+                
                 const div = document.createElement('div');
                 div.className = 'toolkit-btn-item';
                 div.innerHTML = `
-                    <input type="text" placeholder="Button Name" value="${escapeHtml(btn.name)}" data-idx="${idx}" class="toolkit-name-input" style="flex:2;">
-                    <input type="text" placeholder="Download Link (URL or uploaded file)" value="${escapeHtml(btn.link)}" data-idx="${idx}" class="toolkit-link-input" style="flex:2;">
-                    <input type="file" class="toolkit-file-upload" data-idx="${idx}" accept="*/*" style="flex:1; padding:8px;">
-                    <button class="btn-sm btn-delete" onclick="removeToolkitButton(${idx})"><i class="fa fa-trash"></i> Remove</button>
+                    <div style="flex: 2; display: flex; flex-direction: column; gap: 5px;">
+                        <label style="font-size:11px; color:var(--cyan);">Name</label>
+                        <input type="text" placeholder="Button Name" value="${escapeHtml(btn.name)}" data-idx="${idx}" class="toolkit-name-input">
+                        <label style="font-size:11px; color:var(--cyan);">Description</label>
+                        <textarea placeholder="Description" data-idx="${idx}" class="toolkit-desc-input" style="min-height:50px;">${escapeHtml(btn.description)}</textarea>
+                        <label style="font-size:11px; color:var(--cyan);">Image URLs (up to 3)</label>
+                        <input type="text" placeholder="Image URL 1" value="${escapeHtml(btn.images[0])}" data-idx="${idx}" data-imgidx="0" class="toolkit-img-input">
+                        <input type="text" placeholder="Image URL 2" value="${escapeHtml(btn.images[1])}" data-idx="${idx}" data-imgidx="1" class="toolkit-img-input">
+                        <input type="text" placeholder="Image URL 3" value="${escapeHtml(btn.images[2])}" data-idx="${idx}" data-imgidx="2" class="toolkit-img-input">
+                        <label style="font-size:11px; color:var(--cyan);">Direct Link (URL)</label>
+                        <input type="text" placeholder="Download Link" value="${escapeHtml(btn.link)}" data-idx="${idx}" class="toolkit-link-input">
+                        <label style="font-size:11px; color:var(--cyan);">Upload File (Optional)</label>
+                        <input type="file" class="toolkit-file-upload" data-idx="${idx}" accept="*/*">
+                        ${btn.fileUrl ? `<div style="color:var(--success); font-size:12px;">Uploaded: ${btn.fileUrl}</div>` : ''}
+                    </div>
+                    <button class="btn-sm btn-delete" onclick="removeToolkitButton(${idx})" style="align-self: flex-start;"><i class="fa fa-trash"></i> Remove</button>
                 `;
                 container.appendChild(div);
             });
-            document.querySelectorAll('.toolkit-name-input').forEach(inp => inp.addEventListener('change', (e) => { toolkitButtonsArray[e.target.dataset.idx].name = e.target.value; }));
-            document.querySelectorAll('.toolkit-link-input').forEach(inp => inp.addEventListener('change', (e) => { toolkitButtonsArray[e.target.dataset.idx].link = e.target.value; }));
-            document.querySelectorAll('.toolkit-file-upload').forEach(inp => inp.addEventListener('change', (e) => uploadToolkitFile(e.target.dataset.idx, e.target.files[0])));
+            
+            // Attach event listeners after rendering
+            document.querySelectorAll('.toolkit-name-input').forEach(inp => {
+                inp.addEventListener('input', (e) => {
+                    const idx = e.target.dataset.idx;
+                    toolkitButtonsArray[idx].name = e.target.value;
+                });
+            });
+            document.querySelectorAll('.toolkit-desc-input').forEach(inp => {
+                inp.addEventListener('input', (e) => {
+                    const idx = e.target.dataset.idx;
+                    toolkitButtonsArray[idx].description = e.target.value;
+                });
+            });
+            document.querySelectorAll('.toolkit-img-input').forEach(inp => {
+                inp.addEventListener('input', (e) => {
+                    const idx = e.target.dataset.idx;
+                    const imgIdx = parseInt(e.target.dataset.imgidx);
+                    if (!toolkitButtonsArray[idx].images) toolkitButtonsArray[idx].images = ['', '', ''];
+                    toolkitButtonsArray[idx].images[imgIdx] = e.target.value;
+                });
+            });
+            document.querySelectorAll('.toolkit-link-input').forEach(inp => {
+                inp.addEventListener('input', (e) => {
+                    const idx = e.target.dataset.idx;
+                    toolkitButtonsArray[idx].link = e.target.value;
+                });
+            });
+            document.querySelectorAll('.toolkit-file-upload').forEach(inp => {
+                inp.addEventListener('change', (e) => {
+                    uploadToolkitFile(e.target.dataset.idx, e.target.files[0]);
+                });
+            });
         }
         
         function addToolkitButtonField() {
-            toolkitButtonsArray.push({ name: "New Button", link: "" });
+            toolkitButtonsArray.push({ name: "New Button", description: "", images: ["", "", ""], link: "", fileUrl: "" });
             renderToolkitButtonsUI();
         }
         
@@ -1911,7 +1968,7 @@
             const storageRef = storage.ref(`toolkit_files/${Date.now()}_${file.name}`);
             await storageRef.put(file).catch(err => alert("Upload failed: " + err.message));
             const url = await storageRef.getDownloadURL().catch(err => alert("Download URL failed: " + err.message));
-            toolkitButtonsArray[idx].link = url;
+            toolkitButtonsArray[idx].fileUrl = url;
             renderToolkitButtonsUI();
             alert("File uploaded! Link automatically set.");
         }
@@ -1919,6 +1976,7 @@
         function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
         
         async function saveToolkitButtonsConfig() {
+            // Ensure all current inputs are captured before saving (they already are via event listeners)
             await db.collection('app_settings').doc('toolkit').set({ buttons: toolkitButtonsArray }, { merge: true })
                 .catch(err => { console.error("Firestore error:", err); alert("Operation failed: " + err.message); });
             alert("Toolkit buttons saved. Website will display exactly these buttons.");
