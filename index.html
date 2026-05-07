@@ -1371,7 +1371,7 @@
     </div>
 
     <script>
-        // 🔒 IMPORTANT: Restrict Firebase API key usage in Firebase console to prevent unauthorized access.
+        // ⚠️ RESTRICT THIS API KEY to your authorized domains in Google Cloud Console – security best practice.
         const firebaseConfig = { 
             apiKey: "AIzaSyBiDFZ4SiW6UJlnG7o6tmXl967GkrPSRmg", 
             authDomain: "mh-hacks-toolkit.firebaseapp.com", 
@@ -1747,6 +1747,23 @@
         // =========================================================================
         // WEBSITE ANALYST - REDESIGNED (ENHANCED WITH REAL-TIME TODAY + LARGER LIMITS)
         // =========================================================================
+        
+        // Helper function to robustly match analytics event types regardless of casing/format
+        function isAnalyticsType(type, expected) {
+            if (!type) return false;
+            const t = typeof type === 'string' ? type.toLowerCase().trim() : '';
+            if (expected === 'pageview') {
+                return t === 'pageview' || t === 'page_view' || t === 'view';
+            }
+            if (expected === 'free_click') {
+                return t === 'free_click' || t === 'freeclick' || (t.includes('free') && !t.includes('vip'));
+            }
+            if (expected === 'vip_click') {
+                return t === 'vip_click' || t === 'vipclick' || t === 'vip-click' || t === 'vip' || (t.includes('vip') && !t.includes('free'));
+            }
+            return false;
+        }
+        
         async function refreshAnalystDisplay() {
             // detach previous today listener if any
             if(analystTodayUnsubscribe) { analystTodayUnsubscribe(); analystTodayUnsubscribe = null; }
@@ -1757,8 +1774,6 @@
             todayEnd.setDate(todayEnd.getDate()+1);
             
             // real-time listener for today (updates live)
-            // NOTE: website_analytics documents should have types 'pageview', 'free_click', 'vip_click' exactly.
-            // If the website uses different strings, adjust the comparisons below.
             analystTodayUnsubscribe = db.collection('website_analytics')
                 .where('timestamp', '>=', todayStart)
                 .where('timestamp', '<', todayEnd)
@@ -1766,24 +1781,24 @@
                     let todayViews = 0, todayFree = 0, todayVip = 0;
                     todaySnap.forEach(doc => {
                         let d = doc.data();
-                        if(d.type === 'pageview') todayViews += d.count || 1;
-                        if(d.type === 'free_click') todayFree += d.count || 1;
-                        if(d.type === 'vip_click') todayVip += d.count || 1;
+                        if(isAnalyticsType(d.type, 'pageview')) todayViews += d.count || 1;
+                        if(isAnalyticsType(d.type, 'free_click')) todayFree += d.count || 1;
+                        if(isAnalyticsType(d.type, 'vip_click')) todayVip += d.count || 1;
                     });
                     document.getElementById('todayViews').innerText = todayViews.toLocaleString();
                     document.getElementById('todayFree').innerText = todayFree.toLocaleString();
                     document.getElementById('todayVip').innerText = todayVip.toLocaleString();
                 }, err => console.warn("Analyst today snapshot error:", err));
             
-            // lifetime: remove limit (no .limit(), full collection)
+            // lifetime: add limit to prevent potential very large queries
             try {
-                const lifeSnap = await db.collection('website_analytics').get();
+                const lifeSnap = await db.collection('website_analytics').limit(10000).get();
                 let lifeViews = 0, lifeFree = 0, lifeVip = 0;
                 lifeSnap.forEach(doc => {
                     let d = doc.data();
-                    if(d.type === 'pageview') lifeViews += d.count || 1;
-                    if(d.type === 'free_click') lifeFree += d.count || 1;
-                    if(d.type === 'vip_click') lifeVip += d.count || 1;
+                    if(isAnalyticsType(d.type, 'pageview')) lifeViews += d.count || 1;
+                    if(isAnalyticsType(d.type, 'free_click')) lifeFree += d.count || 1;
+                    if(isAnalyticsType(d.type, 'vip_click')) lifeVip += d.count || 1;
                 });
                 document.getElementById('lifetimeViews').innerText = lifeViews.toLocaleString();
                 document.getElementById('lifetimeFree').innerText = lifeFree.toLocaleString();
@@ -1835,9 +1850,9 @@
                 let views = 0, free = 0, vip = 0;
                 snap.forEach(doc => {
                     let d = doc.data();
-                    if(d.type === 'pageview') views += d.count || 1;
-                    if(d.type === 'free_click') free += d.count || 1;
-                    if(d.type === 'vip_click') vip += d.count || 1;
+                    if(isAnalyticsType(d.type, 'pageview')) views += d.count || 1;
+                    if(isAnalyticsType(d.type, 'free_click')) free += d.count || 1;
+                    if(isAnalyticsType(d.type, 'vip_click')) vip += d.count || 1;
                 });
                 document.getElementById('customViews').innerText = views.toLocaleString();
                 document.getElementById('customFree').innerText = free.toLocaleString();
