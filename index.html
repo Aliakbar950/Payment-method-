@@ -12,8 +12,6 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
     </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
-    </script>
     <style>
         /* ================================================================
            CSS VARIABLES
@@ -1616,11 +1614,11 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ================================================================
-    JAVASCRIPT — COMPLETE ADMIN PANEL
+    JAVASCRIPT — COMPLETE ADMIN PANEL (FIXED VERSION)
     ================================================================ -->
     <script>
         // ================================================================
-        // 🔥 FIREBASE CONFIG — REPLACE WITH YOUR OWN
+        // 🔥 FIREBASE CONFIG
         // ================================================================
         var firebaseConfig = {
             apiKey: "AIzaSyBiDFZ4SiW6UJlnG7o6tmXl967GkrPSRmg",
@@ -1672,6 +1670,416 @@
         }
 
         function setJSON(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+        // ================================================================
+        // DEFAULT DATA (same as website)
+        // ================================================================
+        function getDefaultProducts() {
+            return [{
+                id: 1,
+                name: 'Hacker Toolkit Pro',
+                category: 'Premium Tools',
+                categorySlug: 'premium-tools',
+                price: 89,
+                originalPrice: 149,
+                isFree: false,
+                rating: 4.9,
+                reviews: 2143,
+                description: 'An all-in-one suite of 40+ pro-grade utilities.',
+                images: ['https://picsum.photos/seed/hacker1/600/400', 'https://picsum.photos/seed/hacker2/600/400',
+                    'https://picsum.photos/seed/hacker3/600/400', 'https://picsum.photos/seed/hacker4/600/400'
+                ],
+                video: '',
+                features: ['40+ premium tools', 'Cross-platform', 'Lifetime updates', 'Priority support'],
+                badge: 'BEST SELLER',
+                discount: 40,
+                reviewsList: [{ user: 'Alex M.', text: 'Game-changing!', rating: 5 }]
+            }, {
+                id: 2,
+                name: 'AI Prompt Vault 2026',
+                category: 'Premium Tools',
+                categorySlug: 'premium-tools',
+                price: 19,
+                originalPrice: 49,
+                isFree: false,
+                rating: 4.9,
+                reviews: 4210,
+                description: '500+ high-converting AI prompts.',
+                images: ['https://picsum.photos/seed/ai1/600/400', 'https://picsum.photos/seed/ai2/600/400',
+                    'https://picsum.photos/seed/ai3/600/400', 'https://picsum.photos/seed/ai4/600/400'
+                ],
+                video: '',
+                features: ['500+ prompts', 'Weekly updates', 'All major AI platforms'],
+                badge: 'BEST SELLER',
+                discount: 61,
+                reviewsList: [{ user: 'Sarah K.', text: 'Best prompt collection!', rating: 5 }]
+            }, {
+                id: 3,
+                name: 'Instagram 10K Aged Account',
+                category: 'Digital Accounts',
+                categorySlug: 'digital-accounts',
+                price: 199,
+                originalPrice: 299,
+                isFree: false,
+                rating: 4.8,
+                reviews: 410,
+                description: 'Aged Instagram account with 10,000+ real followers.',
+                images: ['https://picsum.photos/seed/ig1/600/400', 'https://picsum.photos/seed/ig2/600/400',
+                    'https://picsum.photos/seed/ig3/600/400', 'https://picsum.photos/seed/ig4/600/400'
+                ],
+                video: '',
+                features: ['10K+ real followers', 'Aged 2022', 'High trust score'],
+                badge: 'PREMIUM',
+                discount: 33,
+                reviewsList: [{ user: 'John D.', text: 'Perfect account!', rating: 5 }]
+            }, {
+                id: 4,
+                name: 'Viral Hooks Vault',
+                category: 'Premium Tricks',
+                categorySlug: 'premium-tricks',
+                price: 29,
+                originalPrice: 49,
+                isFree: false,
+                rating: 4.9,
+                reviews: 1731,
+                description: '100+ proven viral hooks and scripts.',
+                images: ['https://picsum.photos/seed/viral1/600/400', 'https://picsum.photos/seed/viral2/600/400',
+                    'https://picsum.photos/seed/viral3/600/400', 'https://picsum.photos/seed/viral4/600/400'
+                ],
+                video: '',
+                features: ['100+ hooks', 'Script templates', 'Top creator verified'],
+                badge: 'PREMIUM',
+                discount: 41,
+                reviewsList: [{ user: 'Emily R.', text: 'Views skyrocketed!', rating: 5 }]
+            }, {
+                id: 5,
+                name: 'Growth Playbook 2026',
+                category: 'Premium Methods',
+                categorySlug: 'premium-methods',
+                price: 49,
+                originalPrice: 79,
+                isFree: false,
+                rating: 4.7,
+                reviews: 892,
+                description: 'Complete growth methodology for SaaS.',
+                images: ['https://picsum.photos/seed/growth1/600/400', 'https://picsum.photos/seed/growth2/600/400',
+                    'https://picsum.photos/seed/growth3/600/400', 'https://picsum.photos/seed/growth4/600/400'
+                ],
+                video: '',
+                features: ['12 modules', 'Case studies', 'Templates included'],
+                badge: 'BEST SELLER',
+                discount: 38,
+                reviewsList: [{ user: 'Michael B.', text: 'Changed my business!', rating: 5 }]
+            }, {
+                id: 6,
+                name: 'Free Image Compressor',
+                category: 'Free Tools',
+                categorySlug: 'free-tools',
+                price: 0,
+                originalPrice: 0,
+                isFree: true,
+                rating: 4.8,
+                reviews: 9421,
+                description: 'Lossless image compression tool.',
+                images: ['https://picsum.photos/seed/compress1/600/400',
+                    'https://picsum.photos/seed/compress2/600/400',
+                    'https://picsum.photos/seed/compress3/600/400'
+                ],
+                video: '',
+                features: ['Lossless compression', 'Batch processing', 'Drag & drop'],
+                badge: 'FREE',
+                discount: 0,
+                downloadUrl: '#',
+                reviewsList: [{ user: 'David L.', text: 'Super useful!', rating: 5 }]
+            }, {
+                id: 7,
+                name: 'Free JSON Formatter',
+                category: 'Free Tools',
+                categorySlug: 'free-tools',
+                price: 0,
+                originalPrice: 0,
+                isFree: true,
+                rating: 4.9,
+                reviews: 5210,
+                description: 'Online JSON formatter and validator.',
+                images: ['https://picsum.photos/seed/json1/600/400', 'https://picsum.photos/seed/json2/600/400',
+                    'https://picsum.photos/seed/json3/600/400'
+                ],
+                video: '',
+                features: ['Format & minify', 'Validate JSON', 'Syntax highlighting'],
+                badge: 'FREE',
+                discount: 0,
+                downloadUrl: '#',
+                reviewsList: [{ user: 'Anna W.', text: 'My go-to JSON tool!', rating: 5 }]
+            }, {
+                id: 8,
+                name: 'Free Palette Generator',
+                category: 'Free Tools',
+                categorySlug: 'free-tools',
+                price: 0,
+                originalPrice: 0,
+                isFree: true,
+                rating: 4.7,
+                reviews: 2102,
+                description: 'AI-powered color palette generator.',
+                images: ['https://picsum.photos/seed/palette1/600/400',
+                    'https://picsum.photos/seed/palette2/600/400',
+                    'https://picsum.photos/seed/palette3/600/400'
+                ],
+                video: '',
+                features: ['AI-generated', 'Export as CSS', 'Color harmonies'],
+                badge: 'FREE',
+                discount: 0,
+                downloadUrl: '#',
+                reviewsList: [{ user: 'Chris P.', text: 'Beautiful palettes!', rating: 4 }]
+            }, {
+                id: 9,
+                name: 'TikTok 50K Account',
+                category: 'Digital Accounts',
+                categorySlug: 'digital-accounts',
+                price: 249,
+                originalPrice: 399,
+                isFree: false,
+                rating: 4.6,
+                reviews: 215,
+                description: 'High-engagement TikTok account with 50K+ followers.',
+                images: ['https://picsum.photos/seed/tt1/600/400', 'https://picsum.photos/seed/tt2/600/400',
+                    'https://picsum.photos/seed/tt3/600/400'
+                ],
+                video: '',
+                features: ['50K+ followers', 'High engagement', 'Established 2023'],
+                badge: 'PREMIUM',
+                discount: 38,
+                reviewsList: [{ user: 'Laura S.', text: 'Great engagement!', rating: 5 }]
+            }, {
+                id: 10,
+                name: 'YouTube Monetized Account',
+                category: 'Digital Accounts',
+                categorySlug: 'digital-accounts',
+                price: 299,
+                originalPrice: 499,
+                isFree: false,
+                rating: 4.7,
+                reviews: 178,
+                description: 'YouTube channel monetized and ready for Adsense.',
+                images: ['https://picsum.photos/seed/yt1/600/400', 'https://picsum.photos/seed/yt2/600/400',
+                    'https://picsum.photos/seed/yt3/600/400'
+                ],
+                video: '',
+                features: ['Monetized', '1K+ subs', '4K+ watch hours'],
+                badge: 'PREMIUM',
+                discount: 40,
+                reviewsList: [{ user: 'Ryan T.', text: 'Monetization approved!', rating: 5 }]
+            }, {
+                id: 11,
+                name: 'Dropshipping Blueprint',
+                category: 'Premium Methods',
+                categorySlug: 'premium-methods',
+                price: 39,
+                originalPrice: 69,
+                isFree: false,
+                rating: 4.8,
+                reviews: 634,
+                description: 'Step-by-step dropshipping blueprint.',
+                images: ['https://picsum.photos/seed/ds1/600/400', 'https://picsum.photos/seed/ds2/600/400',
+                    'https://picsum.photos/seed/ds3/600/400'
+                ],
+                video: '',
+                features: ['10 modules', 'Product sourcing', 'Ad templates'],
+                badge: 'PREMIUM',
+                discount: 43,
+                reviewsList: [{ user: 'Nina P.', text: 'Best dropshipping guide!', rating: 5 }]
+            }, {
+                id: 12,
+                name: 'SEO Masterclass 2026',
+                category: 'Premium Courses',
+                categorySlug: 'premium-courses',
+                price: 59,
+                originalPrice: 99,
+                isFree: false,
+                rating: 4.9,
+                reviews: 412,
+                description: 'Complete SEO course from keyword to link building.',
+                images: ['https://picsum.photos/seed/seo1/600/400', 'https://picsum.photos/seed/seo2/600/400',
+                    'https://picsum.photos/seed/seo3/600/400'
+                ],
+                video: '',
+                features: ['20+ hours', 'Worksheets', 'Case studies'],
+                badge: 'BEST SELLER',
+                discount: 40,
+                reviewsList: [{ user: 'Omar H.', text: 'Pure gold for SEO!', rating: 5 }]
+            }, {
+                id: 13,
+                name: 'Free CSS Animations Course',
+                category: 'Free Courses',
+                categorySlug: 'free-courses',
+                price: 0,
+                originalPrice: 0,
+                isFree: true,
+                rating: 4.7,
+                reviews: 1850,
+                description: 'Learn CSS animations from scratch.',
+                images: ['https://picsum.photos/seed/css1/600/400', 'https://picsum.photos/seed/css2/600/400',
+                    'https://picsum.photos/seed/css3/600/400'
+                ],
+                video: '',
+                features: ['8 hours', 'Interactive demos', 'Projects included'],
+                badge: 'FREE',
+                discount: 0,
+                downloadUrl: '#',
+                reviewsList: [{ user: 'Elena G.', text: 'Finally animations make sense!', rating: 5 }]
+            }, {
+                id: 14,
+                name: 'Free Python Basics',
+                category: 'Free Courses',
+                categorySlug: 'free-courses',
+                price: 0,
+                originalPrice: 0,
+                isFree: true,
+                rating: 4.8,
+                reviews: 2100,
+                description: 'Beginner-friendly Python course.',
+                images: ['https://picsum.photos/seed/py1/600/400', 'https://picsum.photos/seed/py2/600/400',
+                    'https://picsum.photos/seed/py3/600/400'
+                ],
+                video: '',
+                features: ['12 hours', 'Hands-on projects', 'Quizzes'],
+                badge: 'FREE',
+                discount: 0,
+                downloadUrl: '#',
+                reviewsList: [{ user: 'Mark R.', text: 'Best free Python course!', rating: 5 }]
+            }, {
+                id: 15,
+                name: 'Premium Facebook Ads Course',
+                category: 'Premium Courses',
+                categorySlug: 'premium-courses',
+                price: 79,
+                originalPrice: 129,
+                isFree: false,
+                rating: 4.8,
+                reviews: 312,
+                description: 'Master Facebook and Instagram advertising.',
+                images: ['https://picsum.photos/seed/fbads1/600/400',
+                    'https://picsum.photos/seed/fbads2/600/400',
+                    'https://picsum.photos/seed/fbads3/600/400'
+                ],
+                video: '',
+                features: ['15 hours', 'Ad templates', 'Budget optimization'],
+                badge: 'PREMIUM',
+                discount: 39,
+                reviewsList: [{ user: 'Sophia L.', text: 'ROAS doubled!', rating: 5 }]
+            }, {
+                id: 16,
+                name: 'Twitter Growth Hacks',
+                category: 'Premium Tricks',
+                categorySlug: 'premium-tricks',
+                price: 19,
+                originalPrice: 39,
+                isFree: false,
+                rating: 4.6,
+                reviews: 567,
+                description: 'Secret tactics to grow Twitter audience rapidly.',
+                images: ['https://picsum.photos/seed/tw1/600/400', 'https://picsum.photos/seed/tw2/600/400',
+                    'https://picsum.photos/seed/tw3/600/400'
+                ],
+                video: '',
+                features: ['30 tactics', 'Scripts included', 'Automation tips'],
+                badge: 'PREMIUM',
+                discount: 51,
+                reviewsList: [{ user: 'James C.', text: 'Gained 5K followers!', rating: 5 }]
+            }];
+        }
+
+        function getDefaultCategories() {
+            return [
+                { id: 'premium-tools', label: 'Premium Tools', icon: 'fa-cogs', count: 0 },
+                { id: 'free-tools', label: 'Free Tools', icon: 'fa-gift', count: 0 },
+                { id: 'premium-tricks', label: 'Premium Tricks', icon: 'fa-magic', count: 0 },
+                { id: 'premium-methods', label: 'Premium Methods', icon: 'fa-chart-line', count: 0 },
+                { id: 'premium-courses', label: 'Premium Courses', icon: 'fa-graduation-cap', count: 0 },
+                { id: 'free-courses', label: 'Free Courses', icon: 'fa-book-open', count: 0 },
+                { id: 'digital-accounts', label: 'Digital Accounts', icon: 'fa-user-circle', count: 0 },
+                { id: 'free-tricks', label: 'Free Tricks', icon: 'fa-wand-magic-sparkles', count: 0 },
+                { id: 'free-methods', label: 'Free Methods', icon: 'fa-arrow-trend-up', count: 0 }
+            ];
+        }
+
+        function getDefaultPlans() {
+            return [{
+                id: 'basic',
+                name: 'Basic',
+                desc: 'Perfect for beginners.',
+                price: 29,
+                originalPrice: 49,
+                features: ['Access to 30% of paid tools', 'Basic support'],
+                popular: false
+            }, {
+                id: 'standard',
+                name: 'Standard',
+                desc: 'For serious builders.',
+                price: 59,
+                originalPrice: 89,
+                features: ['Access to 60% of paid tools', 'Priority support'],
+                popular: true
+            }, {
+                id: 'premium',
+                name: 'Premium',
+                desc: 'Full access. Everything.',
+                price: 99,
+                originalPrice: 149,
+                features: ['Access to 100% of paid tools', '24/7 VIP support'],
+                popular: false
+            }];
+        }
+
+        function getDefaultSliders() {
+            return [{
+                image: 'https://picsum.photos/seed/banner1/1200/500',
+                title: '🔥 Premium Tools Collection',
+                subtitle: 'Top-rated tools for growth & automation.',
+                cta: 'Explore Now',
+                link: '#products',
+                order: 0
+            }, {
+                image: 'https://picsum.photos/seed/banner2/1200/500',
+                title: '📈 Scale Your Business',
+                subtitle: 'Methods & courses used by top 1% earners.',
+                cta: 'View Methods',
+                link: '#products',
+                order: 1
+            }, {
+                image: 'https://picsum.photos/seed/banner3/1200/500',
+                title: '🎁 Free Tools For Everyone',
+                subtitle: 'Powerful utilities at no cost. Start building.',
+                cta: 'Get Free Tools',
+                link: '#free-tools',
+                order: 2
+            }];
+        }
+
+        function getDefaultSettings() {
+            return {
+                siteName: 'MH HACKS',
+                logoUrl: 'https://i.ibb.co/wN77dfzw/logo.png',
+                heroTitle: 'Unlock The Tools The Top 1% Are Using.',
+                heroSubtitle: 'Premium digital tools, courses, methods, and verified accounts.',
+                primaryColor: '#7B2CBF',
+                primaryLight: '#9D4EDD',
+                contactEmail: 'mhhackshelpzone@gmail.com',
+                contactPhone: '+92 300 762 4789',
+                facebook: 'https://facebook.com/mhhacks',
+                instagram: 'https://instagram.com/mhhacks',
+                whatsApp1: 'https://wa.me/971562100607',
+                whatsApp2: 'https://wa.me/923007624789',
+                telegram: 'https://t.me/MH_HACKS_OWNER',
+                tiktok: 'https://tiktok.com/@mhhacks',
+                youtube: 'https://youtube.com/@mhhacks',
+                footerText: '© 2026 MH HACKS. All rights reserved.',
+                privacy: 'Privacy Policy content...',
+                refund: 'Refund Policy content...',
+                terms: 'Terms & Conditions content...'
+            };
+        }
 
         // ================================================================
         // GLOBAL DATA CACHE (mirrors Firebase)
@@ -1811,7 +2219,21 @@
         });
 
         // ================================================================
-        // FIREBASE REAL-TIME LISTENERS
+        // SEEDING LOGIC (FIX #2)
+        // ================================================================
+        function seedIfEmpty(refPath, defaultData, setter) {
+            return db.ref(refPath).once('value').then(function(snap) {
+                if (snap.val() === null || snap.val() === undefined) {
+                    setter(defaultData);
+                    console.log('✅ Seeded ' + refPath + ' with default data.');
+                } else {
+                    console.log('ℹ️ ' + refPath + ' already has data, not overwriting.');
+                }
+            }).catch(function(e) { console.warn('Seed check error for ' + refPath, e); });
+        }
+
+        // ================================================================
+        // FIREBASE REAL-TIME LISTENERS (with unconditional rendering)
         // ================================================================
         var firebaseListenersSetup = false;
 
@@ -1824,9 +2246,9 @@
                 try { var data = snap.val();
                     _fb_products = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
                         'Products listener error:', e); }
-                if (currentPage === 'products') renderProductsTable();
-                if (currentPage === 'dashboard') renderDashboard();
-                if (currentPage === 'reviews') renderReviewsTable();
+                renderProductsTable(); // unconditional
+                renderDashboard();
+                renderReviewsTable();
                 updateCategoryCounts();
                 renderCategoriesTable();
             });
@@ -1836,8 +2258,8 @@
                 try { var data = snap.val();
                     _fb_categories = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
                         'Categories listener error:', e); }
-                if (currentPage === 'categories') renderCategoriesTable();
-                if (currentPage === 'products') renderProductsTable();
+                renderCategoriesTable();
+                renderProductsTable();
             });
 
             // --- USERS ---
@@ -1845,10 +2267,10 @@
                 try { var data = snap.val();
                     _fb_users = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
                         'Users listener error:', e); }
-                if (currentPage === 'users') renderUsersTable();
-                if (currentPage === 'dashboard') renderDashboard();
-                if (currentPage === 'chat') renderChatUserList();
-                if (currentPage === 'checkins') renderCheckinsTable();
+                renderUsersTable();
+                renderDashboard();
+                renderChatUserList();
+                renderCheckinsTable();
             });
 
             // --- ORDERS ---
@@ -1856,8 +2278,8 @@
                 try { var data = snap.val();
                     _fb_orders = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
                         'Orders listener error:', e); }
-                if (currentPage === 'orders') renderOrdersTable();
-                if (currentPage === 'dashboard') renderDashboard();
+                renderOrdersTable();
+                renderDashboard();
                 updateBadges();
             });
 
@@ -1866,7 +2288,7 @@
                 try { var data = snap.val();
                     _fb_notifications = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
                         'Notifications listener error:', e); }
-                if (currentPage === 'notifications') renderNotificationsTable();
+                renderNotificationsTable();
                 updateBadges();
             });
 
@@ -1875,7 +2297,7 @@
                 try { var data = snap.val();
                     _fb_plans = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
                         'Plans listener error:', e); }
-                if (currentPage === 'plans') renderPlansTable();
+                renderPlansTable();
             });
 
             // --- COUPONS ---
@@ -1883,7 +2305,7 @@
                 try { var data = snap.val();
                     _fb_coupons = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
                         'Coupons listener error:', e); }
-                if (currentPage === 'coupons') renderCouponsTable();
+                renderCouponsTable();
             });
 
             // --- SLIDERS ---
@@ -1891,7 +2313,7 @@
                 try { var data = snap.val();
                     _fb_sliders = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
                         'Sliders listener error:', e); }
-                if (currentPage === 'sliders') renderSlidersTable();
+                renderSlidersTable();
             });
 
             // --- SETTINGS ---
@@ -1899,7 +2321,7 @@
                 try { var data = snap.val();
                     _fb_settings = (data !== null && data !== undefined) ? data : {}; } catch (e) { console.warn(
                         'Settings listener error:', e); }
-                if (currentPage === 'settings') loadSettingsForm();
+                loadSettingsForm();
             });
 
             // --- ANALYTICS ---
@@ -1907,7 +2329,7 @@
                 try { var data = snap.val();
                     _fb_analytics = (data !== null && data !== undefined) ? data : { daily: {} }; } catch (e) { console
                         .warn('Analytics listener error:', e); }
-                if (currentPage === 'dashboard') renderDashboard();
+                renderDashboard();
             });
 
             // --- CHECKINS ---
@@ -1915,7 +2337,7 @@
                 try { var data = snap.val();
                     _fb_checkins = (data !== null && data !== undefined) ? data : {}; } catch (e) { console.warn(
                         'Checkins listener error:', e); }
-                if (currentPage === 'checkins') renderCheckinsTable();
+                renderCheckinsTable();
             });
 
             // --- CHAT ---
@@ -1923,10 +2345,8 @@
                 try { var data = snap.val();
                     _fb_chat_messages = (data !== null && data !== undefined) ? data : {}; } catch (e) { console.warn(
                         'Chat listener error:', e); }
-                if (currentPage === 'chat') {
-                    renderChatUserList();
-                    if (chatSelectedUserId) loadChatConversation(chatSelectedUserId);
-                }
+                renderChatUserList();
+                if (chatSelectedUserId) loadChatConversation(chatSelectedUserId);
                 updateChatBadge();
             });
 
@@ -1935,7 +2355,7 @@
                 try { var data = snap.val();
                     _fb_reviews = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
                         'Reviews listener error:', e); }
-                if (currentPage === 'reviews') renderReviewsTable();
+                renderReviewsTable();
             });
 
             console.log('🔥 Firebase real-time listeners established.');
@@ -1992,7 +2412,8 @@
                 settings: 'Site Settings'
             };
             document.getElementById('pageTitle').innerHTML = titles[page] || page;
-            // Render
+            // Render only if not already updated by listeners (listeners already update data)
+            // but we ensure render functions are called anyway.
             if (page === 'dashboard') renderDashboard();
             else if (page === 'products') renderProductsTable();
             else if (page === 'categories') renderCategoriesTable();
@@ -2000,7 +2421,8 @@
             else if (page === 'plans') renderPlansTable();
             else if (page === 'users') renderUsersTable();
             else if (page === 'orders') renderOrdersTable();
-            else if (page === 'chat') renderChatUserList();
+            else if (page === 'chat') { renderChatUserList(); if (chatSelectedUserId) loadChatConversation(
+                    chatSelectedUserId); }
             else if (page === 'checkins') renderCheckinsTable();
             else if (page === 'notifications') renderNotificationsTable();
             else if (page === 'coupons') renderCouponsTable();
@@ -3287,7 +3709,7 @@
         document.getElementById('refreshOrdersBtn').addEventListener('click', function() { renderOrdersTable(); });
 
         // ================================================================
-        // CHAT
+        // CHAT (FIX #1: SHOW ALL USERS)
         // ================================================================
         var chatSelectedUserId = null;
 
@@ -3299,19 +3721,23 @@
                 return;
             }
 
+            // NEW: Show ALL users, not just those with messages
             var userChats = users.map(function(u) {
                 var history = getChatHistory(u.id);
                 var lastMsg = history.length > 0 ? history[history.length - 1] : null;
                 var unread = history.filter(function(m) { return m.sender === 'bot' && !m.read; }).length;
                 return { user: u, lastMsg: lastMsg, unread: unread };
-            }).filter(function(item) { return item.lastMsg !== null; });
+            });
 
+            // Sort by last message time (if exists) or by user id
             userChats.sort(function(a, b) {
-                return new Date(b.lastMsg.time) - new Date(a.lastMsg.time);
+                var timeA = a.lastMsg ? new Date(a.lastMsg.time) : new Date(0);
+                var timeB = b.lastMsg ? new Date(b.lastMsg.time) : new Date(0);
+                return timeB - timeA;
             });
 
             if (userChats.length === 0) {
-                list.innerHTML = '<div class="empty-state" style="padding:20px;">No chat messages yet.</div>';
+                list.innerHTML = '<div class="empty-state" style="padding:20px;">No users.</div>';
                 return;
             }
 
@@ -3325,7 +3751,7 @@
                         item.unread + '</span>' : '') +
                     '</div>' +
                     '<div style="font-size:0.7rem;color:var(--text-muted);">' + (item.lastMsg ? item.lastMsg.text
-                        .substring(0, 40) + (item.lastMsg.text.length > 40 ? '...' : '') : 'No messages') +
+                        .substring(0, 40) + (item.lastMsg.text.length > 40 ? '...' : '') : 'No messages yet') +
                     '</div>' +
                     '<div style="font-size:0.6rem;color:var(--text-muted);">' + (item.lastMsg ? formatDate(item
                         .lastMsg.time) : '') + '</div>' +
@@ -3343,6 +3769,7 @@
 
             updateChatBadge();
 
+            // Auto-select first user if none selected
             if (!chatSelectedUserId && userChats.length > 0) {
                 chatSelectedUserId = userChats[0].user.id;
                 loadChatConversation(chatSelectedUserId);
@@ -3903,26 +4330,56 @@
         });
 
         // ================================================================
-        // INIT APP
+        // INIT APP (with seeding logic)
         // ================================================================
         function initApp() {
-            setupFirebaseListeners();
-            renderDashboard();
-            renderProductsTable();
-            renderCategoriesTable();
-            renderSlidersTable();
-            renderPlansTable();
-            renderUsersTable();
-            renderOrdersTable();
-            renderChatUserList();
-            renderCheckinsTable();
-            renderNotificationsTable();
-            renderCouponsTable();
-            renderReviewsTable();
-            loadSettingsForm();
-            updateBadges();
+            // Step 1: Seed empty nodes (DO NOT OVERWRITE existing data)
+            Promise.all([
+                seedIfEmpty('mh_products', getDefaultProducts(), setProducts),
+                seedIfEmpty('mh_categories', getDefaultCategories(), setCategories),
+                seedIfEmpty('mh_plans', getDefaultPlans(), setPlans),
+                seedIfEmpty('mh_sliders', getDefaultSliders(), setSliders),
+                seedIfEmpty('mh_settings', getDefaultSettings(), setSettings)
+            ]).then(function() {
+                // Step 2: Setup Firebase listeners
+                setupFirebaseListeners();
+                // Step 3: Render UI
+                renderDashboard();
+                renderProductsTable();
+                renderCategoriesTable();
+                renderSlidersTable();
+                renderPlansTable();
+                renderUsersTable();
+                renderOrdersTable();
+                renderChatUserList();
+                renderCheckinsTable();
+                renderNotificationsTable();
+                renderCouponsTable();
+                renderReviewsTable();
+                loadSettingsForm();
+                updateBadges();
+                console.log('✅ Admin Panel fully initialized.');
+            }).catch(function(e) {
+                console.warn('Seeding error, but continuing:', e);
+                // Still try to set up listeners and render
+                setupFirebaseListeners();
+                renderDashboard();
+                renderProductsTable();
+                renderCategoriesTable();
+                renderSlidersTable();
+                renderPlansTable();
+                renderUsersTable();
+                renderOrdersTable();
+                renderChatUserList();
+                renderCheckinsTable();
+                renderNotificationsTable();
+                renderCouponsTable();
+                renderReviewsTable();
+                loadSettingsForm();
+                updateBadges();
+            });
 
-            // Auto-refresh
+            // Auto-refresh every 30 seconds
             setInterval(function() {
                 if (currentPage === 'dashboard') renderDashboard();
                 else if (currentPage === 'orders') renderOrdersTable();
@@ -3940,10 +4397,11 @@
             document.getElementById('adminLoginOverlay').classList.remove('hidden');
         }
 
-        console.log('🟣 MH HACKS Admin Panel — Production Ready');
+        console.log('🟣 MH HACKS Admin Panel — Production Ready (FIXED)');
         console.log('📦 Firebase: products, categories, users, orders, plans, coupons, sliders, settings, analytics, checkins, chat, reviews');
         console.log('👤 Admin: admin@mhhacks.com / admin123');
         console.log('🔥 Real-time sync enabled.');
+        console.log('✅ Chat shows ALL users. Seeding does not overwrite existing data.');
     </script>
 </body>
 </html>
