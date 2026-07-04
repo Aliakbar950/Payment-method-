@@ -8,6 +8,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- ========== FIREBASE CDN (SAME AS WEBSITE) ========== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
+    </script>
+
     <style>
         /* ================================================================
            CSS VARIABLES — STRICT WHITE, BLACK, PURPLE
@@ -1563,6 +1570,25 @@
     ================================================================ -->
     <script>
         // ================================================================
+        // 🔥 FIREBASE CONFIG (SAME AS WEBSITE)
+        // ================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBiDFZ4SiW6UJlnG7o6tmXl967GkrPSRmg",
+            authDomain: "mh-hacks-toolkit.firebaseapp.com",
+            projectId: "mh-hacks-toolkit",
+            storageBucket: "mh-hacks-toolkit.firebasestorage.app",
+            messagingSenderId: "1004438699703",
+            appId: "1:1004438699703:web:d14f54c5d9beaacb095732",
+            measurementId: "G-849J8JBJ3P"
+        };
+
+        // ================================================================
+        // 🔥 FIREBASE INIT
+        // ================================================================
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.database();
+
+        // ================================================================
         // 0. UTILITY FUNCTIONS
         // ================================================================
         function toast(message, type) {
@@ -1595,68 +1621,145 @@
         function setJSON(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 
         // ================================================================
-        // 1. DATA LAYER — READ/WRITE WITH DEFAULTS
+        // 1. DATA LAYER — FIREBASE-BACKED (replaces localStorage)
         // ================================================================
-        function getProducts() { return safeJSON('mh_products', []); }
+        // Global Firebase cache (mirrors)
+        var _fb_products = [];
+        var _fb_categories = [];
+        var _fb_users = [];
+        var _fb_orders = [];
+        var _fb_notifications = [];
+        var _fb_plans = [];
+        var _fb_coupons = [];
+        var _fb_sliders = [];
+        var _fb_settings = {};
+        var _fb_analytics = { daily: {} };
+        var _fb_checkins = {};
+        var _fb_chat_messages = {};
 
-        function setProducts(data) { setJSON('mh_products', data); }
+        // ----- PRODUCTS -----
+        function getProducts() { return _fb_products; }
 
-        function getCategories() { return safeJSON('mh_categories', []); }
-
-        function setCategories(data) { setJSON('mh_categories', data); }
-
-        function getUsers() { return safeJSON('mh_users', []); }
-
-        function setUsers(data) { setJSON('mh_users', data); }
-
-        function getOrders() { return safeJSON('mh_orders', []); }
-
-        function setOrders(data) { setJSON('mh_orders', data); }
-
-        function getNotifications() { return safeJSON('mh_notifications', []); }
-
-        function setNotifications(data) { setJSON('mh_notifications', data); }
-
-        function getPlans() { return safeJSON('mh_plans', []); }
-
-        function setPlans(data) { setJSON('mh_plans', data); }
-
-        function getCoupons() { return safeJSON('mh_coupons', []); }
-
-        function setCoupons(data) { setJSON('mh_coupons', data); }
-
-        function getSettings() {
-            var defaults = {
-                siteName: 'MH HACKS',
-                logoUrl: 'https://i.ibb.co/wN77dfzw/logo.png',
-                heroTitle: 'Unlock The Tools The Top 1% Are Using.',
-                heroSubtitle: 'Premium digital tools, courses, methods, and verified accounts.',
-                primaryColor: '#7B2CBF',
-                primaryLight: '#9D4EDD',
-                contactEmail: 'mhhackshelpzone@gmail.com',
-                contactPhone: '+92 300 762 4789',
-                facebook: 'https://facebook.com/mhhacks',
-                instagram: 'https://instagram.com/mhhacks',
-                whatsApp1: 'https://wa.me/971562100607',
-                whatsApp2: 'https://wa.me/923007624789',
-                telegram: 'https://t.me/MH_HACKS_OWNER',
-                tiktok: 'https://tiktok.com/@mhhacks',
-                youtube: 'https://youtube.com/@mhhacks',
-                footerText: '© 2026 MH HACKS. All rights reserved.',
-                privacy: 'Privacy Policy content...',
-                refund: 'Refund Policy content...',
-                terms: 'Terms & Conditions content...'
-            };
-            var saved = safeJSON('mh_site_settings', null);
-            if (saved) { for (var key in defaults) { if (saved[key] === undefined) saved[key] = defaults[key]; } return saved; }
-            return defaults;
+        function setProducts(data) {
+            _fb_products = data || [];
+            try { db.ref('mh_products').set(_fb_products); } catch (e) { console.warn('Firebase setProducts error:', e); }
         }
 
-        function setSettings(data) { setJSON('mh_site_settings', data); }
+        // ----- CATEGORIES -----
+        function getCategories() { return _fb_categories; }
 
-        function getAnalytics() { return safeJSON('mh_analytics', { daily: {} }); }
+        function setCategories(data) {
+            _fb_categories = data || [];
+            try { db.ref('mh_categories').set(_fb_categories); } catch (e) { console.warn('Firebase setCategories error:',
+                    e); }
+        }
 
-        function setAnalytics(data) { setJSON('mh_analytics', data); }
+        // ----- USERS -----
+        function getUsers() { return _fb_users; }
+
+        function setUsers(data) {
+            _fb_users = data || [];
+            try { db.ref('mh_users').set(_fb_users); } catch (e) { console.warn('Firebase setUsers error:', e); }
+        }
+
+        // ----- ORDERS -----
+        function getOrders() { return _fb_orders; }
+
+        function setOrders(data) {
+            _fb_orders = data || [];
+            try { db.ref('mh_orders').set(_fb_orders); } catch (e) { console.warn('Firebase setOrders error:', e); }
+        }
+
+        // ----- NOTIFICATIONS -----
+        function getNotifications() { return _fb_notifications; }
+
+        function setNotifications(data) {
+            _fb_notifications = data || [];
+            try { db.ref('mh_notifications').set(_fb_notifications); } catch (e) { console.warn(
+                    'Firebase setNotifications error:', e); }
+        }
+
+        // ----- PLANS -----
+        function getPlans() { return _fb_plans; }
+
+        function setPlans(data) {
+            _fb_plans = data || [];
+            try { db.ref('mh_plans').set(_fb_plans); } catch (e) { console.warn('Firebase setPlans error:', e); }
+        }
+
+        // ----- COUPONS -----
+        function getCoupons() { return _fb_coupons; }
+
+        function setCoupons(data) {
+            _fb_coupons = data || [];
+            try { db.ref('mh_coupons').set(_fb_coupons); } catch (e) { console.warn('Firebase setCoupons error:', e); }
+        }
+
+        // ----- SLIDERS -----
+        function getSliders() { return _fb_sliders; }
+
+        function setSliders(data) {
+            _fb_sliders = data || [];
+            try { db.ref('mh_sliders').set(_fb_sliders); } catch (e) { console.warn('Firebase setSliders error:', e); }
+        }
+
+        // ----- BANNERS (optional) -----
+        function getBanners() { return _fb_banners || []; }
+
+        function setBanners(data) {
+            _fb_banners = data || [];
+            try { db.ref('mh_banners').set(_fb_banners); } catch (e) { console.warn('Firebase setBanners error:', e); }
+        }
+
+        // ----- SETTINGS -----
+        function getSettings() { return _fb_settings; }
+
+        function setSettings(data) {
+            _fb_settings = data || {};
+            try { db.ref('mh_settings').set(_fb_settings); } catch (e) { console.warn('Firebase setSettings error:', e); }
+        }
+
+        // ----- ANALYTICS -----
+        function getAnalytics() { return _fb_analytics || { daily: {} }; }
+
+        function setAnalytics(data) {
+            _fb_analytics = data || { daily: {} };
+            try { db.ref('mh_analytics').set(_fb_analytics); } catch (e) { console.warn('Firebase setAnalytics error:', e); }
+        }
+
+        // ----- CHECKINS (per user) -----
+        function getCheckins(userId) {
+            var key = String(userId);
+            return _fb_checkins[key] || [];
+        }
+
+        function setCheckins(userId, data) {
+            var key = String(userId);
+            _fb_checkins[key] = data || [];
+            var payload = {};
+            payload[key] = _fb_checkins[key];
+            try { db.ref('mh_checkins').update(payload); } catch (e) { console.warn('Firebase setCheckins error:', e); }
+        }
+
+        // ----- CHAT HISTORY (per user) -----
+        function getChatHistory(userId) {
+            var key = String(userId);
+            return _fb_chat_messages[key] || [];
+        }
+
+        function setChatHistory(userId, data) {
+            var key = String(userId);
+            _fb_chat_messages[key] = data || [];
+            var payload = {};
+            payload[key] = _fb_chat_messages[key];
+            try { db.ref('mh_chat').update(payload); } catch (e) { console.warn('Firebase setChatHistory error:', e); }
+        }
+
+        // ================================================================
+        // 2. ADMIN AUTH (unchanged, still uses localStorage)
+        // ================================================================
+        var adminAuth = getAdminAuth();
+        var isAdminLoggedIn = false;
 
         function getAdminAuth() {
             var defaults = { email: 'admin@mhhacks.com', password: 'admin123' };
@@ -1667,44 +1770,6 @@
 
         function setAdminAuth(data) { setJSON('mh_admin_auth', data); }
 
-        function getCheckins(userId) {
-            return safeJSON('mh_checkin_' + userId, []);
-        }
-
-        function setCheckins(userId, data) {
-            setJSON('mh_checkin_' + userId, data);
-        }
-
-        function getChatHistory(userId) {
-            return safeJSON('mh_chat_' + userId, []);
-        }
-
-        function setChatHistory(userId, data) {
-            setJSON('mh_chat_' + userId, data);
-        }
-
-        // ----- Sliders -----
-        function getSliders() {
-            return safeJSON('mh_sliders', []);
-        }
-        function setSliders(data) {
-            setJSON('mh_sliders', data);
-        }
-
-        // ----- Banners (optional) -----
-        function getBanners() {
-            return safeJSON('mh_banners', []);
-        }
-        function setBanners(data) {
-            setJSON('mh_banners', data);
-        }
-
-        // ================================================================
-        // 2. ADMIN AUTH
-        // ================================================================
-        var adminAuth = getAdminAuth();
-        var isAdminLoggedIn = false;
-
         function checkAdminAuth() {
             var session = safeJSON('mh_admin_session', null);
             if (session && session.email === adminAuth.email) {
@@ -1713,6 +1778,7 @@
                 document.getElementById('adminName').textContent = 'Admin';
                 document.getElementById('adminEmail').textContent = adminAuth.email;
                 document.getElementById('adminAvatar').textContent = 'A';
+                // Init app only after Firebase listeners are set up
                 initApp();
                 return true;
             }
@@ -1746,470 +1812,324 @@
         });
 
         // ================================================================
-        // 3. INIT — LOAD DEFAULTS FOR MISSING KEYS
+        // 3. INIT DATA DEFAULTS (localStorage fallback)
         // ================================================================
         function initDataDefaults() {
             // Products
-            var existingProducts = getProducts();
-            if (existingProducts.length === 0) {
-                var defaultProducts = [{
-                    id: 1,
-                    name: 'Hacker Toolkit Pro',
-                    category: 'Premium Tools',
-                    categorySlug: 'premium-tools',
-                    price: 89,
-                    originalPrice: 149,
-                    isFree: false,
-                    rating: 4.9,
-                    reviews: 2143,
-                    description: 'An all-in-one suite of 40+ pro-grade utilities.',
-                    images: ['https://picsum.photos/seed/hacker1/600/400', 'https://picsum.photos/seed/hacker2/600/400',
-                        'https://picsum.photos/seed/hacker3/600/400', 'https://picsum.photos/seed/hacker4/600/400'
-                    ],
-                    video: '',
-                    features: ['40+ premium tools', 'Cross-platform', 'Lifetime updates', 'Priority support'],
-                    badge: 'BEST SELLER',
-                    discount: 40,
-                    reviewsList: [{ user: 'Alex M.', text: 'Game-changing!', rating: 5 }]
-                }, {
-                    id: 2,
-                    name: 'AI Prompt Vault 2026',
-                    category: 'Premium Tools',
-                    categorySlug: 'premium-tools',
-                    price: 19,
-                    originalPrice: 49,
-                    isFree: false,
-                    rating: 4.9,
-                    reviews: 4210,
-                    description: '500+ high-converting AI prompts.',
-                    images: ['https://picsum.photos/seed/ai1/600/400', 'https://picsum.photos/seed/ai2/600/400',
-                        'https://picsum.photos/seed/ai3/600/400', 'https://picsum.photos/seed/ai4/600/400'
-                    ],
-                    video: '',
-                    features: ['500+ prompts', 'Weekly updates', 'All major AI platforms'],
-                    badge: 'BEST SELLER',
-                    discount: 61,
-                    reviewsList: [{ user: 'Sarah K.', text: 'Best prompt collection!', rating: 5 }]
-                }, {
-                    id: 3,
-                    name: 'Instagram 10K Aged Account',
-                    category: 'Digital Accounts',
-                    categorySlug: 'digital-accounts',
-                    price: 199,
-                    originalPrice: 299,
-                    isFree: false,
-                    rating: 4.8,
-                    reviews: 410,
-                    description: 'Aged Instagram account with 10,000+ real followers.',
-                    images: ['https://picsum.photos/seed/ig1/600/400', 'https://picsum.photos/seed/ig2/600/400',
-                        'https://picsum.photos/seed/ig3/600/400', 'https://picsum.photos/seed/ig4/600/400'
-                    ],
-                    video: '',
-                    features: ['10K+ real followers', 'Aged 2022', 'High trust score'],
-                    badge: 'PREMIUM',
-                    discount: 33,
-                    reviewsList: [{ user: 'John D.', text: 'Perfect account!', rating: 5 }]
-                }, {
-                    id: 4,
-                    name: 'Viral Hooks Vault',
-                    category: 'Premium Tricks',
-                    categorySlug: 'premium-tricks',
-                    price: 29,
-                    originalPrice: 49,
-                    isFree: false,
-                    rating: 4.9,
-                    reviews: 1731,
-                    description: '100+ proven viral hooks and scripts.',
-                    images: ['https://picsum.photos/seed/viral1/600/400', 'https://picsum.photos/seed/viral2/600/400',
-                        'https://picsum.photos/seed/viral3/600/400', 'https://picsum.photos/seed/viral4/600/400'
-                    ],
-                    video: '',
-                    features: ['100+ hooks', 'Script templates', 'Top creator verified'],
-                    badge: 'PREMIUM',
-                    discount: 41,
-                    reviewsList: [{ user: 'Emily R.', text: 'Views skyrocketed!', rating: 5 }]
-                }, {
-                    id: 5,
-                    name: 'Growth Playbook 2026',
-                    category: 'Premium Methods',
-                    categorySlug: 'premium-methods',
-                    price: 49,
-                    originalPrice: 79,
-                    isFree: false,
-                    rating: 4.7,
-                    reviews: 892,
-                    description: 'Complete growth methodology for SaaS.',
-                    images: ['https://picsum.photos/seed/growth1/600/400', 'https://picsum.photos/seed/growth2/600/400',
-                        'https://picsum.photos/seed/growth3/600/400', 'https://picsum.photos/seed/growth4/600/400'
-                    ],
-                    video: '',
-                    features: ['12 modules', 'Case studies', 'Templates included'],
-                    badge: 'BEST SELLER',
-                    discount: 38,
-                    reviewsList: [{ user: 'Michael B.', text: 'Changed my business!', rating: 5 }]
-                }, {
-                    id: 6,
-                    name: 'Free Image Compressor',
-                    category: 'Free Tools',
-                    categorySlug: 'free-tools',
-                    price: 0,
-                    originalPrice: 0,
-                    isFree: true,
-                    rating: 4.8,
-                    reviews: 9421,
-                    description: 'Lossless image compression tool.',
-                    images: ['https://picsum.photos/seed/compress1/600/400',
-                        'https://picsum.photos/seed/compress2/600/400',
-                        'https://picsum.photos/seed/compress3/600/400'
-                    ],
-                    video: '',
-                    features: ['Lossless compression', 'Batch processing', 'Drag & drop'],
-                    badge: 'FREE',
-                    discount: 0,
-                    downloadUrl: '#',
-                    reviewsList: [{ user: 'David L.', text: 'Super useful!', rating: 5 }]
-                }, {
-                    id: 7,
-                    name: 'Free JSON Formatter',
-                    category: 'Free Tools',
-                    categorySlug: 'free-tools',
-                    price: 0,
-                    originalPrice: 0,
-                    isFree: true,
-                    rating: 4.9,
-                    reviews: 5210,
-                    description: 'Online JSON formatter and validator.',
-                    images: ['https://picsum.photos/seed/json1/600/400', 'https://picsum.photos/seed/json2/600/400',
-                        'https://picsum.photos/seed/json3/600/400'
-                    ],
-                    video: '',
-                    features: ['Format & minify', 'Validate JSON', 'Syntax highlighting'],
-                    badge: 'FREE',
-                    discount: 0,
-                    downloadUrl: '#',
-                    reviewsList: [{ user: 'Anna W.', text: 'My go-to JSON tool!', rating: 5 }]
-                }, {
-                    id: 8,
-                    name: 'Free Palette Generator',
-                    category: 'Free Tools',
-                    categorySlug: 'free-tools',
-                    price: 0,
-                    originalPrice: 0,
-                    isFree: true,
-                    rating: 4.7,
-                    reviews: 2102,
-                    description: 'AI-powered color palette generator.',
-                    images: ['https://picsum.photos/seed/palette1/600/400',
-                        'https://picsum.photos/seed/palette2/600/400',
-                        'https://picsum.photos/seed/palette3/600/400'
-                    ],
-                    video: '',
-                    features: ['AI-generated', 'Export as CSS', 'Color harmonies'],
-                    badge: 'FREE',
-                    discount: 0,
-                    downloadUrl: '#',
-                    reviewsList: [{ user: 'Chris P.', text: 'Beautiful palettes!', rating: 4 }]
-                }, {
-                    id: 9,
-                    name: 'TikTok 50K Account',
-                    category: 'Digital Accounts',
-                    categorySlug: 'digital-accounts',
-                    price: 249,
-                    originalPrice: 399,
-                    isFree: false,
-                    rating: 4.6,
-                    reviews: 215,
-                    description: 'High-engagement TikTok account with 50K+ followers.',
-                    images: ['https://picsum.photos/seed/tt1/600/400', 'https://picsum.photos/seed/tt2/600/400',
-                        'https://picsum.photos/seed/tt3/600/400'
-                    ],
-                    video: '',
-                    features: ['50K+ followers', 'High engagement', 'Established 2023'],
-                    badge: 'PREMIUM',
-                    discount: 38,
-                    reviewsList: [{ user: 'Laura S.', text: 'Great engagement!', rating: 5 }]
-                }, {
-                    id: 10,
-                    name: 'YouTube Monetized Account',
-                    category: 'Digital Accounts',
-                    categorySlug: 'digital-accounts',
-                    price: 299,
-                    originalPrice: 499,
-                    isFree: false,
-                    rating: 4.7,
-                    reviews: 178,
-                    description: 'YouTube channel monetized and ready for Adsense.',
-                    images: ['https://picsum.photos/seed/yt1/600/400', 'https://picsum.photos/seed/yt2/600/400',
-                        'https://picsum.photos/seed/yt3/600/400'
-                    ],
-                    video: '',
-                    features: ['Monetized', '1K+ subs', '4K+ watch hours'],
-                    badge: 'PREMIUM',
-                    discount: 40,
-                    reviewsList: [{ user: 'Ryan T.', text: 'Monetization approved!', rating: 5 }]
-                }, {
-                    id: 11,
-                    name: 'Dropshipping Blueprint',
-                    category: 'Premium Methods',
-                    categorySlug: 'premium-methods',
-                    price: 39,
-                    originalPrice: 69,
-                    isFree: false,
-                    rating: 4.8,
-                    reviews: 634,
-                    description: 'Step-by-step dropshipping blueprint.',
-                    images: ['https://picsum.photos/seed/ds1/600/400', 'https://picsum.photos/seed/ds2/600/400',
-                        'https://picsum.photos/seed/ds3/600/400'
-                    ],
-                    video: '',
-                    features: ['10 modules', 'Product sourcing', 'Ad templates'],
-                    badge: 'PREMIUM',
-                    discount: 43,
-                    reviewsList: [{ user: 'Nina P.', text: 'Best dropshipping guide!', rating: 5 }]
-                }, {
-                    id: 12,
-                    name: 'SEO Masterclass 2026',
-                    category: 'Premium Courses',
-                    categorySlug: 'premium-courses',
-                    price: 59,
-                    originalPrice: 99,
-                    isFree: false,
-                    rating: 4.9,
-                    reviews: 412,
-                    description: 'Complete SEO course from keyword to link building.',
-                    images: ['https://picsum.photos/seed/seo1/600/400', 'https://picsum.photos/seed/seo2/600/400',
-                        'https://picsum.photos/seed/seo3/600/400'
-                    ],
-                    video: '',
-                    features: ['20+ hours', 'Worksheets', 'Case studies'],
-                    badge: 'BEST SELLER',
-                    discount: 40,
-                    reviewsList: [{ user: 'Omar H.', text: 'Pure gold for SEO!', rating: 5 }]
-                }, {
-                    id: 13,
-                    name: 'Free CSS Animations Course',
-                    category: 'Free Courses',
-                    categorySlug: 'free-courses',
-                    price: 0,
-                    originalPrice: 0,
-                    isFree: true,
-                    rating: 4.7,
-                    reviews: 1850,
-                    description: 'Learn CSS animations from scratch.',
-                    images: ['https://picsum.photos/seed/css1/600/400', 'https://picsum.photos/seed/css2/600/400',
-                        'https://picsum.photos/seed/css3/600/400'
-                    ],
-                    video: '',
-                    features: ['8 hours', 'Interactive demos', 'Projects included'],
-                    badge: 'FREE',
-                    discount: 0,
-                    downloadUrl: '#',
-                    reviewsList: [{ user: 'Elena G.', text: 'Finally animations make sense!', rating: 5 }]
-                }, {
-                    id: 14,
-                    name: 'Free Python Basics',
-                    category: 'Free Courses',
-                    categorySlug: 'free-courses',
-                    price: 0,
-                    originalPrice: 0,
-                    isFree: true,
-                    rating: 4.8,
-                    reviews: 2100,
-                    description: 'Beginner-friendly Python course.',
-                    images: ['https://picsum.photos/seed/py1/600/400', 'https://picsum.photos/seed/py2/600/400',
-                        'https://picsum.photos/seed/py3/600/400'
-                    ],
-                    video: '',
-                    features: ['12 hours', 'Hands-on projects', 'Quizzes'],
-                    badge: 'FREE',
-                    discount: 0,
-                    downloadUrl: '#',
-                    reviewsList: [{ user: 'Mark R.', text: 'Best free Python course!', rating: 5 }]
-                }, {
-                    id: 15,
-                    name: 'Premium Facebook Ads Course',
-                    category: 'Premium Courses',
-                    categorySlug: 'premium-courses',
-                    price: 79,
-                    originalPrice: 129,
-                    isFree: false,
-                    rating: 4.8,
-                    reviews: 312,
-                    description: 'Master Facebook and Instagram advertising.',
-                    images: ['https://picsum.photos/seed/fbads1/600/400',
-                        'https://picsum.photos/seed/fbads2/600/400',
-                        'https://picsum.photos/seed/fbads3/600/400'
-                    ],
-                    video: '',
-                    features: ['15 hours', 'Ad templates', 'Budget optimization'],
-                    badge: 'PREMIUM',
-                    discount: 39,
-                    reviewsList: [{ user: 'Sophia L.', text: 'ROAS doubled!', rating: 5 }]
-                }, {
-                    id: 16,
-                    name: 'Twitter Growth Hacks',
-                    category: 'Premium Tricks',
-                    categorySlug: 'premium-tricks',
-                    price: 19,
-                    originalPrice: 39,
-                    isFree: false,
-                    rating: 4.6,
-                    reviews: 567,
-                    description: 'Secret tactics to grow Twitter audience rapidly.',
-                    images: ['https://picsum.photos/seed/tw1/600/400', 'https://picsum.photos/seed/tw2/600/400',
-                        'https://picsum.photos/seed/tw3/600/400'
-                    ],
-                    video: '',
-                    features: ['30 tactics', 'Scripts included', 'Automation tips'],
-                    badge: 'PREMIUM',
-                    discount: 51,
-                    reviewsList: [{ user: 'James C.', text: 'Gained 5K followers!', rating: 5 }]
-                }];
-                setProducts(defaultProducts);
+            var existingProducts = safeJSON('mh_products', null);
+            if (existingProducts && existingProducts.length > 0) {
+                // If localStorage has data, we'll push it to Firebase if Firebase is empty (handled in sync)
+                // But we don't want to overwrite Firebase data if it exists.
+                // We'll do initial sync in setupFirebaseListeners.
             }
-
             // Categories
-            var existingCategories = getCategories();
-            if (existingCategories.length === 0) {
-                var defaultCategories = [
-                    { id: 'premium-tools', label: 'Premium Tools', icon: 'fa-cogs', count: 0 },
-                    { id: 'free-tools', label: 'Free Tools', icon: 'fa-gift', count: 0 },
-                    { id: 'premium-tricks', label: 'Premium Tricks', icon: 'fa-magic', count: 0 },
-                    { id: 'premium-methods', label: 'Premium Methods', icon: 'fa-chart-line', count: 0 },
-                    { id: 'premium-courses', label: 'Premium Courses', icon: 'fa-graduation-cap', count: 0 },
-                    { id: 'free-courses', label: 'Free Courses', icon: 'fa-book-open', count: 0 },
-                    { id: 'digital-accounts', label: 'Digital Accounts', icon: 'fa-user-circle', count: 0 },
-                    { id: 'free-tricks', label: 'Free Tricks', icon: 'fa-wand-magic-sparkles', count: 0 },
-                    { id: 'free-methods', label: 'Free Methods', icon: 'fa-arrow-trend-up', count: 0 }
-                ];
-                setCategories(defaultCategories);
-            }
-
+            var existingCategories = safeJSON('mh_categories', null);
             // Users
-            var existingUsers = getUsers();
-            if (existingUsers.length === 0) {
-                var defaultUsers = [{
-                    id: 1001,
-                    fullName: 'Test User',
-                    email: 'test@example.com',
-                    password: 'password123',
-                    walletBalance: 50,
-                    referralCode: 'MHABCD',
-                    totalReferrals: 0,
-                    totalCheckins: 0,
-                    totalPurchased: 0,
-                    joinDate: new Date().toISOString(),
-                    referralHistory: [],
-                    status: 'active'
-                }];
-                setUsers(defaultUsers);
-            }
-
+            var existingUsers = safeJSON('mh_users', null);
+            // Orders
+            var existingOrders = safeJSON('mh_orders', null);
             // Plans
-            var existingPlans = getPlans();
-            if (existingPlans.length === 0) {
-                var defaultPlans = [{
-                    id: 'basic',
-                    name: 'Basic',
-                    desc: 'Perfect for beginners.',
-                    price: 29,
-                    originalPrice: 49,
-                    features: ['Access to 30% of paid tools', 'Basic support'],
-                    toolIds: [],
-                    popular: false
-                }, {
-                    id: 'standard',
-                    name: 'Standard',
-                    desc: 'For serious builders.',
-                    price: 59,
-                    originalPrice: 89,
-                    features: ['Access to 60% of paid tools', 'Priority support'],
-                    toolIds: [],
-                    popular: true
-                }, {
-                    id: 'premium',
-                    name: 'Premium',
-                    desc: 'Full access. Everything.',
-                    price: 99,
-                    originalPrice: 149,
-                    features: ['Access to 100% of paid tools', '24/7 VIP support'],
-                    toolIds: [],
-                    popular: false
-                }];
-                setPlans(defaultPlans);
-            }
-
+            var existingPlans = safeJSON('mh_plans', null);
             // Coupons
-            var existingCoupons = getCoupons();
-            if (existingCoupons.length === 0) {
-                var defaultCoupons = [
-                    { code: 'MH10', type: 'percent', value: 10, active: true, usageLimit: 50, usedCount: 0 },
-                    { code: 'MH20', type: 'percent', value: 20, active: true, usageLimit: 20, usedCount: 0 }
-                ];
-                setCoupons(defaultCoupons);
-            }
-
+            var existingCoupons = safeJSON('mh_coupons', null);
             // Sliders
-            var existingSliders = getSliders();
-            if (existingSliders.length === 0) {
-                var defaultSliders = [{
-                    image: 'https://picsum.photos/seed/banner1/1200/500',
-                    title: '🔥 Premium Tools Collection',
-                    subtitle: 'Top-rated tools for growth & automation.',
-                    cta: 'Explore Now',
-                    link: '#products',
-                    order: 0
-                }, {
-                    image: 'https://picsum.photos/seed/banner2/1200/500',
-                    title: '📈 Scale Your Business',
-                    subtitle: 'Methods & courses used by top 1% earners.',
-                    cta: 'View Methods',
-                    link: '#products',
-                    order: 1
-                }, {
-                    image: 'https://picsum.photos/seed/banner3/1200/500',
-                    title: '🎁 Free Tools For Everyone',
-                    subtitle: 'Powerful utilities at no cost. Start building.',
-                    cta: 'Get Free Tools',
-                    link: '#free-tools',
-                    order: 2
-                }];
-                setSliders(defaultSliders);
-            }
-
-            // Settings - already handled by getSettings()
-            // Analytics
-            var analytics = getAnalytics();
-            if (!analytics.daily) analytics.daily = {};
-            setAnalytics(analytics);
-
+            var existingSliders = safeJSON('mh_sliders', null);
+            // Settings
+            var existingSettings = safeJSON('mh_site_settings', null);
             // Notifications
-            var existingNotifs = getNotifications();
-            if (existingNotifs.length === 0) {
-                setNotifications([{
-                    id: Date.now(),
-                    type: 'admin_message',
-                    message: 'Welcome to MH HACKS Admin Panel!',
-                    read: false,
-                    timestamp: new Date().toISOString()
-                }]);
-            }
-
-            // Update category counts
-            updateCategoryCounts();
-        }
-
-        function updateCategoryCounts() {
-            var products = getProducts();
-            var cats = getCategories();
-            cats.forEach(function(c) {
-                c.count = products.filter(function(p) { return p.categorySlug === c.id; }).length;
-            });
-            setCategories(cats);
+            var existingNotifs = safeJSON('mh_notifications', null);
+            // Analytics
+            var existingAnalytics = safeJSON('mh_analytics', null);
+            // Store in global for later sync
+            window._localData = {
+                products: existingProducts,
+                categories: existingCategories,
+                users: existingUsers,
+                orders: existingOrders,
+                plans: existingPlans,
+                coupons: existingCoupons,
+                sliders: existingSliders,
+                settings: existingSettings,
+                notifications: existingNotifs,
+                analytics: existingAnalytics
+            };
         }
 
         // ================================================================
-        // 4. NAVIGATION
+        // 4. FIREBASE REAL-TIME LISTENERS
+        // ================================================================
+        var firebaseListenersSetup = false;
+
+        function setupFirebaseListeners() {
+            if (firebaseListenersSetup) return;
+            firebaseListenersSetup = true;
+
+            // Helper to sync local data to Firebase if Firebase is empty
+            function syncIfEmpty(refPath, localData, setter) {
+                db.ref(refPath).once('value').then(function(snap) {
+                    if (snap.val() === null || snap.val() === undefined) {
+                        if (localData !== null && localData !== undefined) {
+                            setter(localData);
+                            console.log('[SYNC] Pushed local data to Firebase for ' + refPath);
+                        }
+                    }
+                }).catch(function(err) {
+                    console.warn('Sync check error for ' + refPath, err);
+                });
+            }
+
+            // --- PRODUCTS ---
+            db.ref('mh_products').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_products = data;
+                    } else {
+                        // If Firebase is empty, push local data if available
+                        var local = window._localData ? window._localData.products : null;
+                        if (local && local.length > 0) {
+                            _fb_products = local;
+                            db.ref('mh_products').set(local);
+                        } else {
+                            _fb_products = [];
+                        }
+                    }
+                    // Re-render
+                    if (currentPage === 'products') renderProductsTable();
+                    if (currentPage === 'dashboard') renderDashboard();
+                    updateCategoryCounts();
+                    renderCategoriesTable(); // if open
+                } catch (e) { console.warn('Products listener error:', e); }
+            });
+
+            // --- CATEGORIES ---
+            db.ref('mh_categories').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_categories = data;
+                    } else {
+                        var local = window._localData ? window._localData.categories : null;
+                        if (local && local.length > 0) {
+                            _fb_categories = local;
+                            db.ref('mh_categories').set(local);
+                        } else {
+                            _fb_categories = [];
+                        }
+                    }
+                    if (currentPage === 'categories') renderCategoriesTable();
+                    if (currentPage === 'products') renderProductsTable();
+                } catch (e) { console.warn('Categories listener error:', e); }
+            });
+
+            // --- USERS ---
+            db.ref('mh_users').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_users = data;
+                    } else {
+                        var local = window._localData ? window._localData.users : null;
+                        if (local && local.length > 0) {
+                            _fb_users = local;
+                            db.ref('mh_users').set(local);
+                        } else {
+                            _fb_users = [];
+                        }
+                    }
+                    if (currentPage === 'users') renderUsersTable();
+                    if (currentPage === 'dashboard') renderDashboard();
+                    if (currentPage === 'chat') renderChatUserList();
+                    if (currentPage === 'checkins') renderCheckinsTable();
+                } catch (e) { console.warn('Users listener error:', e); }
+            });
+
+            // --- ORDERS ---
+            db.ref('mh_orders').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_orders = data;
+                    } else {
+                        var local = window._localData ? window._localData.orders : null;
+                        if (local && local.length > 0) {
+                            _fb_orders = local;
+                            db.ref('mh_orders').set(local);
+                        } else {
+                            _fb_orders = [];
+                        }
+                    }
+                    if (currentPage === 'orders') renderOrdersTable();
+                    if (currentPage === 'dashboard') renderDashboard();
+                    updateBadges();
+                } catch (e) { console.warn('Orders listener error:', e); }
+            });
+
+            // --- NOTIFICATIONS ---
+            db.ref('mh_notifications').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_notifications = data;
+                    } else {
+                        var local = window._localData ? window._localData.notifications : null;
+                        if (local && local.length > 0) {
+                            _fb_notifications = local;
+                            db.ref('mh_notifications').set(local);
+                        } else {
+                            _fb_notifications = [];
+                        }
+                    }
+                    if (currentPage === 'notifications') renderNotificationsTable();
+                    updateBadges();
+                } catch (e) { console.warn('Notifications listener error:', e); }
+            });
+
+            // --- PLANS ---
+            db.ref('mh_plans').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_plans = data;
+                    } else {
+                        var local = window._localData ? window._localData.plans : null;
+                        if (local && local.length > 0) {
+                            _fb_plans = local;
+                            db.ref('mh_plans').set(local);
+                        } else {
+                            _fb_plans = [];
+                        }
+                    }
+                    if (currentPage === 'plans') renderPlansTable();
+                } catch (e) { console.warn('Plans listener error:', e); }
+            });
+
+            // --- COUPONS ---
+            db.ref('mh_coupons').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_coupons = data;
+                    } else {
+                        var local = window._localData ? window._localData.coupons : null;
+                        if (local && local.length > 0) {
+                            _fb_coupons = local;
+                            db.ref('mh_coupons').set(local);
+                        } else {
+                            _fb_coupons = [];
+                        }
+                    }
+                    if (currentPage === 'coupons') renderCouponsTable();
+                } catch (e) { console.warn('Coupons listener error:', e); }
+            });
+
+            // --- SLIDERS ---
+            db.ref('mh_sliders').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_sliders = data;
+                    } else {
+                        var local = window._localData ? window._localData.sliders : null;
+                        if (local && local.length > 0) {
+                            _fb_sliders = local;
+                            db.ref('mh_sliders').set(local);
+                        } else {
+                            _fb_sliders = [];
+                        }
+                    }
+                    if (currentPage === 'sliders') renderSlidersTable();
+                } catch (e) { console.warn('Sliders listener error:', e); }
+            });
+
+            // --- SETTINGS ---
+            db.ref('mh_settings').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_settings = data;
+                    } else {
+                        var local = window._localData ? window._localData.settings : null;
+                        if (local && Object.keys(local).length > 0) {
+                            _fb_settings = local;
+                            db.ref('mh_settings').set(local);
+                        } else {
+                            _fb_settings = {};
+                        }
+                    }
+                    if (currentPage === 'settings') loadSettingsForm();
+                } catch (e) { console.warn('Settings listener error:', e); }
+            });
+
+            // --- ANALYTICS ---
+            db.ref('mh_analytics').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_analytics = data;
+                    } else {
+                        var local = window._localData ? window._localData.analytics : null;
+                        if (local && local.daily) {
+                            _fb_analytics = local;
+                            db.ref('mh_analytics').set(local);
+                        } else {
+                            _fb_analytics = { daily: {} };
+                        }
+                    }
+                    // Dashboard uses analytics; if dashboard open, re-render
+                    if (currentPage === 'dashboard') renderDashboard();
+                } catch (e) { console.warn('Analytics listener error:', e); }
+            });
+
+            // --- CHECKINS (whole object) ---
+            db.ref('mh_checkins').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_checkins = data;
+                    } else {
+                        _fb_checkins = {};
+                        db.ref('mh_checkins').set({});
+                    }
+                    if (currentPage === 'checkins') renderCheckinsTable();
+                } catch (e) { console.warn('Checkins listener error:', e); }
+            });
+
+            // --- CHAT (whole object) ---
+            db.ref('mh_chat').on('value', function(snap) {
+                try {
+                    var data = snap.val();
+                    if (data !== null && data !== undefined) {
+                        _fb_chat_messages = data;
+                    } else {
+                        _fb_chat_messages = {};
+                        db.ref('mh_chat').set({});
+                    }
+                    if (currentPage === 'chat') {
+                        renderChatUserList();
+                        // If a conversation is open, reload it
+                        if (chatSelectedUserId) {
+                            loadChatConversation(chatSelectedUserId);
+                        }
+                    }
+                    // Update sidebar badge
+                    var totalUnread = 0;
+                    for (var key in _fb_chat_messages) {
+                        var msgs = _fb_chat_messages[key] || [];
+                        var unread = msgs.filter(function(m) { return m.sender === 'bot' && !m.read; }).length;
+                        totalUnread += unread;
+                    }
+                    document.getElementById('chatBadgeSidebar').textContent = totalUnread;
+                    document.getElementById('chatBadgeSidebar').style.display = totalUnread > 0 ? 'inline-block' :
+                        'none';
+                } catch (e) { console.warn('Chat listener error:', e); }
+            });
+
+            console.log('🔥 Firebase real-time listeners established for Admin Panel.');
+        }
+
+        // ================================================================
+        // 5. NAVIGATION (unchanged)
         // ================================================================
         var currentPage = 'dashboard';
 
@@ -2218,7 +2138,6 @@
                 var page = item.dataset.page;
                 if (!page) return;
                 navigateTo(page);
-                // Close sidebar on mobile
                 document.getElementById('sidebar').classList.remove('open');
                 document.getElementById('sidebarOverlay').classList.remove('active');
             });
@@ -2246,7 +2165,7 @@
                 settings: 'Site Settings'
             };
             document.getElementById('pageTitle').innerHTML = titles[page] || page;
-            // Refresh data for the page
+            // Refresh data for the page (render functions will use Firebase data)
             if (page === 'dashboard') renderDashboard();
             else if (page === 'products') renderProductsTable();
             else if (page === 'categories') renderCategoriesTable();
@@ -2272,7 +2191,7 @@
         });
 
         // ================================================================
-        // 5. MODAL SYSTEM
+        // 6. MODAL SYSTEM (unchanged)
         // ================================================================
         var modalCallbacks = {};
 
@@ -2325,221 +2244,7 @@
         });
 
         // ================================================================
-        // 6. REAL-TIME SYNCHRONIZATION LAYER
-        // ================================================================
-        var SYNC_CHANNEL = 'mh_hacks_channel';
-        var syncChannel = null;
-
-        try {
-            syncChannel = new BroadcastChannel(SYNC_CHANNEL);
-            console.log('[SYNC] Admin BroadcastChannel established.');
-        } catch (e) {
-            console.warn('[SYNC] BroadcastChannel not supported.');
-        }
-
-        function broadcastChange(type, key, data) {
-            var payload = { type: type, key: key, data: data, timestamp: Date.now() };
-            if (syncChannel) {
-                try { syncChannel.postMessage(payload); } catch (e) { /* ignore */ }
-            }
-            window.dispatchEvent(new CustomEvent('mh-sync', { detail: payload }));
-        }
-
-        // Listen for messages from other tabs (website or other admin instances)
-        if (syncChannel) {
-            syncChannel.onmessage = function(event) {
-                var payload = event.data;
-                if (payload && payload.key) {
-                    console.log('[SYNC] Received broadcast:', payload.key);
-                    handleSyncMessage(payload);
-                }
-            };
-        }
-
-        // Listen for storage events (from other tabs)
-        window.addEventListener('storage', function(event) {
-            if (event.key && event.key.startsWith('mh_')) {
-                console.log('[SYNC] Storage event:', event.key);
-                var data = null;
-                try { data = JSON.parse(event.newValue); } catch (e) { data = event.newValue; }
-                handleSyncMessage({ type: 'storage', key: event.key, data: data, timestamp: Date.now() });
-            }
-        });
-
-        // Listen for custom events within same page
-        window.addEventListener('mh-sync', function(event) {
-            handleSyncMessage(event.detail);
-        });
-
-        // Handle sync messages
-        function handleSyncMessage(payload) {
-            var key = payload.key;
-            var data = payload.data;
-            var currentPage = window.currentPage || 'dashboard';
-
-            switch (key) {
-                case 'mh_products':
-                    if (data !== null) {
-                        // Products changed, refresh product tables and dashboard
-                        if (currentPage === 'products') renderProductsTable();
-                        if (currentPage === 'dashboard') renderDashboard();
-                        // Also update category counts
-                        updateCategoryCounts();
-                        renderCategoriesTable(); // if categories page is open, it will refresh
-                    }
-                    break;
-                case 'mh_categories':
-                    if (data !== null) {
-                        if (currentPage === 'categories') renderCategoriesTable();
-                        if (currentPage === 'products') renderProductsTable(); // category filter may need update
-                        if (currentPage === 'dashboard') renderDashboard();
-                    }
-                    break;
-                case 'mh_users':
-                    if (data !== null) {
-                        if (currentPage === 'users') renderUsersTable();
-                        if (currentPage === 'dashboard') renderDashboard();
-                        if (currentPage === 'chat') renderChatUserList();
-                        if (currentPage === 'checkins') renderCheckinsTable();
-                    }
-                    break;
-                case 'mh_orders':
-                    if (data !== null) {
-                        if (currentPage === 'orders') renderOrdersTable();
-                        if (currentPage === 'dashboard') renderDashboard();
-                        updateBadges();
-                    }
-                    break;
-                case 'mh_notifications':
-                    if (data !== null) {
-                        if (currentPage === 'notifications') renderNotificationsTable();
-                        updateBadges();
-                    }
-                    break;
-                case 'mh_plans':
-                    if (data !== null) {
-                        if (currentPage === 'plans') renderPlansTable();
-                    }
-                    break;
-                case 'mh_coupons':
-                    if (data !== null) {
-                        if (currentPage === 'coupons') renderCouponsTable();
-                    }
-                    break;
-                case 'mh_site_settings':
-                    if (data !== null) {
-                        if (currentPage === 'settings') loadSettingsForm();
-                        // also update any UI elements that rely on settings
-                    }
-                    break;
-                case 'mh_sliders':
-                    if (data !== null) {
-                        if (currentPage === 'sliders') renderSlidersTable();
-                    }
-                    break;
-                case 'mh_chat_':
-                    // Chat per user: refresh chat list and conversation if open
-                    if (currentPage === 'chat') {
-                        renderChatUserList();
-                        // If the current conversation user matches the one in the key, reload conversation
-                        var userId = key.replace('mh_chat_', '');
-                        if (chatSelectedUserId && chatSelectedUserId == userId) {
-                            loadChatConversation(chatSelectedUserId);
-                        }
-                    }
-                    break;
-                case 'mh_checkin_':
-                    if (currentPage === 'checkins') renderCheckinsTable();
-                    break;
-                default:
-                    // Generic refresh for unknown keys
-                    if (key && key.startsWith('mh_')) {
-                        // Refresh all tables if needed
-                        if (currentPage === 'products') renderProductsTable();
-                        if (currentPage === 'categories') renderCategoriesTable();
-                        if (currentPage === 'users') renderUsersTable();
-                        if (currentPage === 'orders') renderOrdersTable();
-                        if (currentPage === 'chat') renderChatUserList();
-                        if (currentPage === 'checkins') renderCheckinsTable();
-                        if (currentPage === 'notifications') renderNotificationsTable();
-                        if (currentPage === 'coupons') renderCouponsTable();
-                        if (currentPage === 'plans') renderPlansTable();
-                        if (currentPage === 'sliders') renderSlidersTable();
-                        if (currentPage === 'dashboard') renderDashboard();
-                    }
-                    break;
-            }
-        }
-
-        // Override setter functions to broadcast changes
-        var originalSetProducts = setProducts;
-        setProducts = function(data) {
-            originalSetProducts(data);
-            broadcastChange('update', 'mh_products', data);
-        };
-
-        var originalSetCategories = setCategories;
-        setCategories = function(data) {
-            originalSetCategories(data);
-            broadcastChange('update', 'mh_categories', data);
-        };
-
-        var originalSetUsers = setUsers;
-        setUsers = function(data) {
-            originalSetUsers(data);
-            broadcastChange('update', 'mh_users', data);
-        };
-
-        var originalSetOrders = setOrders;
-        setOrders = function(data) {
-            originalSetOrders(data);
-            broadcastChange('update', 'mh_orders', data);
-        };
-
-        var originalSetNotifications = setNotifications;
-        setNotifications = function(data) {
-            originalSetNotifications(data);
-            broadcastChange('update', 'mh_notifications', data);
-        };
-
-        var originalSetPlans = setPlans;
-        setPlans = function(data) {
-            originalSetPlans(data);
-            broadcastChange('update', 'mh_plans', data);
-        };
-
-        var originalSetCoupons = setCoupons;
-        setCoupons = function(data) {
-            originalSetCoupons(data);
-            broadcastChange('update', 'mh_coupons', data);
-        };
-
-        var originalSetSettings = setSettings;
-        setSettings = function(data) {
-            originalSetSettings(data);
-            broadcastChange('update', 'mh_site_settings', data);
-        };
-
-        var originalSetSliders = setSliders;
-        setSliders = function(data) {
-            originalSetSliders(data);
-            broadcastChange('update', 'mh_sliders', data);
-        };
-
-        var originalSetCheckins = setCheckins;
-        setCheckins = function(userId, data) {
-            originalSetCheckins(userId, data);
-            broadcastChange('update', 'mh_checkin_' + userId, data);
-        };
-
-        var originalSetChatHistory = setChatHistory;
-        setChatHistory = function(userId, data) {
-            originalSetChatHistory(userId, data);
-            broadcastChange('update', 'mh_chat_' + userId, data);
-        };
-
-        // ================================================================
-        // 7. DASHBOARD
+        // 7. DASHBOARD (uses Firebase data via getters)
         // ================================================================
         function renderDashboard() {
             var products = getProducts();
@@ -2554,7 +2259,6 @@
             var totalUsers = users.length;
             var totalProducts = products.length;
 
-            // Today's date
             var today = new Date().toISOString().split('T')[0];
             var todayData = daily[today] || { views: 0, clicks: 0, sales: 0 };
             var todaySales = orders.filter(function(o) {
@@ -2651,7 +2355,6 @@
 
             ctx.clearRect(0, 0, width, height);
 
-            // Grid lines
             ctx.strokeStyle = 'rgba(255,255,255,0.04)';
             ctx.lineWidth = 0.5;
             for (var g = 0; g <= 4; g++) {
@@ -2662,7 +2365,6 @@
                 ctx.stroke();
             }
 
-            // Draw lines
             function drawLine(data, color, label) {
                 ctx.strokeStyle = color;
                 ctx.lineWidth = 2;
@@ -2677,7 +2379,6 @@
                 });
                 ctx.stroke();
                 ctx.shadowBlur = 0;
-                // Dots
                 data.forEach(function(val, idx) {
                     var x = pad.left + (idx / (data.length - 1)) * chartW;
                     var y = pad.top + chartH - (val / maxVal) * chartH;
@@ -2692,7 +2393,6 @@
             drawLine(clicksData, 'rgba(157,78,221,0.5)', 'Clicks');
             drawLine(salesData, 'rgba(123,44,191,0.9)', 'Sales');
 
-            // X labels
             ctx.fillStyle = 'rgba(255,255,255,0.3)';
             ctx.font = '10px Inter, sans-serif';
             ctx.textAlign = 'center';
@@ -2702,7 +2402,6 @@
                 ctx.fillText(label, x, height - 6);
             });
 
-            // Legend
             ctx.textAlign = 'left';
             ctx.font = '10px Inter, sans-serif';
             var legendY = 8;
@@ -2722,7 +2421,7 @@
         }
 
         // ================================================================
-        // 8. PRODUCTS TABLE
+        // 8. PRODUCTS TABLE (uses Firebase data)
         // ================================================================
         function renderProductsTable() {
             var products = getProducts();
@@ -2730,7 +2429,6 @@
             var catFilter = document.getElementById('productCategoryFilter').value;
             var typeFilter = document.getElementById('productTypeFilter').value;
 
-            // Populate category filter
             var cats = getCategories();
             var catSelect = document.getElementById('productCategoryFilter');
             var currentVal = catSelect.value;
@@ -2796,7 +2494,6 @@
                         } else {
                             parent.insertBefore(draggedRow, this);
                         }
-                        // Persist order
                         var newOrder = [];
                         parent.querySelectorAll('tr').forEach(function(r) {
                             var id = parseInt(r.dataset.id);
@@ -2808,7 +2505,6 @@
                             var p = allProducts.find(function(pr) { return pr.id === id; });
                             if (p) ordered.push(p);
                         });
-                        // Add any missing
                         allProducts.forEach(function(p) {
                             if (!ordered.find(function(o) { return o.id === p.id; })) ordered.push(p);
                         });
@@ -2818,7 +2514,6 @@
                 });
             });
 
-            // Event listeners
             tbody.querySelectorAll('.edit-product').forEach(function(btn) {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -2834,14 +2529,13 @@
                 });
             });
 
-            // Select all
             document.getElementById('selectAllProducts').addEventListener('change', function() {
                 var checked = this.checked;
                 tbody.querySelectorAll('.product-check').forEach(function(cb) { cb.checked = checked; });
             });
         }
 
-        // Product add/edit modal
+        // Product add/edit modal (unchanged logic, uses setProducts)
         function openProductEditModal(id) {
             var products = getProducts();
             var p = id ? products.find(function(pr) { return pr.id === id; }) : null;
@@ -2929,11 +2623,8 @@
                 '</button>' +
                 '</form>';
 
-            openModal(isEdit ? 'Edit Product' : 'Add Product', html, null, function() {
-                // Clean up
-            });
+            openModal(isEdit ? 'Edit Product' : 'Add Product', html, null, function() {});
 
-            // Feature add
             document.getElementById('addFeatureBtn').addEventListener('click', function() {
                 var container = document.getElementById('featureList');
                 var idx = container.querySelectorAll('.feature-item').length;
@@ -2951,7 +2642,6 @@
                 btn.addEventListener('click', function() { btn.closest('.feature-item').remove(); });
             });
 
-            // Review add
             document.getElementById('addReviewBtn').addEventListener('click', function() {
                 var container = document.getElementById('reviewList');
                 var idx = container.querySelectorAll('.feature-item').length;
@@ -2969,7 +2659,6 @@
                 btn.addEventListener('click', function() { btn.closest('.feature-item').remove(); });
             });
 
-            // Form submit
             document.getElementById('productForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 var id = document.getElementById('productId').value;
@@ -3012,7 +2701,6 @@
 
                 var allProducts = getProducts();
                 if (id) {
-                    // Edit
                     var idx = allProducts.findIndex(function(p) { return p.id === parseInt(id); });
                     if (idx !== -1) {
                         allProducts[idx] = {
@@ -3038,7 +2726,6 @@
                         toast('Product updated!', 'success');
                     }
                 } else {
-                    // Add
                     var newProduct = {
                         id: generateId(),
                         name: name,
@@ -3110,7 +2797,7 @@
         });
 
         // ================================================================
-        // 9. CATEGORIES TABLE
+        // 9. CATEGORIES TABLE (uses Firebase)
         // ================================================================
         function renderCategoriesTable() {
             var cats = getCategories();
@@ -3215,7 +2902,7 @@
         });
 
         // ================================================================
-        // 10. SLIDERS TABLE
+        // 10. SLIDERS TABLE (uses Firebase)
         // ================================================================
         function renderSlidersTable() {
             var sliders = getSliders();
@@ -3224,7 +2911,6 @@
                 tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No slides found.</td></tr>';
                 return;
             }
-            // Sort by order
             sliders.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
             tbody.innerHTML = sliders.map(function(s, idx) {
                 return '<tr draggable="true" data-order="' + (s.order || idx) + '">' +
@@ -3240,7 +2926,6 @@
                     '</tr>';
             }).join('');
 
-            // Drag and drop reorder
             var rows = tbody.querySelectorAll('tr');
             var draggedRow = null;
             rows.forEach(function(row) {
@@ -3265,25 +2950,21 @@
                         } else {
                             parent.insertBefore(draggedRow, this);
                         }
-                        // Update orders
                         var allSliders = getSliders();
                         var newOrder = [];
                         parent.querySelectorAll('tr').forEach(function(r) {
                             var order = parseInt(r.dataset.order);
                             if (!isNaN(order)) newOrder.push(order);
                         });
-                        // Reorder the array based on new order
                         var orderedSliders = [];
                         newOrder.forEach(function(order) {
                             var s = allSliders.find(function(sl) { return sl.order === order; });
                             if (s) orderedSliders.push(s);
                         });
-                        // Add any missing
                         allSliders.forEach(function(s) {
                             if (!orderedSliders.find(function(os) { return os.order === s.order; }))
                                 orderedSliders.push(s);
                         });
-                        // Assign new order numbers
                         orderedSliders.forEach(function(s, i) { s.order = i; });
                         setSliders(orderedSliders);
                         toast('Slides reordered!', 'success');
@@ -3375,7 +3056,7 @@
         });
 
         // ================================================================
-        // 11. PRICING PLANS TABLE
+        // 11. PRICING PLANS TABLE (uses Firebase)
         // ================================================================
         function renderPlansTable() {
             var plans = getPlans();
@@ -3522,7 +3203,7 @@
         });
 
         // ================================================================
-        // 12. USERS TABLE
+        // 12. USERS TABLE (uses Firebase)
         // ================================================================
         function renderUsersTable() {
             var users = getUsers();
@@ -3726,7 +3407,7 @@
         document.getElementById('userStatusFilter').addEventListener('change', function() { renderUsersTable(); });
 
         // ================================================================
-        // 13. ORDERS TABLE
+        // 13. ORDERS TABLE (uses Firebase)
         // ================================================================
         function renderOrdersTable() {
             var orders = getOrders();
@@ -3783,7 +3464,6 @@
                 });
             });
 
-            // Update badge
             var pending = orders.filter(function(o) { return o.status === 'pending'; }).length;
             document.getElementById('orderBadge').textContent = pending;
             document.getElementById('orderBadge').style.display = pending > 0 ? 'inline-block' : 'none';
@@ -3837,11 +3517,8 @@
                 '</div>' +
                 '</div>';
 
-            openModal('Order Details: ' + o.id, html, null, function() {
-                // Clean up
-            });
+            openModal('Order Details: ' + o.id, html, null, function() {});
 
-            // Verify
             var verifyBtn = document.getElementById('orderVerifyBtn');
             if (verifyBtn) {
                 verifyBtn.addEventListener('click', function() {
@@ -3871,7 +3548,6 @@
             if (idx === -1) { toast('Order not found', 'error'); return; }
             orders[idx].status = newStatus;
             setOrders(orders);
-            // Add notification
             var notifs = getNotifications();
             notifs.unshift({
                 id: Date.now(),
@@ -3904,7 +3580,7 @@
         document.getElementById('refreshOrdersBtn').addEventListener('click', function() { renderOrdersTable(); });
 
         // ================================================================
-        // 14. CHAT
+        // 14. CHAT (uses Firebase)
         // ================================================================
         var chatSelectedUserId = null;
 
@@ -3959,12 +3635,10 @@
                 });
             });
 
-            // Update badge
             var totalUnread = userChats.reduce(function(sum, item) { return sum + item.unread; }, 0);
             document.getElementById('chatBadgeSidebar').textContent = totalUnread;
             document.getElementById('chatBadgeSidebar').style.display = totalUnread > 0 ? 'inline-block' : 'none';
 
-            // Auto-select first if none selected
             if (!chatSelectedUserId && userChats.length > 0) {
                 chatSelectedUserId = userChats[0].user.id;
                 loadChatConversation(chatSelectedUserId);
@@ -3986,7 +3660,6 @@
                 return;
             }
 
-            // Mark bot messages as read
             var updated = false;
             history.forEach(function(m) {
                 if (m.sender === 'bot' && m.read === false) { m.read = true;
@@ -4063,7 +3736,7 @@
         });
 
         // ================================================================
-        // 15. CHECK-INS TABLE
+        // 15. CHECK-INS TABLE (uses Firebase)
         // ================================================================
         function renderCheckinsTable() {
             var users = getUsers();
@@ -4085,7 +3758,6 @@
                 var totalEarned = checkins.reduce(function(sum, c) { return sum + (c.points || 0); }, 0);
                 var last = checkins.length > 0 ? checkins[checkins.length - 1] : null;
 
-                // Calculate streak
                 var streak = 0;
                 if (checkins.length > 0) {
                     var sorted = checkins.slice().sort(function(a, b) { return new Date(a.date) - new Date(b
@@ -4166,7 +3838,7 @@
         document.getElementById('refreshCheckinsBtn').addEventListener('click', function() { renderCheckinsTable(); });
 
         // ================================================================
-        // 16. NOTIFICATIONS TABLE
+        // 16. NOTIFICATIONS TABLE (uses Firebase)
         // ================================================================
         function renderNotificationsTable() {
             var notifs = getNotifications();
@@ -4260,7 +3932,7 @@
         });
 
         // ================================================================
-        // 17. COUPONS TABLE
+        // 17. COUPONS TABLE (uses Firebase)
         // ================================================================
         function renderCouponsTable() {
             var coupons = getCoupons();
@@ -4381,7 +4053,7 @@
         });
 
         // ================================================================
-        // 18. SITE SETTINGS
+        // 18. SITE SETTINGS (uses Firebase)
         // ================================================================
         function loadSettingsForm() {
             var settings = getSettings();
@@ -4457,10 +4129,28 @@
         });
 
         // ================================================================
-        // 21. INIT APP
+        // 21. UPDATE CATEGORY COUNTS (helper)
+        // ================================================================
+        function updateCategoryCounts() {
+            var products = getProducts();
+            var cats = getCategories();
+            cats.forEach(function(c) {
+                c.count = products.filter(function(p) { return p.categorySlug === c.id; }).length;
+            });
+            setCategories(cats);
+        }
+
+        // ================================================================
+        // 22. INIT APP
         // ================================================================
         function initApp() {
+            // First, load local data for sync
             initDataDefaults();
+
+            // Setup Firebase listeners (this will also sync data)
+            setupFirebaseListeners();
+
+            // Now render initial data (listeners will call renders, but we also want to render initially)
             renderDashboard();
             renderProductsTable();
             renderCategoriesTable();
@@ -4475,7 +4165,7 @@
             loadSettingsForm();
             updateBadges();
 
-            // Auto-refresh every 30 seconds
+            // Auto-refresh every 30 seconds (optional, since Firebase is real-time)
             setInterval(function() {
                 if (currentPage === 'dashboard') renderDashboard();
                 else if (currentPage === 'orders') renderOrdersTable();
@@ -4486,15 +4176,14 @@
         }
 
         // ================================================================
-        // 22. CHECK ADMIN SESSION ON LOAD
+        // 23. CHECK ADMIN SESSION ON LOAD
         // ================================================================
         if (!checkAdminAuth()) {
-            // Show login
             document.getElementById('adminLoginOverlay').classList.remove('hidden');
         }
 
         // ================================================================
-        // 23. TOAST PROTOTYPE FIX FOR OLD BROWSERS
+        // 24. TOAST PROTOTYPE FIX FOR OLD BROWSERS
         // ================================================================
         if (!Element.prototype.closest) {
             Element.prototype.closest = function(s) {
@@ -4505,11 +4194,10 @@
             };
         }
 
-        console.log('🟣 MH HACKS Admin Panel Loaded with Full Sync');
-        console.log('📦 localStorage keys: mh_products, mh_categories, mh_users, mh_orders, mh_plans, mh_coupons, mh_site_settings, mh_analytics, mh_admin_auth, mh_sliders');
+        console.log('🟣 MH HACKS Admin Panel Loaded with Firebase Integration');
+        console.log('📦 Firebase nodes: mh_products, mh_categories, mh_users, mh_orders, mh_plans, mh_coupons, mh_site_settings, mh_analytics, mh_sliders, mh_checkins, mh_chat');
         console.log('👤 Admin default: admin@mhhacks.com / admin123');
-        console.log('📡 BroadcastChannel active: ' + SYNC_CHANNEL);
-        console.log('🔄 Every change is broadcasted to website and other admin tabs.');
+        console.log('🔥 Real-time sync enabled with website.');
     </script>
 </body>
 </html>
