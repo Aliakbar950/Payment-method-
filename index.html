@@ -8,16 +8,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-    <!-- ========== FIREBASE CDN (SAME AS WEBSITE) ========== -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
     </script>
-
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
     <style>
         /* ================================================================
-           CSS VARIABLES — STRICT WHITE, BLACK, PURPLE
+           CSS VARIABLES
            ================================================================ */
         :root {
             --primary: #7B2CBF;
@@ -42,9 +41,6 @@
             --shadow-primary: 0 0 60px rgba(123, 44, 191, 0.10);
         }
 
-        /* ================================================================
-           RESET & BASE
-           ================================================================ */
         *,
         *::before,
         *::after {
@@ -101,7 +97,7 @@
         }
 
         /* ================================================================
-           ADMIN LOGIN OVERLAY
+           LOGIN OVERLAY
            ================================================================ */
         #adminLoginOverlay {
             position: fixed;
@@ -282,6 +278,10 @@
             font-weight: 800;
             padding: 2px 10px;
             border-radius: 50px;
+            display: none;
+        }
+        .sidebar .nav-item .badge.show {
+            display: inline-block;
         }
         .sidebar .admin-profile {
             padding: 16px 22px 0;
@@ -327,7 +327,6 @@
             background: rgba(123, 44, 191, 0.06);
         }
 
-        /* Hamburger for mobile */
         .sidebar-toggle {
             display: none;
             position: fixed;
@@ -490,15 +489,9 @@
             color: var(--text-muted);
             margin-top: 4px;
         }
-        .stat-card .change .up {
-            color: var(--primary);
-        }
-        .stat-card .change .down {
-            color: var(--text-muted);
-        }
 
         /* ================================================================
-           CHARTS (canvas)
+           CHARTS
            ================================================================ */
         .chart-container {
             background: var(--bg-card);
@@ -829,15 +822,6 @@
             color: var(--text-muted);
             margin-top: 2px;
         }
-        .modal-overlay .modal-box .form-group .error-text {
-            color: var(--primary);
-            font-size: 0.7rem;
-            margin-top: 2px;
-            display: none;
-        }
-        .modal-overlay .modal-box .form-group .error-text.show {
-            display: block;
-        }
         .modal-overlay .modal-box .btn-submit {
             padding: 12px 32px;
             border-radius: 12px;
@@ -1098,14 +1082,8 @@
             }
         }
 
-        /* ================================================================
-           UTILITIES
-           ================================================================ */
         .text-muted {
             color: var(--text-muted);
-        }
-        .text-glow {
-            color: var(--primary);
         }
         .mt-2 {
             margin-top: 12px;
@@ -1141,12 +1119,65 @@
             margin-bottom: 12px;
             opacity: 0.2;
         }
+
+        /* Chat specific */
+        .chat-user-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .chat-user-item:hover {
+            background: rgba(123, 44, 191, 0.04);
+        }
+        .chat-user-item.active {
+            background: rgba(123, 44, 191, 0.08);
+        }
+        #chatMessagesView {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 200px;
+            max-height: 400px;
+        }
+        #chatMessagesView .msg-user {
+            align-self: flex-end;
+            background: var(--primary);
+            padding: 8px 14px;
+            border-radius: 12px;
+            border-bottom-right-radius: 4px;
+            font-size: 0.85rem;
+            max-width: 80%;
+        }
+        #chatMessagesView .msg-bot {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 8px 14px;
+            border-radius: 12px;
+            border-bottom-left-radius: 4px;
+            font-size: 0.85rem;
+            max-width: 80%;
+        }
+        #chatMessagesView .msg-time {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        #chatMessagesView .msg-image {
+            max-width: 140px;
+            border-radius: 6px;
+            margin-top: 4px;
+            display: block;
+        }
     </style>
 </head>
 <body>
 
     <!-- ================================================================
-    ADMIN LOGIN OVERLAY
+    LOGIN OVERLAY
     ================================================================ -->
     <div id="adminLoginOverlay">
         <div class="login-box">
@@ -1193,6 +1224,7 @@
             <div class="nav-item" data-page="checkins"><i class="fas fa-calendar-check"></i> Check-ins</div>
             <div class="nav-item" data-page="notifications"><i class="fas fa-bell"></i> Notifications <span class="badge" id="notifBadgeSidebar">0</span></div>
             <div class="nav-item" data-page="coupons"><i class="fas fa-ticket"></i> Coupons</div>
+            <div class="nav-item" data-page="reviews"><i class="fas fa-star"></i> Reviews</div>
             <div class="nav-item" data-page="settings"><i class="fas fa-cog"></i> Site Settings</div>
         </div>
         <div class="admin-profile">
@@ -1375,7 +1407,7 @@
                         <span id="chatConversationTitle">Select a user</span>
                         <span style="font-size:0.7rem;color:var(--text-muted);" id="chatUserStatus"></span>
                     </div>
-                    <div id="chatMessagesView" style="flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:6px;min-height:200px;"></div>
+                    <div id="chatMessagesView" style="flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:6px;min-height:200px;max-height:400px;"></div>
                     <div style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.04);display:flex;gap:8px;align-items:center;">
                         <input type="text" id="chatReplyInput" placeholder="Type reply..." style="flex:1;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);color:var(--text-light);font-size:0.85rem;" />
                         <button class="btn-sm" id="chatSendReplyBtn"><i class="fas fa-paper-plane"></i></button>
@@ -1440,7 +1472,25 @@
         </div>
 
         <!-- ============================================================
-        PAGE: SITE SETTINGS
+        PAGE: REVIEWS
+        ============================================================ -->
+        <div class="page-section" id="page-reviews">
+            <div class="table-wrap">
+                <div class="table-toolbar">
+                    <input type="text" id="reviewSearch" placeholder="Search by user or product..." style="flex:1;min-width:160px;" />
+                    <select id="reviewStatusFilter"><option value="">All Status</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead><tr><th>User</th><th>Product</th><th>Rating</th><th>Review</th><th>Status</th><th>Date</th><th style="width:160px;">Actions</th></tr></thead>
+                        <tbody id="reviewsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        PAGE: SETTINGS
         ============================================================ -->
         <div class="page-section" id="page-settings">
             <div class="table-wrap" style="padding:24px 28px;">
@@ -1566,13 +1616,13 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ================================================================
-    JAVASCRIPT
+    JAVASCRIPT — COMPLETE ADMIN PANEL
     ================================================================ -->
     <script>
         // ================================================================
-        // 🔥 FIREBASE CONFIG (SAME AS WEBSITE)
+        // 🔥 FIREBASE CONFIG — REPLACE WITH YOUR OWN
         // ================================================================
-        const firebaseConfig = {
+        var firebaseConfig = {
             apiKey: "AIzaSyBiDFZ4SiW6UJlnG7o6tmXl967GkrPSRmg",
             authDomain: "mh-hacks-toolkit.firebaseapp.com",
             projectId: "mh-hacks-toolkit",
@@ -1589,7 +1639,7 @@
         var db = firebase.database();
 
         // ================================================================
-        // 0. UTILITY FUNCTIONS
+        // UTILITY FUNCTIONS
         // ================================================================
         function toast(message, type) {
             if (!type) type = 'info';
@@ -1610,20 +1660,22 @@
 
         function generateId() { return Date.now() + Math.floor(Math.random() * 1000); }
 
-        function formatPrice(p) { return '$' + p.toFixed(2); }
+        function formatPrice(p) { return '$' + Number(p).toFixed(2); }
 
-        function formatDate(d) { return new Date(d).toLocaleDateString() + ' ' + new Date(d).toLocaleTimeString([], { hour: '2-digit',
-                minute: '2-digit' }); }
+        function formatDate(d) {
+            if (!d) return '-';
+            return new Date(d).toLocaleDateString() + ' ' + new Date(d).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
 
-        function safeJSON(key, fallback) { try { var data = localStorage.getItem(key); return data ? JSON.parse(data) :
-                fallback; } catch (e) { return fallback; } }
+        function safeJSON(key, fallback) {
+            try { var data = localStorage.getItem(key); return data ? JSON.parse(data) : fallback; } catch (e) { return fallback; }
+        }
 
         function setJSON(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 
         // ================================================================
-        // 1. DATA LAYER — FIREBASE-BACKED (replaces localStorage)
+        // GLOBAL DATA CACHE (mirrors Firebase)
         // ================================================================
-        // Global Firebase cache (mirrors)
         var _fb_products = [];
         var _fb_categories = [];
         var _fb_users = [];
@@ -1636,139 +1688,87 @@
         var _fb_analytics = { daily: {} };
         var _fb_checkins = {};
         var _fb_chat_messages = {};
+        var _fb_reviews = [];
 
-        // ----- PRODUCTS -----
+        // ================================================================
+        // DATA GETTERS / SETTERS
+        // ================================================================
         function getProducts() { return _fb_products; }
 
-        function setProducts(data) {
-            _fb_products = data || [];
-            try { db.ref('mh_products').set(_fb_products); } catch (e) { console.warn('Firebase setProducts error:', e); }
-        }
+        function setProducts(data) { _fb_products = data || [];
+            try { db.ref('mh_products').set(_fb_products); } catch (e) { console.warn('setProducts error:', e); } }
 
-        // ----- CATEGORIES -----
         function getCategories() { return _fb_categories; }
 
-        function setCategories(data) {
-            _fb_categories = data || [];
-            try { db.ref('mh_categories').set(_fb_categories); } catch (e) { console.warn('Firebase setCategories error:',
-                    e); }
-        }
+        function setCategories(data) { _fb_categories = data || [];
+            try { db.ref('mh_categories').set(_fb_categories); } catch (e) { console.warn('setCategories error:', e); } }
 
-        // ----- USERS -----
         function getUsers() { return _fb_users; }
 
-        function setUsers(data) {
-            _fb_users = data || [];
-            try { db.ref('mh_users').set(_fb_users); } catch (e) { console.warn('Firebase setUsers error:', e); }
-        }
+        function setUsers(data) { _fb_users = data || [];
+            try { db.ref('mh_users').set(_fb_users); } catch (e) { console.warn('setUsers error:', e); } }
 
-        // ----- ORDERS -----
         function getOrders() { return _fb_orders; }
 
-        function setOrders(data) {
-            _fb_orders = data || [];
-            try { db.ref('mh_orders').set(_fb_orders); } catch (e) { console.warn('Firebase setOrders error:', e); }
-        }
+        function setOrders(data) { _fb_orders = data || [];
+            try { db.ref('mh_orders').set(_fb_orders); } catch (e) { console.warn('setOrders error:', e); } }
 
-        // ----- NOTIFICATIONS -----
         function getNotifications() { return _fb_notifications; }
 
-        function setNotifications(data) {
-            _fb_notifications = data || [];
-            try { db.ref('mh_notifications').set(_fb_notifications); } catch (e) { console.warn(
-                    'Firebase setNotifications error:', e); }
-        }
+        function setNotifications(data) { _fb_notifications = data || [];
+            try { db.ref('mh_notifications').set(_fb_notifications); } catch (e) { console.warn('setNotifications error:', e); } }
 
-        // ----- PLANS -----
         function getPlans() { return _fb_plans; }
 
-        function setPlans(data) {
-            _fb_plans = data || [];
-            try { db.ref('mh_plans').set(_fb_plans); } catch (e) { console.warn('Firebase setPlans error:', e); }
-        }
+        function setPlans(data) { _fb_plans = data || [];
+            try { db.ref('mh_plans').set(_fb_plans); } catch (e) { console.warn('setPlans error:', e); } }
 
-        // ----- COUPONS -----
         function getCoupons() { return _fb_coupons; }
 
-        function setCoupons(data) {
-            _fb_coupons = data || [];
-            try { db.ref('mh_coupons').set(_fb_coupons); } catch (e) { console.warn('Firebase setCoupons error:', e); }
-        }
+        function setCoupons(data) { _fb_coupons = data || [];
+            try { db.ref('mh_coupons').set(_fb_coupons); } catch (e) { console.warn('setCoupons error:', e); } }
 
-        // ----- SLIDERS -----
         function getSliders() { return _fb_sliders; }
 
-        function setSliders(data) {
-            _fb_sliders = data || [];
-            try { db.ref('mh_sliders').set(_fb_sliders); } catch (e) { console.warn('Firebase setSliders error:', e); }
-        }
+        function setSliders(data) { _fb_sliders = data || [];
+            try { db.ref('mh_sliders').set(_fb_sliders); } catch (e) { console.warn('setSliders error:', e); } }
 
-        // ----- BANNERS (optional) -----
-        function getBanners() { return _fb_banners || []; }
-
-        function setBanners(data) {
-            _fb_banners = data || [];
-            try { db.ref('mh_banners').set(_fb_banners); } catch (e) { console.warn('Firebase setBanners error:', e); }
-        }
-
-        // ----- SETTINGS -----
         function getSettings() { return _fb_settings; }
 
-        function setSettings(data) {
-            _fb_settings = data || {};
-            try { db.ref('mh_settings').set(_fb_settings); } catch (e) { console.warn('Firebase setSettings error:', e); }
-        }
+        function setSettings(data) { _fb_settings = data || {};
+            try { db.ref('mh_settings').set(_fb_settings); } catch (e) { console.warn('setSettings error:', e); } }
 
-        // ----- ANALYTICS -----
         function getAnalytics() { return _fb_analytics || { daily: {} }; }
 
-        function setAnalytics(data) {
-            _fb_analytics = data || { daily: {} };
-            try { db.ref('mh_analytics').set(_fb_analytics); } catch (e) { console.warn('Firebase setAnalytics error:', e); }
-        }
+        function setAnalytics(data) { _fb_analytics = data || { daily: {} };
+            try { db.ref('mh_analytics').set(_fb_analytics); } catch (e) { console.warn('setAnalytics error:', e); } }
 
-        // ----- CHECKINS (per user) -----
-        function getCheckins(userId) {
-            var key = String(userId);
-            return _fb_checkins[key] || [];
-        }
+        function getCheckins(userId) { var key = String(userId); return _fb_checkins[key] || []; }
 
-        function setCheckins(userId, data) {
-            var key = String(userId);
+        function setCheckins(userId, data) { var key = String(userId);
             _fb_checkins[key] = data || [];
             var payload = {};
             payload[key] = _fb_checkins[key];
-            try { db.ref('mh_checkins').update(payload); } catch (e) { console.warn('Firebase setCheckins error:', e); }
-        }
+            try { db.ref('mh_checkins').update(payload); } catch (e) { console.warn('setCheckins error:', e); } }
 
-        // ----- CHAT HISTORY (per user) -----
-        function getChatHistory(userId) {
-            var key = String(userId);
-            return _fb_chat_messages[key] || [];
-        }
+        function getChatHistory(userId) { var key = String(userId); return _fb_chat_messages[key] || []; }
 
-        function setChatHistory(userId, data) {
-            var key = String(userId);
+        function setChatHistory(userId, data) { var key = String(userId);
             _fb_chat_messages[key] = data || [];
             var payload = {};
             payload[key] = _fb_chat_messages[key];
-            try { db.ref('mh_chat').update(payload); } catch (e) { console.warn('Firebase setChatHistory error:', e); }
-        }
+            try { db.ref('mh_chat').update(payload); } catch (e) { console.warn('setChatHistory error:', e); } }
+
+        function getReviews() { return _fb_reviews; }
+
+        function setReviews(data) { _fb_reviews = data || [];
+            try { db.ref('mh_reviews').set(_fb_reviews); } catch (e) { console.warn('setReviews error:', e); } }
 
         // ================================================================
-        // 2. ADMIN AUTH (unchanged, still uses localStorage)
+        // ADMIN AUTH
         // ================================================================
-        var adminAuth = getAdminAuth();
+        var adminAuth = safeJSON('mh_admin_auth', { email: 'admin@mhhacks.com', password: 'admin123' });
         var isAdminLoggedIn = false;
-
-        function getAdminAuth() {
-            var defaults = { email: 'admin@mhhacks.com', password: 'admin123' };
-            var saved = safeJSON('mh_admin_auth', null);
-            if (saved) return saved;
-            return defaults;
-        }
-
-        function setAdminAuth(data) { setJSON('mh_admin_auth', data); }
 
         function checkAdminAuth() {
             var session = safeJSON('mh_admin_session', null);
@@ -1778,7 +1778,6 @@
                 document.getElementById('adminName').textContent = 'Admin';
                 document.getElementById('adminEmail').textContent = adminAuth.email;
                 document.getElementById('adminAvatar').textContent = 'A';
-                // Init app only after Firebase listeners are set up
                 initApp();
                 return true;
             }
@@ -1812,51 +1811,7 @@
         });
 
         // ================================================================
-        // 3. INIT DATA DEFAULTS (localStorage fallback)
-        // ================================================================
-        function initDataDefaults() {
-            // Products
-            var existingProducts = safeJSON('mh_products', null);
-            if (existingProducts && existingProducts.length > 0) {
-                // If localStorage has data, we'll push it to Firebase if Firebase is empty (handled in sync)
-                // But we don't want to overwrite Firebase data if it exists.
-                // We'll do initial sync in setupFirebaseListeners.
-            }
-            // Categories
-            var existingCategories = safeJSON('mh_categories', null);
-            // Users
-            var existingUsers = safeJSON('mh_users', null);
-            // Orders
-            var existingOrders = safeJSON('mh_orders', null);
-            // Plans
-            var existingPlans = safeJSON('mh_plans', null);
-            // Coupons
-            var existingCoupons = safeJSON('mh_coupons', null);
-            // Sliders
-            var existingSliders = safeJSON('mh_sliders', null);
-            // Settings
-            var existingSettings = safeJSON('mh_site_settings', null);
-            // Notifications
-            var existingNotifs = safeJSON('mh_notifications', null);
-            // Analytics
-            var existingAnalytics = safeJSON('mh_analytics', null);
-            // Store in global for later sync
-            window._localData = {
-                products: existingProducts,
-                categories: existingCategories,
-                users: existingUsers,
-                orders: existingOrders,
-                plans: existingPlans,
-                coupons: existingCoupons,
-                sliders: existingSliders,
-                settings: existingSettings,
-                notifications: existingNotifs,
-                analytics: existingAnalytics
-            };
-        }
-
-        // ================================================================
-        // 4. FIREBASE REAL-TIME LISTENERS
+        // FIREBASE REAL-TIME LISTENERS
         // ================================================================
         var firebaseListenersSetup = false;
 
@@ -1864,272 +1819,142 @@
             if (firebaseListenersSetup) return;
             firebaseListenersSetup = true;
 
-            // Helper to sync local data to Firebase if Firebase is empty
-            function syncIfEmpty(refPath, localData, setter) {
-                db.ref(refPath).once('value').then(function(snap) {
-                    if (snap.val() === null || snap.val() === undefined) {
-                        if (localData !== null && localData !== undefined) {
-                            setter(localData);
-                            console.log('[SYNC] Pushed local data to Firebase for ' + refPath);
-                        }
-                    }
-                }).catch(function(err) {
-                    console.warn('Sync check error for ' + refPath, err);
-                });
-            }
-
             // --- PRODUCTS ---
             db.ref('mh_products').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_products = data;
-                    } else {
-                        // If Firebase is empty, push local data if available
-                        var local = window._localData ? window._localData.products : null;
-                        if (local && local.length > 0) {
-                            _fb_products = local;
-                            db.ref('mh_products').set(local);
-                        } else {
-                            _fb_products = [];
-                        }
-                    }
-                    // Re-render
-                    if (currentPage === 'products') renderProductsTable();
-                    if (currentPage === 'dashboard') renderDashboard();
-                    updateCategoryCounts();
-                    renderCategoriesTable(); // if open
-                } catch (e) { console.warn('Products listener error:', e); }
+                try { var data = snap.val();
+                    _fb_products = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
+                        'Products listener error:', e); }
+                if (currentPage === 'products') renderProductsTable();
+                if (currentPage === 'dashboard') renderDashboard();
+                if (currentPage === 'reviews') renderReviewsTable();
+                updateCategoryCounts();
+                renderCategoriesTable();
             });
 
             // --- CATEGORIES ---
             db.ref('mh_categories').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_categories = data;
-                    } else {
-                        var local = window._localData ? window._localData.categories : null;
-                        if (local && local.length > 0) {
-                            _fb_categories = local;
-                            db.ref('mh_categories').set(local);
-                        } else {
-                            _fb_categories = [];
-                        }
-                    }
-                    if (currentPage === 'categories') renderCategoriesTable();
-                    if (currentPage === 'products') renderProductsTable();
-                } catch (e) { console.warn('Categories listener error:', e); }
+                try { var data = snap.val();
+                    _fb_categories = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
+                        'Categories listener error:', e); }
+                if (currentPage === 'categories') renderCategoriesTable();
+                if (currentPage === 'products') renderProductsTable();
             });
 
             // --- USERS ---
             db.ref('mh_users').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_users = data;
-                    } else {
-                        var local = window._localData ? window._localData.users : null;
-                        if (local && local.length > 0) {
-                            _fb_users = local;
-                            db.ref('mh_users').set(local);
-                        } else {
-                            _fb_users = [];
-                        }
-                    }
-                    if (currentPage === 'users') renderUsersTable();
-                    if (currentPage === 'dashboard') renderDashboard();
-                    if (currentPage === 'chat') renderChatUserList();
-                    if (currentPage === 'checkins') renderCheckinsTable();
-                } catch (e) { console.warn('Users listener error:', e); }
+                try { var data = snap.val();
+                    _fb_users = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
+                        'Users listener error:', e); }
+                if (currentPage === 'users') renderUsersTable();
+                if (currentPage === 'dashboard') renderDashboard();
+                if (currentPage === 'chat') renderChatUserList();
+                if (currentPage === 'checkins') renderCheckinsTable();
             });
 
             // --- ORDERS ---
             db.ref('mh_orders').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_orders = data;
-                    } else {
-                        var local = window._localData ? window._localData.orders : null;
-                        if (local && local.length > 0) {
-                            _fb_orders = local;
-                            db.ref('mh_orders').set(local);
-                        } else {
-                            _fb_orders = [];
-                        }
-                    }
-                    if (currentPage === 'orders') renderOrdersTable();
-                    if (currentPage === 'dashboard') renderDashboard();
-                    updateBadges();
-                } catch (e) { console.warn('Orders listener error:', e); }
+                try { var data = snap.val();
+                    _fb_orders = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
+                        'Orders listener error:', e); }
+                if (currentPage === 'orders') renderOrdersTable();
+                if (currentPage === 'dashboard') renderDashboard();
+                updateBadges();
             });
 
             // --- NOTIFICATIONS ---
             db.ref('mh_notifications').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_notifications = data;
-                    } else {
-                        var local = window._localData ? window._localData.notifications : null;
-                        if (local && local.length > 0) {
-                            _fb_notifications = local;
-                            db.ref('mh_notifications').set(local);
-                        } else {
-                            _fb_notifications = [];
-                        }
-                    }
-                    if (currentPage === 'notifications') renderNotificationsTable();
-                    updateBadges();
-                } catch (e) { console.warn('Notifications listener error:', e); }
+                try { var data = snap.val();
+                    _fb_notifications = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
+                        'Notifications listener error:', e); }
+                if (currentPage === 'notifications') renderNotificationsTable();
+                updateBadges();
             });
 
             // --- PLANS ---
             db.ref('mh_plans').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_plans = data;
-                    } else {
-                        var local = window._localData ? window._localData.plans : null;
-                        if (local && local.length > 0) {
-                            _fb_plans = local;
-                            db.ref('mh_plans').set(local);
-                        } else {
-                            _fb_plans = [];
-                        }
-                    }
-                    if (currentPage === 'plans') renderPlansTable();
-                } catch (e) { console.warn('Plans listener error:', e); }
+                try { var data = snap.val();
+                    _fb_plans = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
+                        'Plans listener error:', e); }
+                if (currentPage === 'plans') renderPlansTable();
             });
 
             // --- COUPONS ---
             db.ref('mh_coupons').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_coupons = data;
-                    } else {
-                        var local = window._localData ? window._localData.coupons : null;
-                        if (local && local.length > 0) {
-                            _fb_coupons = local;
-                            db.ref('mh_coupons').set(local);
-                        } else {
-                            _fb_coupons = [];
-                        }
-                    }
-                    if (currentPage === 'coupons') renderCouponsTable();
-                } catch (e) { console.warn('Coupons listener error:', e); }
+                try { var data = snap.val();
+                    _fb_coupons = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
+                        'Coupons listener error:', e); }
+                if (currentPage === 'coupons') renderCouponsTable();
             });
 
             // --- SLIDERS ---
             db.ref('mh_sliders').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_sliders = data;
-                    } else {
-                        var local = window._localData ? window._localData.sliders : null;
-                        if (local && local.length > 0) {
-                            _fb_sliders = local;
-                            db.ref('mh_sliders').set(local);
-                        } else {
-                            _fb_sliders = [];
-                        }
-                    }
-                    if (currentPage === 'sliders') renderSlidersTable();
-                } catch (e) { console.warn('Sliders listener error:', e); }
+                try { var data = snap.val();
+                    _fb_sliders = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
+                        'Sliders listener error:', e); }
+                if (currentPage === 'sliders') renderSlidersTable();
             });
 
             // --- SETTINGS ---
             db.ref('mh_settings').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_settings = data;
-                    } else {
-                        var local = window._localData ? window._localData.settings : null;
-                        if (local && Object.keys(local).length > 0) {
-                            _fb_settings = local;
-                            db.ref('mh_settings').set(local);
-                        } else {
-                            _fb_settings = {};
-                        }
-                    }
-                    if (currentPage === 'settings') loadSettingsForm();
-                } catch (e) { console.warn('Settings listener error:', e); }
+                try { var data = snap.val();
+                    _fb_settings = (data !== null && data !== undefined) ? data : {}; } catch (e) { console.warn(
+                        'Settings listener error:', e); }
+                if (currentPage === 'settings') loadSettingsForm();
             });
 
             // --- ANALYTICS ---
             db.ref('mh_analytics').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_analytics = data;
-                    } else {
-                        var local = window._localData ? window._localData.analytics : null;
-                        if (local && local.daily) {
-                            _fb_analytics = local;
-                            db.ref('mh_analytics').set(local);
-                        } else {
-                            _fb_analytics = { daily: {} };
-                        }
-                    }
-                    // Dashboard uses analytics; if dashboard open, re-render
-                    if (currentPage === 'dashboard') renderDashboard();
-                } catch (e) { console.warn('Analytics listener error:', e); }
+                try { var data = snap.val();
+                    _fb_analytics = (data !== null && data !== undefined) ? data : { daily: {} }; } catch (e) { console
+                        .warn('Analytics listener error:', e); }
+                if (currentPage === 'dashboard') renderDashboard();
             });
 
-            // --- CHECKINS (whole object) ---
+            // --- CHECKINS ---
             db.ref('mh_checkins').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_checkins = data;
-                    } else {
-                        _fb_checkins = {};
-                        db.ref('mh_checkins').set({});
-                    }
-                    if (currentPage === 'checkins') renderCheckinsTable();
-                } catch (e) { console.warn('Checkins listener error:', e); }
+                try { var data = snap.val();
+                    _fb_checkins = (data !== null && data !== undefined) ? data : {}; } catch (e) { console.warn(
+                        'Checkins listener error:', e); }
+                if (currentPage === 'checkins') renderCheckinsTable();
             });
 
-            // --- CHAT (whole object) ---
+            // --- CHAT ---
             db.ref('mh_chat').on('value', function(snap) {
-                try {
-                    var data = snap.val();
-                    if (data !== null && data !== undefined) {
-                        _fb_chat_messages = data;
-                    } else {
-                        _fb_chat_messages = {};
-                        db.ref('mh_chat').set({});
-                    }
-                    if (currentPage === 'chat') {
-                        renderChatUserList();
-                        // If a conversation is open, reload it
-                        if (chatSelectedUserId) {
-                            loadChatConversation(chatSelectedUserId);
-                        }
-                    }
-                    // Update sidebar badge
-                    var totalUnread = 0;
-                    for (var key in _fb_chat_messages) {
-                        var msgs = _fb_chat_messages[key] || [];
-                        var unread = msgs.filter(function(m) { return m.sender === 'bot' && !m.read; }).length;
-                        totalUnread += unread;
-                    }
-                    document.getElementById('chatBadgeSidebar').textContent = totalUnread;
-                    document.getElementById('chatBadgeSidebar').style.display = totalUnread > 0 ? 'inline-block' :
-                        'none';
-                } catch (e) { console.warn('Chat listener error:', e); }
+                try { var data = snap.val();
+                    _fb_chat_messages = (data !== null && data !== undefined) ? data : {}; } catch (e) { console.warn(
+                        'Chat listener error:', e); }
+                if (currentPage === 'chat') {
+                    renderChatUserList();
+                    if (chatSelectedUserId) loadChatConversation(chatSelectedUserId);
+                }
+                updateChatBadge();
             });
 
-            console.log('🔥 Firebase real-time listeners established for Admin Panel.');
+            // --- REVIEWS ---
+            db.ref('mh_reviews').on('value', function(snap) {
+                try { var data = snap.val();
+                    _fb_reviews = (data !== null && data !== undefined) ? data : []; } catch (e) { console.warn(
+                        'Reviews listener error:', e); }
+                if (currentPage === 'reviews') renderReviewsTable();
+            });
+
+            console.log('🔥 Firebase real-time listeners established.');
+        }
+
+        function updateChatBadge() {
+            var totalUnread = 0;
+            for (var key in _fb_chat_messages) {
+                var msgs = _fb_chat_messages[key] || [];
+                var unread = msgs.filter(function(m) { return m.sender === 'bot' && !m.read; }).length;
+                totalUnread += unread;
+            }
+            var badge = document.getElementById('chatBadgeSidebar');
+            badge.textContent = totalUnread;
+            badge.className = 'badge' + (totalUnread > 0 ? ' show' : '');
         }
 
         // ================================================================
-        // 5. NAVIGATION (unchanged)
+        // NAVIGATION
         // ================================================================
         var currentPage = 'dashboard';
 
@@ -2145,7 +1970,8 @@
 
         function navigateTo(page) {
             document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
-            document.querySelector('.nav-item[data-page="' + page + '"]').classList.add('active');
+            var navItem = document.querySelector('.nav-item[data-page="' + page + '"]');
+            if (navItem) navItem.classList.add('active');
             document.querySelectorAll('.page-section').forEach(function(s) { s.classList.remove('active'); });
             var section = document.getElementById('page-' + page);
             if (section) section.classList.add('active');
@@ -2162,10 +1988,11 @@
                 checkins: 'Check-ins',
                 notifications: 'Notifications',
                 coupons: 'Coupons',
+                reviews: 'Reviews',
                 settings: 'Site Settings'
             };
             document.getElementById('pageTitle').innerHTML = titles[page] || page;
-            // Refresh data for the page (render functions will use Firebase data)
+            // Render
             if (page === 'dashboard') renderDashboard();
             else if (page === 'products') renderProductsTable();
             else if (page === 'categories') renderCategoriesTable();
@@ -2177,10 +2004,10 @@
             else if (page === 'checkins') renderCheckinsTable();
             else if (page === 'notifications') renderNotificationsTable();
             else if (page === 'coupons') renderCouponsTable();
+            else if (page === 'reviews') renderReviewsTable();
             else if (page === 'settings') loadSettingsForm();
         }
 
-        // Sidebar toggle for mobile
         document.getElementById('sidebarToggle').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebarOverlay').classList.toggle('active');
@@ -2191,7 +2018,7 @@
         });
 
         // ================================================================
-        // 6. MODAL SYSTEM (unchanged)
+        // MODAL SYSTEM
         // ================================================================
         var modalCallbacks = {};
 
@@ -2244,7 +2071,7 @@
         });
 
         // ================================================================
-        // 7. DASHBOARD (uses Firebase data via getters)
+        // DASHBOARD
         // ================================================================
         function renderDashboard() {
             var products = getProducts();
@@ -2258,7 +2085,6 @@
             var pendingOrders = orders.filter(function(o) { return o.status === 'pending'; }).length;
             var totalUsers = users.length;
             var totalProducts = products.length;
-
             var today = new Date().toISOString().split('T')[0];
             var todayData = daily[today] || { views: 0, clicks: 0, sales: 0 };
             var todaySales = orders.filter(function(o) {
@@ -2266,29 +2092,27 @@
             }).length;
 
             var stats = [
-                { label: 'Total Users', value: totalUsers, change: '+' + totalUsers },
-                { label: 'Total Orders', value: orders.length, change: '+' + orders.length },
-                { label: 'Total Revenue', value: '$' + totalRevenue.toFixed(0), change: '' },
-                { label: 'Total Products', value: totalProducts, change: '' },
-                { label: 'Pending Payments', value: pendingOrders, change: pendingOrders > 0 ? '⚠️ ' + pendingOrders :
-                        '' },
-                { label: "Today's Views", value: todayData.views || 0, change: '' },
-                { label: "Today's Clicks", value: todayData.clicks || 0, change: '' },
-                { label: "Today's Sales", value: todaySales, change: '' }
+                { label: 'Total Users', value: totalUsers },
+                { label: 'Total Orders', value: orders.length },
+                { label: 'Total Revenue', value: '$' + totalRevenue.toFixed(0) },
+                { label: 'Total Products', value: totalProducts },
+                { label: 'Pending Payments', value: pendingOrders },
+                { label: "Today's Views", value: todayData.views || 0 },
+                { label: "Today's Clicks", value: todayData.clicks || 0 },
+                { label: "Today's Sales", value: todaySales }
             ];
 
             var html = stats.map(function(s) {
                 return '<div class="stat-card">' +
                     '<div class="label">' + s.label + '</div>' +
                     '<div class="value">' + s.value + '</div>' +
-                    (s.change ? '<div class="change">' + s.change + '</div>' : '') +
                     '</div>';
             }).join('');
             document.getElementById('dashboardStats').innerHTML = html;
 
             // Activity feed
             var feedItems = [];
-            orders.slice().sort(function(a, b) { return new Date(b.createdAt) - new Date(a.createdAt); }).slice(0, 10)
+            orders.slice().sort(function(a, b) { return new Date(b.createdAt) - new Date(a.createdAt); }).slice(0, 8)
                 .forEach(function(o) {
                     feedItems.push({ icon: 'fa-shopping-bag', text: '<strong>' + o.id + '</strong> — ' + o
                             .userEmail + ' placed an order for $' + (o.total || 0).toFixed(2),
@@ -2315,7 +2139,6 @@
             if (!feedHtml) feedHtml = '<div class="empty-state"><i class="fas fa-inbox"></i>No activity yet.</div>';
             document.getElementById('activityFeed').innerHTML = feedHtml;
 
-            // Chart
             renderChart(orders, daily);
         }
 
@@ -2365,7 +2188,7 @@
                 ctx.stroke();
             }
 
-            function drawLine(data, color, label) {
+            function drawLine(data, color) {
                 ctx.strokeStyle = color;
                 ctx.lineWidth = 2;
                 ctx.shadowColor = color;
@@ -2389,9 +2212,9 @@
                 });
             }
 
-            drawLine(viewsData, 'rgba(123,44,191,0.7)', 'Views');
-            drawLine(clicksData, 'rgba(157,78,221,0.5)', 'Clicks');
-            drawLine(salesData, 'rgba(123,44,191,0.9)', 'Sales');
+            drawLine(viewsData, 'rgba(123,44,191,0.7)');
+            drawLine(clicksData, 'rgba(157,78,221,0.5)');
+            drawLine(salesData, 'rgba(123,44,191,0.9)');
 
             ctx.fillStyle = 'rgba(255,255,255,0.3)';
             ctx.font = '10px Inter, sans-serif';
@@ -2421,7 +2244,7 @@
         }
 
         // ================================================================
-        // 8. PRODUCTS TABLE (uses Firebase data)
+        // PRODUCTS
         // ================================================================
         function renderProductsTable() {
             var products = getProducts();
@@ -2437,7 +2260,8 @@
             catSelect.value = currentVal;
 
             var filtered = products.filter(function(p) {
-                var matchName = p.name.toLowerCase().includes(search) || p.category.toLowerCase().includes(search);
+                var matchName = p.name.toLowerCase().includes(search) || (p.category || '').toLowerCase().includes(
+                search);
                 var matchCat = !catFilter || p.categorySlug === catFilter;
                 var matchType = !typeFilter || (typeFilter === 'paid' ? !p.isFree : p.isFree);
                 return matchName && matchCat && matchType;
@@ -2446,20 +2270,21 @@
             var tbody = document.getElementById('productsTableBody');
             if (filtered.length === 0) {
                 tbody.innerHTML =
-                    '<tr><td colspan="8" class="empty-state" style="padding:40px 0;">No products found.</td></tr>';
+                    '<tr><td colspan="8" class="empty-state">No products found.</td></tr>';
                 return;
             }
             tbody.innerHTML = filtered.map(function(p, idx) {
-                var statusBadge = p.isFree ? '<span class="badge-status" style="background:rgba(123,44,191,0.08);color:var(--primary);">Free</span>' :
+                var statusBadge = p.isFree ?
+                    '<span class="badge-status" style="background:rgba(123,44,191,0.08);color:var(--primary);">Free</span>' :
                     '<span class="badge-status" style="background:rgba(123,44,191,0.12);color:var(--primary);">Paid</span>';
                 return '<tr draggable="true" data-id="' + p.id + '">' +
                     '<td><input type="checkbox" class="product-check" data-id="' + p.id + '" /></td>' +
                     '<td><span class="drag-handle"><i class="fas fa-grip-lines"></i></span></td>' +
                     '<td><img src="' + (p.images && p.images[0] ? p.images[0] :
-                        'https://picsum.photos/seed/default/40/40') + '" class="product-thumb" alt="' + p.name +
-                    '" /></td>' +
+                        'https://picsum.photos/seed/' + (p.id || 'default') + '/40/40') +
+                    '" class="product-thumb" alt="' + p.name + '" /></td>' +
                     '<td><strong>' + p.name + '</strong></td>' +
-                    '<td>' + p.category + '</td>' +
+                    '<td>' + (p.category || '-') + '</td>' +
                     '<td>' + (p.isFree ? 'Free' : formatPrice(p.price)) + '</td>' +
                     '<td>' + statusBadge + '</td>' +
                     '<td class="actions-cell">' +
@@ -2477,12 +2302,8 @@
                     draggedRow = this;
                     this.style.opacity = '0.4';
                 });
-                row.addEventListener('dragend', function(e) {
-                    this.style.opacity = '1';
-                });
-                row.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                });
+                row.addEventListener('dragend', function(e) { this.style.opacity = '1'; });
+                row.addEventListener('dragover', function(e) { e.preventDefault(); });
                 row.addEventListener('drop', function(e) {
                     e.preventDefault();
                     if (draggedRow && draggedRow !== this) {
@@ -2535,7 +2356,6 @@
             });
         }
 
-        // Product add/edit modal (unchanged logic, uses setProducts)
         function openProductEditModal(id) {
             var products = getProducts();
             var p = id ? products.find(function(pr) { return pr.id === id; }) : null;
@@ -2565,18 +2385,6 @@
                 }).join('');
             }
 
-            var reviewsHtml = '';
-            if (p && p.reviewsList) {
-                reviewsHtml = p.reviewsList.map(function(r, i) {
-                    return '<div class="feature-item"><input type="text" value="' + r.user.replace(/"/g,
-                        '&quot;') + '" placeholder="User" style="flex:0.6;" /><input type="text" value="' + r
-                        .text.replace(/"/g, '&quot;') +
-                        '" placeholder="Review" style="flex:1;" /><input type="number" value="' + r.rating +
-                        '" placeholder="Rating" style="flex:0.4;min-width:60px;" /><button class="remove-review" data-idx="' +
-                        i + '"><i class="fas fa-times"></i></button></div>';
-                }).join('');
-            }
-
             var html = '<form id="productForm">' +
                 '<input type="hidden" id="productId" value="' + (p ? p.id : '') + '" />' +
                 '<div class="form-row">' +
@@ -2595,8 +2403,8 @@
                 '<div class="form-group"><label>Is Free?</label><select id="pIsFree"><option value="false" ' + (p && !p
                     .isFree ? 'selected' : '') + '>No</option><option value="true" ' + (p && p.isFree ? 'selected' :
                     '') + '>Yes</option></select></div>' +
-                '<div class="form-group"><label>Badge (e.g. BEST SELLER)</label><input type="text" id="pBadge" value="' +
-                (p ? p.badge : '') + '" /></div>' +
+                '<div class="form-group"><label>Badge</label><input type="text" id="pBadge" value="' + (p ? p.badge :
+                    '') + '" /></div>' +
                 '</div>' +
                 '<div class="form-row">' +
                 '<div class="form-group"><label>Discount %</label><input type="number" id="pDiscount" value="' + (p ? p
@@ -2606,18 +2414,14 @@
                 '</div>' +
                 '<div class="form-group"><label>Description</label><textarea id="pDescription" rows="2">' + (p ? p
                     .description : '') + '</textarea></div>' +
-                '<div class="form-group"><label>Video URL (optional)</label><input type="text" id="pVideo" value="' + (p ?
-                    p.video : '') + '" /></div>' +
+                '<div class="form-group"><label>Video URL</label><input type="text" id="pVideo" value="' + (p ? p
+                    .video : '') + '" /></div>' +
                 '<div class="form-group"><label>Images (URLs, one per line)</label><textarea id="pImages" rows="2">' + (p ?
                     p.images.join('\n') : '') + '</textarea>' +
                 '<div class="image-upload-preview">' + imagesHtml + '</div></div>' +
                 '<div class="form-group"><label>Features</label>' +
                 '<div class="feature-list-builder" id="featureList">' + featuresHtml + '</div>' +
                 '<button type="button" id="addFeatureBtn" class="btn-sm outline" style="margin-top:4px;"><i class="fas fa-plus"></i> Add Feature</button>' +
-                '</div>' +
-                '<div class="form-group"><label>Reviews</label>' +
-                '<div class="feature-list-builder" id="reviewList">' + reviewsHtml + '</div>' +
-                '<button type="button" id="addReviewBtn" class="btn-sm outline" style="margin-top:4px;"><i class="fas fa-plus"></i> Add Review</button>' +
                 '</div>' +
                 '<button type="submit" class="btn-submit">' + (isEdit ? 'Update Product' : 'Add Product') +
                 '</button>' +
@@ -2627,35 +2431,14 @@
 
             document.getElementById('addFeatureBtn').addEventListener('click', function() {
                 var container = document.getElementById('featureList');
-                var idx = container.querySelectorAll('.feature-item').length;
                 var div = document.createElement('div');
                 div.className = 'feature-item';
                 div.innerHTML =
-                    '<input type="text" placeholder="Feature" /><button class="remove-feature" data-idx="' +
-                    idx + '"><i class="fas fa-times"></i></button>';
+                    '<input type="text" placeholder="Feature" /><button class="remove-feature"><i class="fas fa-times"></i></button>';
                 container.appendChild(div);
-                div.querySelector('.remove-feature').addEventListener('click', function() {
-                    div.remove();
-                });
+                div.querySelector('.remove-feature').addEventListener('click', function() { div.remove(); });
             });
             document.querySelectorAll('#featureList .remove-feature').forEach(function(btn) {
-                btn.addEventListener('click', function() { btn.closest('.feature-item').remove(); });
-            });
-
-            document.getElementById('addReviewBtn').addEventListener('click', function() {
-                var container = document.getElementById('reviewList');
-                var idx = container.querySelectorAll('.feature-item').length;
-                var div = document.createElement('div');
-                div.className = 'feature-item';
-                div.innerHTML =
-                    '<input type="text" placeholder="User" style="flex:0.6;" /><input type="text" placeholder="Review" style="flex:1;" /><input type="number" placeholder="Rating" style="flex:0.4;min-width:60px;" /><button class="remove-review" data-idx="' +
-                    idx + '"><i class="fas fa-times"></i></button>';
-                container.appendChild(div);
-                div.querySelector('.remove-review').addEventListener('click', function() {
-                    div.remove();
-                });
-            });
-            document.querySelectorAll('#reviewList .remove-review').forEach(function(btn) {
                 btn.addEventListener('click', function() { btn.closest('.feature-item').remove(); });
             });
 
@@ -2687,18 +2470,6 @@
                     if (val) features.push(val);
                 });
 
-                var reviewsList = [];
-                document.querySelectorAll('#reviewList .feature-item').forEach(function(item) {
-                    var inputs = item.querySelectorAll('input');
-                    if (inputs.length === 3) {
-                        var user = inputs[0].value.trim();
-                        var text = inputs[1].value.trim();
-                        var r = parseFloat(inputs[2].value) || 5;
-                        if (user && text) reviewsList.push({ user: user, text: text, rating: Math.min(5,
-                                Math.max(1, r)) });
-                    }
-                });
-
                 var allProducts = getProducts();
                 if (id) {
                     var idx = allProducts.findIndex(function(p) { return p.id === parseInt(id); });
@@ -2720,13 +2491,13 @@
                             features: features,
                             badge: badge,
                             discount: isFree ? 0 : discount,
-                            reviewsList: reviewsList
+                            reviewsList: allProducts[idx].reviewsList || []
                         };
                         setProducts(allProducts);
                         toast('Product updated!', 'success');
                     }
                 } else {
-                    var newProduct = {
+                    allProducts.push({
                         id: generateId(),
                         name: name,
                         category: category,
@@ -2743,9 +2514,8 @@
                         features: features,
                         badge: badge,
                         discount: isFree ? 0 : discount,
-                        reviewsList: reviewsList
-                    };
-                    allProducts.push(newProduct);
+                        reviewsList: []
+                    });
                     setProducts(allProducts);
                     toast('Product added!', 'success');
                 }
@@ -2757,31 +2527,27 @@
         }
 
         function deleteProduct(id) {
-            openConfirm('Delete Product', 'Are you sure you want to delete this product? This cannot be undone.')
-                .then(function(confirmed) {
-                    if (confirmed) {
-                        var products = getProducts();
-                        products = products.filter(function(p) { return p.id !== id; });
-                        setProducts(products);
-                        updateCategoryCounts();
-                        renderProductsTable();
-                        renderDashboard();
-                        toast('Product deleted.', 'info');
-                    }
-                });
+            openConfirm('Delete Product', 'Are you sure you want to delete this product?').then(function(confirmed) {
+                if (confirmed) {
+                    var products = getProducts();
+                    products = products.filter(function(p) { return p.id !== id; });
+                    setProducts(products);
+                    updateCategoryCounts();
+                    renderProductsTable();
+                    renderDashboard();
+                    toast('Product deleted.', 'info');
+                }
+            });
         }
 
-        document.getElementById('addProductBtn').addEventListener('click', function() {
-            openProductEditModal(null);
-        });
-
+        document.getElementById('addProductBtn').addEventListener('click', function() { openProductEditModal(null); });
         document.getElementById('productSearch').addEventListener('input', function() { renderProductsTable(); });
         document.getElementById('productCategoryFilter').addEventListener('change', function() { renderProductsTable(); });
         document.getElementById('productTypeFilter').addEventListener('change', function() { renderProductsTable(); });
 
         document.getElementById('bulkDeleteProducts').addEventListener('click', function() {
             var checked = document.querySelectorAll('.product-check:checked');
-            if (checked.length === 0) { toast('Select at least one product to delete', 'error'); return; }
+            if (checked.length === 0) { toast('Select at least one product', 'error'); return; }
             var ids = Array.from(checked).map(function(cb) { return parseInt(cb.dataset.id); });
             openConfirm('Bulk Delete', 'Delete ' + ids.length + ' selected products?').then(function(confirmed) {
                 if (confirmed) {
@@ -2797,7 +2563,7 @@
         });
 
         // ================================================================
-        // 9. CATEGORIES TABLE (uses Firebase)
+        // CATEGORIES
         // ================================================================
         function renderCategoriesTable() {
             var cats = getCategories();
@@ -2821,16 +2587,12 @@
             }).join('');
 
             tbody.querySelectorAll('.edit-category').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var id = btn.dataset.id;
-                    openCategoryEditModal(id);
-                });
+                btn.addEventListener('click', function() { var id = btn.dataset.id;
+                    openCategoryEditModal(id); });
             });
             tbody.querySelectorAll('.delete-category').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var id = btn.dataset.id;
-                    deleteCategory(id);
-                });
+                btn.addEventListener('click', function() { var id = btn.dataset.id;
+                    deleteCategory(id); });
             });
         }
 
@@ -2885,24 +2647,21 @@
         }
 
         function deleteCategory(id) {
-            openConfirm('Delete Category', 'Delete this category? Products in this category will remain but category will be removed.')
-                .then(function(confirmed) {
-                    if (confirmed) {
-                        var cats = getCategories();
-                        cats = cats.filter(function(c) { return c.id !== id; });
-                        setCategories(cats);
-                        renderCategoriesTable();
-                        toast('Category deleted.', 'info');
-                    }
-                });
+            openConfirm('Delete Category', 'Delete this category?').then(function(confirmed) {
+                if (confirmed) {
+                    var cats = getCategories();
+                    cats = cats.filter(function(c) { return c.id !== id; });
+                    setCategories(cats);
+                    renderCategoriesTable();
+                    toast('Category deleted.', 'info');
+                }
+            });
         }
 
-        document.getElementById('addCategoryBtn').addEventListener('click', function() {
-            openCategoryEditModal(null);
-        });
+        document.getElementById('addCategoryBtn').addEventListener('click', function() { openCategoryEditModal(null); });
 
         // ================================================================
-        // 10. SLIDERS TABLE (uses Firebase)
+        // SLIDERS
         // ================================================================
         function renderSlidersTable() {
             var sliders = getSliders();
@@ -2915,10 +2674,11 @@
             tbody.innerHTML = sliders.map(function(s, idx) {
                 return '<tr draggable="true" data-order="' + (s.order || idx) + '">' +
                     '<td>' + (s.order !== undefined ? s.order : idx) + '</td>' +
-                    '<td><img src="' + s.image + '" style="width:60px;height:40px;object-fit:cover;border-radius:6px;" /></td>' +
+                    '<td><img src="' + s.image +
+                    '" style="width:60px;height:40px;object-fit:cover;border-radius:6px;" /></td>' +
                     '<td>' + s.title + '</td>' +
-                    '<td>' + s.subtitle + '</td>' +
-                    '<td>' + s.cta + '</td>' +
+                    '<td>' + (s.subtitle || '') + '</td>' +
+                    '<td>' + (s.cta || '') + '</td>' +
                     '<td class="actions-cell">' +
                     '<button class="edit-slider" data-id="' + idx + '"><i class="fas fa-edit"></i></button>' +
                     '<button class="delete-slider" data-id="' + idx + '"><i class="fas fa-trash-alt"></i></button>' +
@@ -2929,27 +2689,18 @@
             var rows = tbody.querySelectorAll('tr');
             var draggedRow = null;
             rows.forEach(function(row) {
-                row.addEventListener('dragstart', function(e) {
-                    draggedRow = this;
-                    this.style.opacity = '0.4';
-                });
-                row.addEventListener('dragend', function(e) {
-                    this.style.opacity = '1';
-                });
-                row.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                });
+                row.addEventListener('dragstart', function(e) { draggedRow = this;
+                    this.style.opacity = '0.4'; });
+                row.addEventListener('dragend', function(e) { this.style.opacity = '1'; });
+                row.addEventListener('dragover', function(e) { e.preventDefault(); });
                 row.addEventListener('drop', function(e) {
                     e.preventDefault();
                     if (draggedRow && draggedRow !== this) {
                         var parent = this.parentNode;
                         var draggedIdx = Array.from(parent.children).indexOf(draggedRow);
                         var targetIdx = Array.from(parent.children).indexOf(this);
-                        if (draggedIdx < targetIdx) {
-                            parent.insertBefore(draggedRow, this.nextSibling);
-                        } else {
-                            parent.insertBefore(draggedRow, this);
-                        }
+                        if (draggedIdx < targetIdx) parent.insertBefore(draggedRow, this.nextSibling);
+                        else parent.insertBefore(draggedRow, this);
                         var allSliders = getSliders();
                         var newOrder = [];
                         parent.querySelectorAll('tr').forEach(function(r) {
@@ -2974,16 +2725,12 @@
             });
 
             tbody.querySelectorAll('.edit-slider').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var idx = parseInt(btn.dataset.id);
-                    openSliderEditModal(idx);
-                });
+                btn.addEventListener('click', function() { var idx = parseInt(btn.dataset.id);
+                    openSliderEditModal(idx); });
             });
             tbody.querySelectorAll('.delete-slider').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var idx = parseInt(btn.dataset.id);
-                    deleteSlider(idx);
-                });
+                btn.addEventListener('click', function() { var idx = parseInt(btn.dataset.id);
+                    deleteSlider(idx); });
             });
         }
 
@@ -3003,8 +2750,8 @@
                     .cta : '') + '" /></div>' +
                 '<div class="form-group"><label>Link</label><input type="text" id="sLink" value="' + (s ? s.link :
                     '#') + '" /></div>' +
-                '<div class="form-group"><label>Order (number)</label><input type="number" id="sOrder" value="' + (s ?
-                    s.order : 0) + '" /></div>' +
+                '<div class="form-group"><label>Order</label><input type="number" id="sOrder" value="' + (s ? s
+                    .order : 0) + '" /></div>' +
                 '<button type="submit" class="btn-submit">' + (isEdit ? 'Update Slide' : 'Add Slide') +
                 '</button>' +
                 '</form>';
@@ -3019,9 +2766,7 @@
                 var cta = document.getElementById('sCta').value.trim();
                 var link = document.getElementById('sLink').value.trim();
                 var order = parseInt(document.getElementById('sOrder').value) || 0;
-
                 if (!image || !title) { toast('Image and Title are required', 'error'); return; }
-
                 var allSliders = getSliders();
                 if (isEdit) {
                     allSliders[idx] = { image: image, title: title, subtitle: subtitle, cta: cta, link: link,
@@ -3051,12 +2796,10 @@
             });
         }
 
-        document.getElementById('addSliderBtn').addEventListener('click', function() {
-            openSliderEditModal(null);
-        });
+        document.getElementById('addSliderBtn').addEventListener('click', function() { openSliderEditModal(null); });
 
         // ================================================================
-        // 11. PRICING PLANS TABLE (uses Firebase)
+        // PLANS
         // ================================================================
         function renderPlansTable() {
             var plans = getPlans();
@@ -3080,16 +2823,12 @@
             }).join('');
 
             tbody.querySelectorAll('.edit-plan').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var id = btn.dataset.id;
-                    openPlanEditModal(id);
-                });
+                btn.addEventListener('click', function() { var id = btn.dataset.id;
+                    openPlanEditModal(id); });
             });
             tbody.querySelectorAll('.delete-plan').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var id = btn.dataset.id;
-                    deletePlan(id);
-                });
+                btn.addEventListener('click', function() { var id = btn.dataset.id;
+                    deletePlan(id); });
             });
         }
 
@@ -3097,7 +2836,6 @@
             var plans = getPlans();
             var p = id ? plans.find(function(pl) { return pl.id === id; }) : null;
             var isEdit = !!p;
-            var products = getProducts();
 
             var featuresHtml = '';
             if (p && p.features) {
@@ -3156,15 +2894,12 @@
                 var originalPrice = parseFloat(document.getElementById('planOriginal').value) || 0;
                 var popular = document.getElementById('planPopular').value === 'true';
                 var desc = document.getElementById('planDesc').value.trim();
-
                 if (!name || price <= 0) { toast('Name and price are required', 'error'); return; }
-
                 var features = [];
                 document.querySelectorAll('#planFeatureList .feature-item input').forEach(function(inp) {
                     var val = inp.value.trim();
                     if (val) features.push(val);
                 });
-
                 var allPlans = getPlans();
                 if (id) {
                     var idx = allPlans.findIndex(function(pl) { return pl.id === id; });
@@ -3175,9 +2910,8 @@
                         toast('Plan updated!', 'success');
                     }
                 } else {
-                    var newId = 'plan-' + generateId();
-                    allPlans.push({ id: newId, name: name, desc: desc, price: price, originalPrice: originalPrice,
-                        features: features, popular: popular, toolIds: [] });
+                    allPlans.push({ id: 'plan-' + generateId(), name: name, desc: desc, price: price,
+                        originalPrice: originalPrice, features: features, popular: popular, toolIds: [] });
                     setPlans(allPlans);
                     toast('Plan added!', 'success');
                 }
@@ -3198,12 +2932,10 @@
             });
         }
 
-        document.getElementById('addPlanBtn').addEventListener('click', function() {
-            openPlanEditModal(null);
-        });
+        document.getElementById('addPlanBtn').addEventListener('click', function() { openPlanEditModal(null); });
 
         // ================================================================
-        // 12. USERS TABLE (uses Firebase)
+        // USERS
         // ================================================================
         function renderUsersTable() {
             var users = getUsers();
@@ -3211,7 +2943,8 @@
             var statusFilter = document.getElementById('userStatusFilter').value;
 
             var filtered = users.filter(function(u) {
-                var matchSearch = u.fullName.toLowerCase().includes(search) || u.email.toLowerCase().includes(search);
+                var matchSearch = (u.fullName || '').toLowerCase().includes(search) || (u.email || '').toLowerCase()
+                    .includes(search);
                 var matchStatus = !statusFilter || u.status === statusFilter;
                 return matchSearch && matchStatus;
             });
@@ -3228,8 +2961,8 @@
                     '<span class="badge-status banned">Banned</span>' :
                     '<span class="badge-status suspended">Suspended</span>';
                 return '<tr>' +
-                    '<td><strong>' + u.fullName + '</strong></td>' +
-                    '<td>' + u.email + '</td>' +
+                    '<td><strong>' + (u.fullName || 'N/A') + '</strong></td>' +
+                    '<td>' + (u.email || '-') + '</td>' +
                     '<td>' + (u.walletBalance || 0) + '</td>' +
                     '<td>' + (u.totalReferrals || 0) + '</td>' +
                     '<td>' + statusBadge + '</td>' +
@@ -3243,22 +2976,16 @@
             }).join('');
 
             tbody.querySelectorAll('.edit-user').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var id = parseInt(btn.dataset.id);
-                    openUserEditModal(id);
-                });
+                btn.addEventListener('click', function() { var id = parseInt(btn.dataset.id);
+                    openUserEditModal(id); });
             });
             tbody.querySelectorAll('.view-user').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var id = parseInt(btn.dataset.id);
-                    viewUserHistory(id);
-                });
+                btn.addEventListener('click', function() { var id = parseInt(btn.dataset.id);
+                    viewUserHistory(id); });
             });
             tbody.querySelectorAll('.delete-user').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var id = parseInt(btn.dataset.id);
-                    deleteUser(id);
-                });
+                btn.addEventListener('click', function() { var id = parseInt(btn.dataset.id);
+                    deleteUser(id); });
             });
         }
 
@@ -3277,7 +3004,7 @@
                 '</div>' +
                 '<div class="form-row">' +
                 '<div class="form-group"><label>Password</label><input type="text" id="uPassword" value="' + (u ? u
-                    .password : '') + '" placeholder="Leave blank to keep current" /></div>' +
+                    .password : '') + '" placeholder="Leave blank to keep" /></div>' +
                 '<div class="form-group"><label>Wallet Balance (PKR)</label><input type="number" id="uWallet" value="' +
                 (u ? u.walletBalance : '0') + '" /></div>' +
                 '</div>' +
@@ -3304,9 +3031,7 @@
                 var wallet = parseFloat(document.getElementById('uWallet').value) || 0;
                 var status = document.getElementById('uStatus').value;
                 var refCode = document.getElementById('uRefCode').value.trim();
-
                 if (!name || !email) { toast('Name and email are required', 'error'); return; }
-
                 var allUsers = getUsers();
                 if (id) {
                     var idx = allUsers.findIndex(function(user) { return user.id === parseInt(id); });
@@ -3349,7 +3074,7 @@
         }
 
         function deleteUser(id) {
-            openConfirm('Delete User', 'Delete this user? All their data will be removed.').then(function(confirmed) {
+            openConfirm('Delete User', 'Delete this user? All data will be removed.').then(function(confirmed) {
                 if (confirmed) {
                     var users = getUsers();
                     users = users.filter(function(u) { return u.id !== id; });
@@ -3365,7 +3090,6 @@
             var users = getUsers();
             var u = users.find(function(user) { return user.id === id; });
             if (!u) { toast('User not found', 'error'); return; }
-
             var checkins = getCheckins(u.id);
             var chatHistory = getChatHistory(u.id);
             var orders = getOrders().filter(function(o) { return o.userId === u.id || o.userEmail === u.email; });
@@ -3400,14 +3124,12 @@
             openModal('User History: ' + u.fullName, html);
         }
 
-        document.getElementById('addUserBtn').addEventListener('click', function() {
-            openUserEditModal(null);
-        });
+        document.getElementById('addUserBtn').addEventListener('click', function() { openUserEditModal(null); });
         document.getElementById('userSearch').addEventListener('input', function() { renderUsersTable(); });
         document.getElementById('userStatusFilter').addEventListener('change', function() { renderUsersTable(); });
 
         // ================================================================
-        // 13. ORDERS TABLE (uses Firebase)
+        // ORDERS
         // ================================================================
         function renderOrdersTable() {
             var orders = getOrders();
@@ -3415,8 +3137,8 @@
             var statusFilter = document.getElementById('orderStatusFilter').value;
 
             var filtered = orders.filter(function(o) {
-                var matchSearch = o.id.toLowerCase().includes(search) || (o.userEmail || '').toLowerCase().includes(
-                search);
+                var matchSearch = (o.id || '').toLowerCase().includes(search) || (o.userEmail || '').toLowerCase()
+                    .includes(search);
                 var matchStatus = !statusFilter || o.status === statusFilter;
                 return matchSearch && matchStatus;
             });
@@ -3437,7 +3159,7 @@
                 };
                 var itemCount = o.items ? o.items.length : 0;
                 return '<tr>' +
-                    '<td><strong>' + o.id + '</strong></td>' +
+                    '<td><strong>' + (o.id || '-') + '</strong></td>' +
                     '<td>' + (o.userEmail || '-') + '</td>' +
                     '<td>' + itemCount + ' item' + (itemCount !== 1 ? 's' : '') + '</td>' +
                     '<td>$' + (o.total || 0).toFixed(2) + '</td>' +
@@ -3452,21 +3174,18 @@
             }).join('');
 
             tbody.querySelectorAll('.view-order').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var id = btn.dataset.id;
-                    viewOrderDetail(id);
-                });
+                btn.addEventListener('click', function() { var id = btn.dataset.id;
+                    viewOrderDetail(id); });
             });
             tbody.querySelectorAll('.delete-order').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var id = btn.dataset.id;
-                    deleteOrder(id);
-                });
+                btn.addEventListener('click', function() { var id = btn.dataset.id;
+                    deleteOrder(id); });
             });
 
             var pending = orders.filter(function(o) { return o.status === 'pending'; }).length;
-            document.getElementById('orderBadge').textContent = pending;
-            document.getElementById('orderBadge').style.display = pending > 0 ? 'inline-block' : 'none';
+            var badge = document.getElementById('orderBadge');
+            badge.textContent = pending;
+            badge.className = 'badge' + (pending > 0 ? ' show' : '');
         }
 
         function viewOrderDetail(id) {
@@ -3520,26 +3239,14 @@
             openModal('Order Details: ' + o.id, html, null, function() {});
 
             var verifyBtn = document.getElementById('orderVerifyBtn');
-            if (verifyBtn) {
-                verifyBtn.addEventListener('click', function() {
-                    updateOrderStatus(o.id, 'verified');
-                    closeModal();
-                });
-            }
+            if (verifyBtn) verifyBtn.addEventListener('click', function() { updateOrderStatus(o.id, 'verified');
+                closeModal(); });
             var rejectBtn = document.getElementById('orderRejectBtn');
-            if (rejectBtn) {
-                rejectBtn.addEventListener('click', function() {
-                    updateOrderStatus(o.id, 'rejected');
-                    closeModal();
-                });
-            }
+            if (rejectBtn) rejectBtn.addEventListener('click', function() { updateOrderStatus(o.id, 'rejected');
+                closeModal(); });
             var deliverBtn = document.getElementById('orderDeliverBtn');
-            if (deliverBtn) {
-                deliverBtn.addEventListener('click', function() {
-                    updateOrderStatus(o.id, 'delivered');
-                    closeModal();
-                });
-            }
+            if (deliverBtn) deliverBtn.addEventListener('click', function() { updateOrderStatus(o.id, 'delivered');
+                closeModal(); });
         }
 
         function updateOrderStatus(orderId, newStatus) {
@@ -3580,7 +3287,7 @@
         document.getElementById('refreshOrdersBtn').addEventListener('click', function() { renderOrdersTable(); });
 
         // ================================================================
-        // 14. CHAT (uses Firebase)
+        // CHAT
         // ================================================================
         var chatSelectedUserId = null;
 
@@ -3610,9 +3317,8 @@
 
             list.innerHTML = userChats.map(function(item) {
                 var isActive = chatSelectedUserId === item.user.id;
-                return '<div class="chat-user-item" data-id="' + item.user.id +
-                    '" style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.03);cursor:pointer;background:' +
-                    (isActive ? 'rgba(123,44,191,0.04)' : 'transparent') + ';transition:var(--transition);">' +
+                return '<div class="chat-user-item' + (isActive ? ' active' : '') + '" data-id="' + item.user.id +
+                    '">' +
                     '<div style="display:flex;justify-content:space-between;align-items:center;">' +
                     '<span style="font-weight:500;">' + item.user.fullName + '</span>' +
                     (item.unread > 0 ? '<span style="background:var(--primary);color:#0a0a0a;font-size:0.6rem;font-weight:800;padding:2px 10px;border-radius:50px;">' +
@@ -3635,9 +3341,7 @@
                 });
             });
 
-            var totalUnread = userChats.reduce(function(sum, item) { return sum + item.unread; }, 0);
-            document.getElementById('chatBadgeSidebar').textContent = totalUnread;
-            document.getElementById('chatBadgeSidebar').style.display = totalUnread > 0 ? 'inline-block' : 'none';
+            updateChatBadge();
 
             if (!chatSelectedUserId && userChats.length > 0) {
                 chatSelectedUserId = userChats[0].user.id;
@@ -3669,17 +3373,11 @@
 
             view.innerHTML = history.map(function(m) {
                 var isUser = m.sender === 'user';
-                return '<div style="align-self:' + (isUser ? 'flex-end' : 'flex-start') +
-                    ';max-width:80%;background:' + (isUser ? 'var(--primary)' :
-                        'rgba(255,255,255,0.04)') + ';padding:8px 14px;border-radius:12px;border-bottom-' +
-                    (isUser ? 'right' : 'left') + '-radius:4px;font-size:0.85rem;">' +
+                return '<div class="' + (isUser ? 'msg-user' : 'msg-bot') + '">' +
                     (m.text || '') +
-                    (m.image ? '<img src="' + m.image +
-                        '" style="max-width:140px;border-radius:6px;margin-top:4px;display:block;" />' : '') +
-                    (m.audio ? '<audio controls src="' + m.audio +
-                        '" style="max-width:160px;margin-top:4px;display:block;"></audio>' : '') +
-                    '<div style="font-size:0.6rem;color:var(--text-muted);margin-top:2px;">' + (isUser ?
-                        'You' : 'Admin') + ' · ' + formatDate(m.time) + '</div>' +
+                    (m.image ? '<img src="' + m.image + '" class="msg-image" />' : '') +
+                    '<div class="msg-time">' + (isUser ? 'User' : 'Admin') + ' · ' + formatDate(m.time) +
+                    '</div>' +
                     '</div>';
             }).join('');
             view.scrollTop = view.scrollHeight;
@@ -3690,14 +3388,8 @@
             var input = document.getElementById('chatReplyInput');
             var text = input.value.trim();
             if (!text) { toast('Enter a message', 'error'); return; }
-
             var history = getChatHistory(chatSelectedUserId);
-            history.push({
-                sender: 'bot',
-                text: text,
-                time: new Date().toISOString(),
-                read: true
-            });
+            history.push({ sender: 'bot', text: text, time: new Date().toISOString(), read: true });
             setChatHistory(chatSelectedUserId, history);
             input.value = '';
             loadChatConversation(chatSelectedUserId);
@@ -3719,13 +3411,8 @@
             reader.onload = function(e) {
                 if (!chatSelectedUserId) { toast('Select a user first', 'error'); return; }
                 var history = getChatHistory(chatSelectedUserId);
-                history.push({
-                    sender: 'bot',
-                    text: '📷 Image',
-                    image: e.target.result,
-                    time: new Date().toISOString(),
-                    read: true
-                });
+                history.push({ sender: 'bot', text: '📷 Image', image: e.target.result, time: new Date()
+                        .toISOString(), read: true });
                 setChatHistory(chatSelectedUserId, history);
                 loadChatConversation(chatSelectedUserId);
                 renderChatUserList();
@@ -3736,14 +3423,15 @@
         });
 
         // ================================================================
-        // 15. CHECK-INS TABLE (uses Firebase)
+        // CHECK-INS
         // ================================================================
         function renderCheckinsTable() {
             var users = getUsers();
             var search = document.getElementById('checkinSearch').value.toLowerCase().trim();
 
             var filtered = users.filter(function(u) {
-                return u.fullName.toLowerCase().includes(search) || u.email.toLowerCase().includes(search);
+                return (u.fullName || '').toLowerCase().includes(search) || (u.email || '').toLowerCase().includes(
+                    search);
             });
 
             var tbody = document.getElementById('checkinsTableBody');
@@ -3773,7 +3461,7 @@
                 }
 
                 return '<tr>' +
-                    '<td><strong>' + u.fullName + '</strong></td>' +
+                    '<td><strong>' + (u.fullName || 'N/A') + '</strong></td>' +
                     '<td>' + total + '</td>' +
                     '<td>' + streak + ' days</td>' +
                     '<td>' + (last ? formatDate(last.date) : '-') + '</td>' +
@@ -3786,10 +3474,8 @@
             }).join('');
 
             tbody.querySelectorAll('.grant-checkin').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var id = parseInt(btn.dataset.id);
-                    grantCheckinReward(id);
-                });
+                btn.addEventListener('click', function() { var id = parseInt(btn.dataset.id);
+                    grantCheckinReward(id); });
             });
         }
 
@@ -3838,7 +3524,7 @@
         document.getElementById('refreshCheckinsBtn').addEventListener('click', function() { renderCheckinsTable(); });
 
         // ================================================================
-        // 16. NOTIFICATIONS TABLE (uses Firebase)
+        // NOTIFICATIONS
         // ================================================================
         function renderNotificationsTable() {
             var notifs = getNotifications();
@@ -3886,7 +3572,7 @@
             var badge = document.getElementById('notifBadgeSidebar');
             var unread = notifs.filter(function(n) { return !n.read; }).length;
             badge.textContent = unread;
-            badge.style.display = unread > 0 ? 'inline-block' : 'none';
+            badge.className = 'badge' + (unread > 0 ? ' show' : '');
         }
 
         document.getElementById('addNotificationBtn').addEventListener('click', function() {
@@ -3903,15 +3589,9 @@
                 var message = document.getElementById('notifMessage').value.trim();
                 var type = document.getElementById('notifType').value;
                 if (!message) { toast('Message is required', 'error'); return; }
-
                 var notifs = getNotifications();
-                notifs.unshift({
-                    id: Date.now(),
-                    type: type,
-                    message: message,
-                    read: false,
-                    timestamp: new Date().toISOString()
-                });
+                notifs.unshift({ id: Date.now(), type: type, message: message, read: false, timestamp: new Date()
+                        .toISOString() });
                 setNotifications(notifs);
                 closeModal();
                 renderNotificationsTable();
@@ -3922,17 +3602,15 @@
 
         document.getElementById('clearNotificationsBtn').addEventListener('click', function() {
             openConfirm('Clear All', 'Delete all notifications?').then(function(confirmed) {
-                if (confirmed) {
-                    setNotifications([]);
+                if (confirmed) { setNotifications([]);
                     renderNotificationsTable();
                     updateBadges();
-                    toast('All notifications cleared.', 'info');
-                }
+                    toast('All notifications cleared.', 'info'); }
             });
         });
 
         // ================================================================
-        // 17. COUPONS TABLE (uses Firebase)
+        // COUPONS
         // ================================================================
         function renderCouponsTable() {
             var coupons = getCoupons();
@@ -3959,16 +3637,12 @@
             }).join('');
 
             tbody.querySelectorAll('.edit-coupon').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var code = btn.dataset.id;
-                    openCouponEditModal(code);
-                });
+                btn.addEventListener('click', function() { var code = btn.dataset.id;
+                    openCouponEditModal(code); });
             });
             tbody.querySelectorAll('.delete-coupon').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var code = btn.dataset.id;
-                    deleteCoupon(code);
-                });
+                btn.addEventListener('click', function() { var code = btn.dataset.id;
+                    deleteCoupon(code); });
             });
         }
 
@@ -4009,9 +3683,7 @@
                 var value = parseFloat(document.getElementById('cValue').value) || 0;
                 var limit = parseInt(document.getElementById('cLimit').value) || 0;
                 var active = document.getElementById('cActive').value === 'true';
-
                 if (!newCode || value <= 0) { toast('Code and value are required', 'error'); return; }
-
                 var allCoupons = getCoupons();
                 if (oldCode) {
                     var idx = allCoupons.findIndex(function(cpn) { return cpn.code === oldCode; });
@@ -4048,12 +3720,100 @@
             });
         }
 
-        document.getElementById('addCouponBtn').addEventListener('click', function() {
-            openCouponEditModal(null);
-        });
+        document.getElementById('addCouponBtn').addEventListener('click', function() { openCouponEditModal(null); });
 
         // ================================================================
-        // 18. SITE SETTINGS (uses Firebase)
+        // REVIEWS
+        // ================================================================
+        function renderReviewsTable() {
+            var reviews = getReviews();
+            var search = document.getElementById('reviewSearch').value.toLowerCase().trim();
+            var statusFilter = document.getElementById('reviewStatusFilter').value;
+
+            var filtered = reviews.filter(function(r) {
+                var matchSearch = (r.user || '').toLowerCase().includes(search) || (r.product || '').toLowerCase()
+                    .includes(search);
+                var matchStatus = !statusFilter || r.status === statusFilter;
+                return matchSearch && matchStatus;
+            });
+
+            var tbody = document.getElementById('reviewsTableBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No reviews found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.slice().sort(function(a, b) {
+                return new Date(b.date) - new Date(a.date);
+            }).map(function(r) {
+                var statusMap = {
+                    pending: '<span class="badge-status pending">Pending</span>',
+                    approved: '<span class="badge-status verified">Approved</span>',
+                    rejected: '<span class="badge-status rejected">Rejected</span>'
+                };
+                var stars = '';
+                for (var i = 0; i < 5; i++) stars += (i < r.rating ? '⭐' : '☆');
+                return '<tr>' +
+                    '<td>' + (r.user || '-') + '</td>' +
+                    '<td>' + (r.product || '-') + '</td>' +
+                    '<td>' + stars + ' (' + r.rating + ')' + '</td>' +
+                    '<td>' + (r.text || '').substring(0, 60) + (r.text && r.text.length > 60 ? '...' : '') +
+                    '</td>' +
+                    '<td>' + (statusMap[r.status] || r.status) + '</td>' +
+                    '<td>' + (r.date ? formatDate(r.date) : '-') + '</td>' +
+                    '<td class="actions-cell">' +
+                    (r.status === 'pending' ?
+                        '<button class="approve-review" data-id="' + r.id +
+                        '" style="color:var(--primary);"><i class="fas fa-check"></i></button>' +
+                        '<button class="reject-review" data-id="' + r.id +
+                        '" style="color:var(--text-muted);"><i class="fas fa-times"></i></button>' : '') +
+                    '<button class="delete-review" data-id="' + r.id +
+                    '"><i class="fas fa-trash-alt"></i></button>' +
+                    '</td>' +
+                    '</tr>';
+            }).join('');
+
+            tbody.querySelectorAll('.approve-review').forEach(function(btn) {
+                btn.addEventListener('click', function() { var id = parseInt(btn.dataset.id);
+                    updateReviewStatus(id, 'approved'); });
+            });
+            tbody.querySelectorAll('.reject-review').forEach(function(btn) {
+                btn.addEventListener('click', function() { var id = parseInt(btn.dataset.id);
+                    updateReviewStatus(id, 'rejected'); });
+            });
+            tbody.querySelectorAll('.delete-review').forEach(function(btn) {
+                btn.addEventListener('click', function() { var id = parseInt(btn.dataset.id);
+                    deleteReview(id); });
+            });
+        }
+
+        function updateReviewStatus(id, newStatus) {
+            var reviews = getReviews();
+            var idx = reviews.findIndex(function(r) { return r.id === id; });
+            if (idx === -1) { toast('Review not found', 'error'); return; }
+            reviews[idx].status = newStatus;
+            setReviews(reviews);
+            toast('Review ' + newStatus + '!', 'success');
+            renderReviewsTable();
+        }
+
+        function deleteReview(id) {
+            openConfirm('Delete Review', 'Delete this review?').then(function(confirmed) {
+                if (confirmed) {
+                    var reviews = getReviews();
+                    reviews = reviews.filter(function(r) { return r.id !== id; });
+                    setReviews(reviews);
+                    renderReviewsTable();
+                    toast('Review deleted.', 'info');
+                }
+            });
+        }
+
+        document.getElementById('reviewSearch').addEventListener('input', function() { renderReviewsTable(); });
+        document.getElementById('reviewStatusFilter').addEventListener('change', function() { renderReviewsTable(); });
+
+        // ================================================================
+        // SETTINGS
         // ================================================================
         function loadSettingsForm() {
             var settings = getSettings();
@@ -4106,30 +3866,24 @@
         });
 
         // ================================================================
-        // 19. UPDATE BADGES
+        // BADGES
         // ================================================================
         function updateBadges() {
             var orders = getOrders();
             var pending = orders.filter(function(o) { return o.status === 'pending'; }).length;
-            document.getElementById('orderBadge').textContent = pending;
-            document.getElementById('orderBadge').style.display = pending > 0 ? 'inline-block' : 'none';
+            var badge = document.getElementById('orderBadge');
+            badge.textContent = pending;
+            badge.className = 'badge' + (pending > 0 ? ' show' : '');
 
             var notifs = getNotifications();
             var unread = notifs.filter(function(n) { return !n.read; }).length;
-            document.getElementById('notifBadgeSidebar').textContent = unread;
-            document.getElementById('notifBadgeSidebar').style.display = unread > 0 ? 'inline-block' : 'none';
+            var nbadge = document.getElementById('notifBadgeSidebar');
+            nbadge.textContent = unread;
+            nbadge.className = 'badge' + (unread > 0 ? ' show' : '');
         }
 
         // ================================================================
-        // 20. REFRESH BUTTON
-        // ================================================================
-        document.getElementById('refreshDataBtn').addEventListener('click', function() {
-            toast('Refreshing data...', 'info');
-            navigateTo(currentPage);
-        });
-
-        // ================================================================
-        // 21. UPDATE CATEGORY COUNTS (helper)
+        // UPDATE CATEGORY COUNTS
         // ================================================================
         function updateCategoryCounts() {
             var products = getProducts();
@@ -4141,16 +3895,18 @@
         }
 
         // ================================================================
-        // 22. INIT APP
+        // REFRESH
+        // ================================================================
+        document.getElementById('refreshDataBtn').addEventListener('click', function() {
+            toast('Refreshing data...', 'info');
+            navigateTo(currentPage);
+        });
+
+        // ================================================================
+        // INIT APP
         // ================================================================
         function initApp() {
-            // First, load local data for sync
-            initDataDefaults();
-
-            // Setup Firebase listeners (this will also sync data)
             setupFirebaseListeners();
-
-            // Now render initial data (listeners will call renders, but we also want to render initially)
             renderDashboard();
             renderProductsTable();
             renderCategoriesTable();
@@ -4162,42 +3918,32 @@
             renderCheckinsTable();
             renderNotificationsTable();
             renderCouponsTable();
+            renderReviewsTable();
             loadSettingsForm();
             updateBadges();
 
-            // Auto-refresh every 30 seconds (optional, since Firebase is real-time)
+            // Auto-refresh
             setInterval(function() {
                 if (currentPage === 'dashboard') renderDashboard();
                 else if (currentPage === 'orders') renderOrdersTable();
                 else if (currentPage === 'chat') renderChatUserList();
                 else if (currentPage === 'notifications') renderNotificationsTable();
+                else if (currentPage === 'reviews') renderReviewsTable();
                 updateBadges();
             }, 30000);
         }
 
         // ================================================================
-        // 23. CHECK ADMIN SESSION ON LOAD
+        // CHECK ADMIN SESSION
         // ================================================================
         if (!checkAdminAuth()) {
             document.getElementById('adminLoginOverlay').classList.remove('hidden');
         }
 
-        // ================================================================
-        // 24. TOAST PROTOTYPE FIX FOR OLD BROWSERS
-        // ================================================================
-        if (!Element.prototype.closest) {
-            Element.prototype.closest = function(s) {
-                var el = this;
-                do { if (el.matches(s)) return el;
-                    el = el.parentElement || el.parentNode; } while (el !== null && el.nodeType === 1);
-                return null;
-            };
-        }
-
-        console.log('🟣 MH HACKS Admin Panel Loaded with Firebase Integration');
-        console.log('📦 Firebase nodes: mh_products, mh_categories, mh_users, mh_orders, mh_plans, mh_coupons, mh_site_settings, mh_analytics, mh_sliders, mh_checkins, mh_chat');
-        console.log('👤 Admin default: admin@mhhacks.com / admin123');
-        console.log('🔥 Real-time sync enabled with website.');
+        console.log('🟣 MH HACKS Admin Panel — Production Ready');
+        console.log('📦 Firebase: products, categories, users, orders, plans, coupons, sliders, settings, analytics, checkins, chat, reviews');
+        console.log('👤 Admin: admin@mhhacks.com / admin123');
+        console.log('🔥 Real-time sync enabled.');
     </script>
 </body>
 </html>
