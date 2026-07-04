@@ -1178,6 +1178,7 @@
             <div class="nav-item active" data-page="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</div>
             <div class="nav-item" data-page="products"><i class="fas fa-box"></i> Products</div>
             <div class="nav-item" data-page="categories"><i class="fas fa-tags"></i> Categories</div>
+            <div class="nav-item" data-page="sliders"><i class="fas fa-images"></i> Sliders</div>
             <div class="nav-item" data-page="plans"><i class="fas fa-crown"></i> Pricing Plans</div>
             <div class="nav-item" data-page="users"><i class="fas fa-users"></i> Users</div>
             <div class="nav-item" data-page="orders"><i class="fas fa-shopping-bag"></i> Orders <span class="badge" id="orderBadge">0</span></div>
@@ -1274,6 +1275,23 @@
                     <table>
                         <thead><tr><th style="width:40px;">#</th><th>Icon</th><th>Label</th><th>Slug / ID</th><th>Product Count</th><th style="width:160px;">Actions</th></tr></thead>
                         <tbody id="categoriesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        PAGE: SLIDERS
+        ============================================================ -->
+        <div class="page-section" id="page-sliders">
+            <div class="table-wrap">
+                <div class="table-toolbar">
+                    <button class="btn-sm" id="addSliderBtn"><i class="fas fa-plus"></i> Add Slide</button>
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead><tr><th style="width:40px;">Order</th><th>Image</th><th>Title</th><th>Subtitle</th><th>CTA</th><th style="width:160px;">Actions</th></tr></thead>
+                        <tbody id="slidersTableBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -1665,6 +1683,22 @@
             setJSON('mh_chat_' + userId, data);
         }
 
+        // ----- Sliders -----
+        function getSliders() {
+            return safeJSON('mh_sliders', []);
+        }
+        function setSliders(data) {
+            setJSON('mh_sliders', data);
+        }
+
+        // ----- Banners (optional) -----
+        function getBanners() {
+            return safeJSON('mh_banners', []);
+        }
+        function setBanners(data) {
+            setJSON('mh_banners', data);
+        }
+
         // ================================================================
         // 2. ADMIN AUTH
         // ================================================================
@@ -1715,7 +1749,7 @@
         // 3. INIT — LOAD DEFAULTS FOR MISSING KEYS
         // ================================================================
         function initDataDefaults() {
-            // Products — use the products from the main site spec
+            // Products
             var existingProducts = getProducts();
             if (existingProducts.length === 0) {
                 var defaultProducts = [{
@@ -2115,6 +2149,34 @@
                 setCoupons(defaultCoupons);
             }
 
+            // Sliders
+            var existingSliders = getSliders();
+            if (existingSliders.length === 0) {
+                var defaultSliders = [{
+                    image: 'https://picsum.photos/seed/banner1/1200/500',
+                    title: '🔥 Premium Tools Collection',
+                    subtitle: 'Top-rated tools for growth & automation.',
+                    cta: 'Explore Now',
+                    link: '#products',
+                    order: 0
+                }, {
+                    image: 'https://picsum.photos/seed/banner2/1200/500',
+                    title: '📈 Scale Your Business',
+                    subtitle: 'Methods & courses used by top 1% earners.',
+                    cta: 'View Methods',
+                    link: '#products',
+                    order: 1
+                }, {
+                    image: 'https://picsum.photos/seed/banner3/1200/500',
+                    title: '🎁 Free Tools For Everyone',
+                    subtitle: 'Powerful utilities at no cost. Start building.',
+                    cta: 'Get Free Tools',
+                    link: '#free-tools',
+                    order: 2
+                }];
+                setSliders(defaultSliders);
+            }
+
             // Settings - already handled by getSettings()
             // Analytics
             var analytics = getAnalytics();
@@ -2173,6 +2235,7 @@
                 dashboard: 'Dashboard',
                 products: 'Products',
                 categories: 'Categories',
+                sliders: 'Sliders',
                 plans: 'Pricing Plans',
                 users: 'Users',
                 orders: 'Orders',
@@ -2187,6 +2250,7 @@
             if (page === 'dashboard') renderDashboard();
             else if (page === 'products') renderProductsTable();
             else if (page === 'categories') renderCategoriesTable();
+            else if (page === 'sliders') renderSlidersTable();
             else if (page === 'plans') renderPlansTable();
             else if (page === 'users') renderUsersTable();
             else if (page === 'orders') renderOrdersTable();
@@ -2261,7 +2325,221 @@
         });
 
         // ================================================================
-        // 6. DASHBOARD
+        // 6. REAL-TIME SYNCHRONIZATION LAYER
+        // ================================================================
+        var SYNC_CHANNEL = 'mh_hacks_channel';
+        var syncChannel = null;
+
+        try {
+            syncChannel = new BroadcastChannel(SYNC_CHANNEL);
+            console.log('[SYNC] Admin BroadcastChannel established.');
+        } catch (e) {
+            console.warn('[SYNC] BroadcastChannel not supported.');
+        }
+
+        function broadcastChange(type, key, data) {
+            var payload = { type: type, key: key, data: data, timestamp: Date.now() };
+            if (syncChannel) {
+                try { syncChannel.postMessage(payload); } catch (e) { /* ignore */ }
+            }
+            window.dispatchEvent(new CustomEvent('mh-sync', { detail: payload }));
+        }
+
+        // Listen for messages from other tabs (website or other admin instances)
+        if (syncChannel) {
+            syncChannel.onmessage = function(event) {
+                var payload = event.data;
+                if (payload && payload.key) {
+                    console.log('[SYNC] Received broadcast:', payload.key);
+                    handleSyncMessage(payload);
+                }
+            };
+        }
+
+        // Listen for storage events (from other tabs)
+        window.addEventListener('storage', function(event) {
+            if (event.key && event.key.startsWith('mh_')) {
+                console.log('[SYNC] Storage event:', event.key);
+                var data = null;
+                try { data = JSON.parse(event.newValue); } catch (e) { data = event.newValue; }
+                handleSyncMessage({ type: 'storage', key: event.key, data: data, timestamp: Date.now() });
+            }
+        });
+
+        // Listen for custom events within same page
+        window.addEventListener('mh-sync', function(event) {
+            handleSyncMessage(event.detail);
+        });
+
+        // Handle sync messages
+        function handleSyncMessage(payload) {
+            var key = payload.key;
+            var data = payload.data;
+            var currentPage = window.currentPage || 'dashboard';
+
+            switch (key) {
+                case 'mh_products':
+                    if (data !== null) {
+                        // Products changed, refresh product tables and dashboard
+                        if (currentPage === 'products') renderProductsTable();
+                        if (currentPage === 'dashboard') renderDashboard();
+                        // Also update category counts
+                        updateCategoryCounts();
+                        renderCategoriesTable(); // if categories page is open, it will refresh
+                    }
+                    break;
+                case 'mh_categories':
+                    if (data !== null) {
+                        if (currentPage === 'categories') renderCategoriesTable();
+                        if (currentPage === 'products') renderProductsTable(); // category filter may need update
+                        if (currentPage === 'dashboard') renderDashboard();
+                    }
+                    break;
+                case 'mh_users':
+                    if (data !== null) {
+                        if (currentPage === 'users') renderUsersTable();
+                        if (currentPage === 'dashboard') renderDashboard();
+                        if (currentPage === 'chat') renderChatUserList();
+                        if (currentPage === 'checkins') renderCheckinsTable();
+                    }
+                    break;
+                case 'mh_orders':
+                    if (data !== null) {
+                        if (currentPage === 'orders') renderOrdersTable();
+                        if (currentPage === 'dashboard') renderDashboard();
+                        updateBadges();
+                    }
+                    break;
+                case 'mh_notifications':
+                    if (data !== null) {
+                        if (currentPage === 'notifications') renderNotificationsTable();
+                        updateBadges();
+                    }
+                    break;
+                case 'mh_plans':
+                    if (data !== null) {
+                        if (currentPage === 'plans') renderPlansTable();
+                    }
+                    break;
+                case 'mh_coupons':
+                    if (data !== null) {
+                        if (currentPage === 'coupons') renderCouponsTable();
+                    }
+                    break;
+                case 'mh_site_settings':
+                    if (data !== null) {
+                        if (currentPage === 'settings') loadSettingsForm();
+                        // also update any UI elements that rely on settings
+                    }
+                    break;
+                case 'mh_sliders':
+                    if (data !== null) {
+                        if (currentPage === 'sliders') renderSlidersTable();
+                    }
+                    break;
+                case 'mh_chat_':
+                    // Chat per user: refresh chat list and conversation if open
+                    if (currentPage === 'chat') {
+                        renderChatUserList();
+                        // If the current conversation user matches the one in the key, reload conversation
+                        var userId = key.replace('mh_chat_', '');
+                        if (chatSelectedUserId && chatSelectedUserId == userId) {
+                            loadChatConversation(chatSelectedUserId);
+                        }
+                    }
+                    break;
+                case 'mh_checkin_':
+                    if (currentPage === 'checkins') renderCheckinsTable();
+                    break;
+                default:
+                    // Generic refresh for unknown keys
+                    if (key && key.startsWith('mh_')) {
+                        // Refresh all tables if needed
+                        if (currentPage === 'products') renderProductsTable();
+                        if (currentPage === 'categories') renderCategoriesTable();
+                        if (currentPage === 'users') renderUsersTable();
+                        if (currentPage === 'orders') renderOrdersTable();
+                        if (currentPage === 'chat') renderChatUserList();
+                        if (currentPage === 'checkins') renderCheckinsTable();
+                        if (currentPage === 'notifications') renderNotificationsTable();
+                        if (currentPage === 'coupons') renderCouponsTable();
+                        if (currentPage === 'plans') renderPlansTable();
+                        if (currentPage === 'sliders') renderSlidersTable();
+                        if (currentPage === 'dashboard') renderDashboard();
+                    }
+                    break;
+            }
+        }
+
+        // Override setter functions to broadcast changes
+        var originalSetProducts = setProducts;
+        setProducts = function(data) {
+            originalSetProducts(data);
+            broadcastChange('update', 'mh_products', data);
+        };
+
+        var originalSetCategories = setCategories;
+        setCategories = function(data) {
+            originalSetCategories(data);
+            broadcastChange('update', 'mh_categories', data);
+        };
+
+        var originalSetUsers = setUsers;
+        setUsers = function(data) {
+            originalSetUsers(data);
+            broadcastChange('update', 'mh_users', data);
+        };
+
+        var originalSetOrders = setOrders;
+        setOrders = function(data) {
+            originalSetOrders(data);
+            broadcastChange('update', 'mh_orders', data);
+        };
+
+        var originalSetNotifications = setNotifications;
+        setNotifications = function(data) {
+            originalSetNotifications(data);
+            broadcastChange('update', 'mh_notifications', data);
+        };
+
+        var originalSetPlans = setPlans;
+        setPlans = function(data) {
+            originalSetPlans(data);
+            broadcastChange('update', 'mh_plans', data);
+        };
+
+        var originalSetCoupons = setCoupons;
+        setCoupons = function(data) {
+            originalSetCoupons(data);
+            broadcastChange('update', 'mh_coupons', data);
+        };
+
+        var originalSetSettings = setSettings;
+        setSettings = function(data) {
+            originalSetSettings(data);
+            broadcastChange('update', 'mh_site_settings', data);
+        };
+
+        var originalSetSliders = setSliders;
+        setSliders = function(data) {
+            originalSetSliders(data);
+            broadcastChange('update', 'mh_sliders', data);
+        };
+
+        var originalSetCheckins = setCheckins;
+        setCheckins = function(userId, data) {
+            originalSetCheckins(userId, data);
+            broadcastChange('update', 'mh_checkin_' + userId, data);
+        };
+
+        var originalSetChatHistory = setChatHistory;
+        setChatHistory = function(userId, data) {
+            originalSetChatHistory(userId, data);
+            broadcastChange('update', 'mh_chat_' + userId, data);
+        };
+
+        // ================================================================
+        // 7. DASHBOARD
         // ================================================================
         function renderDashboard() {
             var products = getProducts();
@@ -2444,7 +2722,7 @@
         }
 
         // ================================================================
-        // 7. PRODUCTS TABLE
+        // 8. PRODUCTS TABLE
         // ================================================================
         function renderProductsTable() {
             var products = getProducts();
@@ -2832,7 +3110,7 @@
         });
 
         // ================================================================
-        // 8. CATEGORIES TABLE
+        // 9. CATEGORIES TABLE
         // ================================================================
         function renderCategoriesTable() {
             var cats = getCategories();
@@ -2937,7 +3215,167 @@
         });
 
         // ================================================================
-        // 9. PRICING PLANS TABLE
+        // 10. SLIDERS TABLE
+        // ================================================================
+        function renderSlidersTable() {
+            var sliders = getSliders();
+            var tbody = document.getElementById('slidersTableBody');
+            if (sliders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No slides found.</td></tr>';
+                return;
+            }
+            // Sort by order
+            sliders.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+            tbody.innerHTML = sliders.map(function(s, idx) {
+                return '<tr draggable="true" data-order="' + (s.order || idx) + '">' +
+                    '<td>' + (s.order !== undefined ? s.order : idx) + '</td>' +
+                    '<td><img src="' + s.image + '" style="width:60px;height:40px;object-fit:cover;border-radius:6px;" /></td>' +
+                    '<td>' + s.title + '</td>' +
+                    '<td>' + s.subtitle + '</td>' +
+                    '<td>' + s.cta + '</td>' +
+                    '<td class="actions-cell">' +
+                    '<button class="edit-slider" data-id="' + idx + '"><i class="fas fa-edit"></i></button>' +
+                    '<button class="delete-slider" data-id="' + idx + '"><i class="fas fa-trash-alt"></i></button>' +
+                    '</td>' +
+                    '</tr>';
+            }).join('');
+
+            // Drag and drop reorder
+            var rows = tbody.querySelectorAll('tr');
+            var draggedRow = null;
+            rows.forEach(function(row) {
+                row.addEventListener('dragstart', function(e) {
+                    draggedRow = this;
+                    this.style.opacity = '0.4';
+                });
+                row.addEventListener('dragend', function(e) {
+                    this.style.opacity = '1';
+                });
+                row.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+                row.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    if (draggedRow && draggedRow !== this) {
+                        var parent = this.parentNode;
+                        var draggedIdx = Array.from(parent.children).indexOf(draggedRow);
+                        var targetIdx = Array.from(parent.children).indexOf(this);
+                        if (draggedIdx < targetIdx) {
+                            parent.insertBefore(draggedRow, this.nextSibling);
+                        } else {
+                            parent.insertBefore(draggedRow, this);
+                        }
+                        // Update orders
+                        var allSliders = getSliders();
+                        var newOrder = [];
+                        parent.querySelectorAll('tr').forEach(function(r) {
+                            var order = parseInt(r.dataset.order);
+                            if (!isNaN(order)) newOrder.push(order);
+                        });
+                        // Reorder the array based on new order
+                        var orderedSliders = [];
+                        newOrder.forEach(function(order) {
+                            var s = allSliders.find(function(sl) { return sl.order === order; });
+                            if (s) orderedSliders.push(s);
+                        });
+                        // Add any missing
+                        allSliders.forEach(function(s) {
+                            if (!orderedSliders.find(function(os) { return os.order === s.order; }))
+                                orderedSliders.push(s);
+                        });
+                        // Assign new order numbers
+                        orderedSliders.forEach(function(s, i) { s.order = i; });
+                        setSliders(orderedSliders);
+                        toast('Slides reordered!', 'success');
+                        renderSlidersTable();
+                    }
+                });
+            });
+
+            tbody.querySelectorAll('.edit-slider').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var idx = parseInt(btn.dataset.id);
+                    openSliderEditModal(idx);
+                });
+            });
+            tbody.querySelectorAll('.delete-slider').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var idx = parseInt(btn.dataset.id);
+                    deleteSlider(idx);
+                });
+            });
+        }
+
+        function openSliderEditModal(idx) {
+            var sliders = getSliders();
+            var s = (idx !== undefined && idx < sliders.length) ? sliders[idx] : null;
+            var isEdit = (s !== null);
+            var html = '<form id="sliderForm">' +
+                '<input type="hidden" id="sliderIdx" value="' + idx + '" />' +
+                '<div class="form-group"><label>Image URL *</label><input type="text" id="sImage" value="' + (s ? s
+                    .image : '') + '" required /></div>' +
+                '<div class="form-group"><label>Title *</label><input type="text" id="sTitle" value="' + (s ? s
+                    .title : '') + '" required /></div>' +
+                '<div class="form-group"><label>Subtitle</label><input type="text" id="sSubtitle" value="' + (s ? s
+                    .subtitle : '') + '" /></div>' +
+                '<div class="form-group"><label>CTA Button Text</label><input type="text" id="sCta" value="' + (s ? s
+                    .cta : '') + '" /></div>' +
+                '<div class="form-group"><label>Link</label><input type="text" id="sLink" value="' + (s ? s.link :
+                    '#') + '" /></div>' +
+                '<div class="form-group"><label>Order (number)</label><input type="number" id="sOrder" value="' + (s ?
+                    s.order : 0) + '" /></div>' +
+                '<button type="submit" class="btn-submit">' + (isEdit ? 'Update Slide' : 'Add Slide') +
+                '</button>' +
+                '</form>';
+
+            openModal(isEdit ? 'Edit Slide' : 'Add Slide', html);
+
+            document.getElementById('sliderForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                var image = document.getElementById('sImage').value.trim();
+                var title = document.getElementById('sTitle').value.trim();
+                var subtitle = document.getElementById('sSubtitle').value.trim();
+                var cta = document.getElementById('sCta').value.trim();
+                var link = document.getElementById('sLink').value.trim();
+                var order = parseInt(document.getElementById('sOrder').value) || 0;
+
+                if (!image || !title) { toast('Image and Title are required', 'error'); return; }
+
+                var allSliders = getSliders();
+                if (isEdit) {
+                    allSliders[idx] = { image: image, title: title, subtitle: subtitle, cta: cta, link: link,
+                        order: order };
+                    setSliders(allSliders);
+                    toast('Slide updated!', 'success');
+                } else {
+                    allSliders.push({ image: image, title: title, subtitle: subtitle, cta: cta, link: link,
+                        order: order });
+                    setSliders(allSliders);
+                    toast('Slide added!', 'success');
+                }
+                closeModal();
+                renderSlidersTable();
+            });
+        }
+
+        function deleteSlider(idx) {
+            openConfirm('Delete Slide', 'Delete this slide?').then(function(confirmed) {
+                if (confirmed) {
+                    var sliders = getSliders();
+                    sliders.splice(idx, 1);
+                    setSliders(sliders);
+                    renderSlidersTable();
+                    toast('Slide deleted.', 'info');
+                }
+            });
+        }
+
+        document.getElementById('addSliderBtn').addEventListener('click', function() {
+            openSliderEditModal(null);
+        });
+
+        // ================================================================
+        // 11. PRICING PLANS TABLE
         // ================================================================
         function renderPlansTable() {
             var plans = getPlans();
@@ -3084,7 +3522,7 @@
         });
 
         // ================================================================
-        // 10. USERS TABLE
+        // 12. USERS TABLE
         // ================================================================
         function renderUsersTable() {
             var users = getUsers();
@@ -3288,7 +3726,7 @@
         document.getElementById('userStatusFilter').addEventListener('change', function() { renderUsersTable(); });
 
         // ================================================================
-        // 11. ORDERS TABLE
+        // 13. ORDERS TABLE
         // ================================================================
         function renderOrdersTable() {
             var orders = getOrders();
@@ -3466,7 +3904,7 @@
         document.getElementById('refreshOrdersBtn').addEventListener('click', function() { renderOrdersTable(); });
 
         // ================================================================
-        // 12. CHAT
+        // 14. CHAT
         // ================================================================
         var chatSelectedUserId = null;
 
@@ -3625,7 +4063,7 @@
         });
 
         // ================================================================
-        // 13. CHECK-INS TABLE
+        // 15. CHECK-INS TABLE
         // ================================================================
         function renderCheckinsTable() {
             var users = getUsers();
@@ -3728,7 +4166,7 @@
         document.getElementById('refreshCheckinsBtn').addEventListener('click', function() { renderCheckinsTable(); });
 
         // ================================================================
-        // 14. NOTIFICATIONS TABLE
+        // 16. NOTIFICATIONS TABLE
         // ================================================================
         function renderNotificationsTable() {
             var notifs = getNotifications();
@@ -3822,7 +4260,7 @@
         });
 
         // ================================================================
-        // 15. COUPONS TABLE
+        // 17. COUPONS TABLE
         // ================================================================
         function renderCouponsTable() {
             var coupons = getCoupons();
@@ -3943,7 +4381,7 @@
         });
 
         // ================================================================
-        // 16. SITE SETTINGS
+        // 18. SITE SETTINGS
         // ================================================================
         function loadSettingsForm() {
             var settings = getSettings();
@@ -3996,7 +4434,7 @@
         });
 
         // ================================================================
-        // 17. UPDATE BADGES
+        // 19. UPDATE BADGES
         // ================================================================
         function updateBadges() {
             var orders = getOrders();
@@ -4011,7 +4449,7 @@
         }
 
         // ================================================================
-        // 18. REFRESH BUTTON
+        // 20. REFRESH BUTTON
         // ================================================================
         document.getElementById('refreshDataBtn').addEventListener('click', function() {
             toast('Refreshing data...', 'info');
@@ -4019,13 +4457,14 @@
         });
 
         // ================================================================
-        // 19. INIT APP
+        // 21. INIT APP
         // ================================================================
         function initApp() {
             initDataDefaults();
             renderDashboard();
             renderProductsTable();
             renderCategoriesTable();
+            renderSlidersTable();
             renderPlansTable();
             renderUsersTable();
             renderOrdersTable();
@@ -4047,7 +4486,7 @@
         }
 
         // ================================================================
-        // 20. CHECK ADMIN SESSION ON LOAD
+        // 22. CHECK ADMIN SESSION ON LOAD
         // ================================================================
         if (!checkAdminAuth()) {
             // Show login
@@ -4055,7 +4494,7 @@
         }
 
         // ================================================================
-        // 21. TOAST PROTOTYPE FIX FOR OLD BROWSERS
+        // 23. TOAST PROTOTYPE FIX FOR OLD BROWSERS
         // ================================================================
         if (!Element.prototype.closest) {
             Element.prototype.closest = function(s) {
@@ -4066,9 +4505,11 @@
             };
         }
 
-        console.log('🟣 MH HACKS Admin Panel Loaded');
-        console.log('📦 localStorage keys: mh_products, mh_categories, mh_users, mh_orders, mh_plans, mh_coupons, mh_site_settings, mh_analytics, mh_admin_auth');
+        console.log('🟣 MH HACKS Admin Panel Loaded with Full Sync');
+        console.log('📦 localStorage keys: mh_products, mh_categories, mh_users, mh_orders, mh_plans, mh_coupons, mh_site_settings, mh_analytics, mh_admin_auth, mh_sliders');
         console.log('👤 Admin default: admin@mhhacks.com / admin123');
+        console.log('📡 BroadcastChannel active: ' + SYNC_CHANNEL);
+        console.log('🔄 Every change is broadcasted to website and other admin tabs.');
     </script>
 </body>
 </html>
